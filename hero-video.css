@@ -1,0 +1,275 @@
+/* Hallmark · macrostructure: Photographic · tone: aquatic product cinema · anchor hue: client blue
+ * New exploded/assembly story; critique and generation acceptance remain pending. */
+.ns-hero-in-view .ns-floating{display:none}
+.ns-hero-track{height:340svh;min-height:1000px;background:var(--ns-dark)}
+.ns-hero.ns-cinema{position:sticky;top:var(--ns-header-h,86px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:minmax(0,1fr) auto;align-items:stretch;gap:0;width:100%;height:calc(100svh - var(--ns-header-h,86px) - var(--ns-notice-h,36px));min-height:0;max-height:none;padding:0;overflow:clip;isolation:isolate;background:var(--ns-dark);color:var(--ns-paper)}
+.ns-water-film,.ns-water-shade{position:absolute;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}
+.ns-water-film{object-fit:cover;opacity:.4}
+.ns-water-shade{z-index:-1;background:var(--ns-focus);opacity:.3}
+.ns-cinema .ns-hero-copy{position:relative;inset:auto;transform:none;grid-column:1;grid-row:1;align-self:center;width:100%;max-width:none;padding:var(--space-xl) 0 var(--space-xl) var(--ns-space);z-index:4}
+.ns-story-heading{display:grid;min-width:0}
+.ns-story-heading>*{grid-area:1/1;align-self:center}
+.ns-cinema .ns-hero-copy h1,.ns-cinema .ns-hero-copy .ns-story-intro{font-size:clamp(32px,4.1vw,64px);font-weight:400;line-height:1.2;letter-spacing:-.045em;color:var(--ns-paper);margin:0;max-width:10em}
+.ns-cinema .ns-hero-copy h1 span{display:block}
+.ns-story-intro{visibility:hidden}
+.ns-story-ready .ns-story-intro{visibility:visible;opacity:var(--ns-intro-o,1);transform:translateY(var(--ns-intro-y,0px))}
+.ns-story-ready .ns-hero-copy h1{opacity:var(--ns-title-o,0);transform:translateY(var(--ns-title-y,24px))}
+.ns-hero-action{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-lg);margin-top:var(--space-xl)}
+.ns-cinema .ns-hero-action p{font-size:16px;line-height:1.7;color:var(--ns-paper);max-width:65ch;margin:0;opacity:.9}
+.ns-cinema .ns-button{min-height:48px;padding:var(--space-md) var(--space-lg);font-size:14px;line-height:1;background:var(--ns-paper);color:var(--ns-focus);border:1px solid transparent;gap:var(--space-xl)}
+.ns-cinema .ns-button:is(:hover,:focus-visible){background:var(--ns-pink);color:var(--ns-focus)}
+.ns-cinema :focus-visible{outline:3px solid var(--ns-paper);outline-offset:4px}
+.ns-cinema .ns-packing-scene{position:relative;inset:auto;grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;container-type:size;width:100%;height:100%;max-width:none;min-height:0;aspect-ratio:auto;padding:var(--space-md);transform:translate3d(var(--ns-px),var(--ns-py),0);transition:transform var(--dur-short) var(--ease-out);pointer-events:none}
+.ns-film-frame{position:relative;height:auto;max-height:100%;max-width:100%;aspect-ratio:60/53;width:min(100%,113.2075cqh);mask-image:linear-gradient(90deg,transparent,var(--color-mask) 6%,var(--color-mask) 94%,transparent),linear-gradient(0deg,transparent,var(--color-mask) 7%,var(--color-mask) 93%,transparent);mask-composite:intersect}
+.ns-film,.ns-film-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;border:0;transform:none;mask-image:none}
+.ns-film{opacity:0}.ns-film[data-ready="true"]{opacity:1}
+.ns-film-status{position:absolute;inset:auto var(--space-lg) var(--space-sm);padding:var(--space-xs) var(--space-sm);font-size:14px;background:var(--ns-paper);color:var(--ns-ink);z-index:5}
+.ns-film-status:empty{display:none}
+.ns-cinema-bottom{position:relative;inset:auto;grid-row:2;grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);padding:var(--space-md) var(--ns-space) var(--space-lg);color:var(--ns-paper);font-size:12px;min-height:84px;z-index:5}
+.ns-film-controls{display:none;align-items:center;gap:var(--space-md)}
+.ns-cinema[data-film-controls="ready"] .ns-film-controls{display:flex}
+.ns-cinema #motion-toggle,.ns-cinema #film-replay{color:var(--ns-paper);background:var(--ns-focus);border:1px solid var(--ns-paper);min-height:44px;padding:var(--space-xs) var(--space-sm);font-size:12px;line-height:1;white-space:nowrap}
+.ns-cinema #motion-toggle:is(:hover,:focus-visible),.ns-cinema #film-replay:is(:hover,:focus-visible){background:var(--ns-dark)}
+.ns-cinema .ns-progress{position:absolute;inset:auto var(--ns-space) var(--space-xs);width:auto;height:2px;background:var(--ns-paper);margin:0;opacity:1}
+.ns-cinema .ns-progress>span{height:100%;background:var(--ns-blue)}
+.ns-cinema .ns-scroll-cue{font-size:12px;gap:var(--space-sm)}
+@media(max-width:768px){
+ .ns-hero-track{height:290svh;min-height:900px}
+ .ns-hero.ns-cinema{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
+ .ns-cinema .ns-hero-copy{grid-row:1;grid-column:1;align-self:start;padding:var(--space-lg) var(--space-lg) var(--space-xs)}
+ .ns-cinema .ns-hero-copy h1,.ns-cinema .ns-hero-copy .ns-story-intro{font-size:30px;line-height:1.2;max-width:none}
+ .ns-cinema .ns-hero-copy h1 span{display:inline}.ns-cinema .ns-hero-copy h1 span+span:before{content:" "}
+ .ns-story-intro br{display:none}
+ .ns-hero-action{margin-top:var(--space-md);display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:var(--space-sm)}
+ .ns-cinema .ns-hero-action p{font-size:14px}
+ .ns-cinema .ns-button{min-height:44px;font-size:12px;padding:var(--space-xs) var(--space-sm);gap:var(--space-sm)}
+ .ns-cinema .ns-packing-scene{grid-row:2;grid-column:1;transform:none;padding:0 var(--space-xs);min-height:0}
+ .ns-film-frame{height:auto;max-width:100%}
+ .ns-cinema-bottom{grid-row:3;padding:var(--space-xs) var(--space-lg) var(--space-lg);min-height:100px;align-items:center;flex-wrap:wrap;gap:var(--space-xs)}
+ .ns-film-controls{width:100%;justify-content:space-between;gap:var(--space-xs)}
+ .ns-scroll-cue{max-width:10em;white-space:normal}
+ .ns-cinema .ns-progress{left:var(--space-lg);right:var(--space-lg)}
+}
+@media(max-width:380px){.ns-cinema .ns-hero-copy{padding:var(--space-md) var(--space-md) var(--space-xs)}.ns-cinema .ns-hero-copy h1,.ns-cinema .ns-hero-copy .ns-story-intro{font-size:26px}.ns-cinema .ns-hero-action p{font-size:12px}.ns-cinema-bottom{padding-inline:var(--space-md)}}
+@media(max-height:500px) and (min-width:600px){
+ .ns-hero-track{height:auto;min-height:0}
+ .ns-hero.ns-cinema{position:relative;top:0;height:auto;min-height:0;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(340px,auto) auto}
+ .ns-cinema .ns-hero-copy{grid-row:1;grid-column:1;padding:var(--space-lg)}
+ .ns-cinema .ns-packing-scene{grid-row:1;grid-column:2;height:340px;transform:none!important}
+ .ns-cinema .ns-hero-copy h1,.ns-cinema .ns-hero-copy .ns-story-intro{font-size:30px}
+ .ns-cinema-bottom{grid-row:2;grid-column:1/-1}
+}
+@media(prefers-reduced-motion:reduce){
+ .ns-hero-track{height:auto;min-height:0}
+ .ns-hero.ns-cinema{position:relative;top:0}
+ .ns-cinema .ns-packing-scene{transform:none!important;transition:none}
+ .ns-cinema .ns-hero-copy h1{opacity:1!important;transform:none!important}
+ .ns-story-intro{visibility:hidden!important}
+ .ns-cinema .ns-progress{display:none}
+}
+
+/* Static fallback has no empty scroll runway. */
+.ns-hero-track:not(.ns-scroll-enabled){height:auto;min-height:0}
+.ns-hero-track:not(.ns-scroll-enabled) .ns-cinema{position:relative;top:0;height:auto;min-height:70svh}
+.ns-hero-track:not(.ns-scroll-enabled) .ns-packing-scene{height:clamp(300px,50svh,600px)}
+
+/* Full-bleed product stage (2026-09-25 user feedback: product scene should be the whole hero, with depth).
+ * Stage colours are measured from the product film's own background edges (poster edge average),
+ * so the film frame dissolves into the hero instead of reading as a rectangle.
+ * Web-only depth: pointer tilt, scroll dolly, light bloom behind the product. Product pixels are not tinted. */
+.ns-hero.ns-cinema{--ns-stage-deep:#082146;--ns-stage-mid:#0C3A66;--ns-stage-floor:#195984;background:var(--ns-stage-deep)}
+.ns-film-ambient{position:absolute;inset:0;z-index:-4;pointer-events:none;background:radial-gradient(120% 70% at 68% 100%,var(--ns-stage-floor) 0%,var(--ns-stage-mid) 38%,var(--ns-stage-deep) 72%)}
+.ns-ambient-canvas{position:absolute;inset:-8%;width:116%;height:116%;filter:blur(24px) saturate(1.06);opacity:0;transition:opacity 600ms var(--ease-out)}
+.ns-cinema[data-ambient="on"] .ns-ambient-canvas{opacity:1}
+.ns-cinema .ns-water-film{z-index:-3;opacity:.4;mix-blend-mode:soft-light;inset:-4%;width:108%;height:108%;transform:translate3d(calc(var(--ns-px,0px) * -1.6),calc(var(--ns-py,0px) * -1.6),0);transition:transform var(--dur-short) var(--ease-out)}
+.ns-cinema .ns-water-shade{z-index:-2;opacity:1;background:linear-gradient(90deg,rgba(4,16,36,.42) 0%,rgba(4,16,36,.14) 20%,transparent 31%),linear-gradient(0deg,rgba(4,16,36,.36) 0%,transparent 16%)}
+.ns-film-light{position:absolute;inset:0;z-index:-1;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(34% 46% at var(--ns-lx,70%) var(--ns-ly,48%),rgba(96,160,255,.26) 0%,rgba(58,134,255,.08) 55%,transparent 75%)}
+.ns-cinema .ns-packing-scene{grid-column:1/-1;grid-row:1/-1;display:block;padding:0;z-index:1;transform:none;transition:none;perspective:1600px;perspective-origin:68% 50%}
+.ns-film-rig{position:absolute;top:50%;right:0;width:min(calc(108cqh * 1.1321),64cqw);aspect-ratio:60/53;transform:translate3d(var(--ns-px,0px),calc(-50% + var(--ns-py,0px)),0) rotateX(var(--ns-rx,0deg)) rotateY(var(--ns-ry,0deg)) scale(var(--ns-dolly,1));transform-origin:50% 55%;transition:transform var(--dur-short) var(--ease-out);will-change:transform}
+.ns-film-rig .ns-film-frame{width:100%;height:100%;max-width:none;max-height:none}
+@media(max-width:768px){
+ .ns-cinema .ns-packing-scene{grid-row:2;grid-column:1;perspective:none}
+ .ns-film-rig{top:50%;left:50%;right:auto;width:min(104cqw,calc(106cqh * 1.1321));transform:translate3d(-50%,-50%,0) scale(var(--ns-dolly,1))}
+ .ns-cinema .ns-water-shade{background:linear-gradient(180deg,rgba(4,16,36,.45) 0%,transparent 26%),linear-gradient(0deg,rgba(4,16,36,.42) 0%,transparent 18%)}
+ .ns-film-light{background:radial-gradient(60% 40% at 50% 55%,rgba(96,160,255,.22) 0%,transparent 70%)}
+}
+@media(max-height:500px) and (min-width:600px){
+ .ns-cinema .ns-packing-scene{grid-row:1;grid-column:2;height:340px;perspective:none}
+ .ns-film-rig{top:50%;left:50%;right:auto;width:min(100cqw,calc(100cqh * 1.1321));transform:translate3d(-50%,-50%,0)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .ns-film-rig{transform:translate3d(0,-50%,0)!important;transition:none}
+ .ns-cinema .ns-water-film{transform:none;transition:none}
+}
+@media(prefers-reduced-motion:reduce) and (max-width:768px){.ns-film-rig{transform:translate3d(-50%,-50%,0)!important}}
+.ns-hero-track:not(.ns-scroll-enabled) .ns-cinema .ns-packing-scene{height:auto;min-height:clamp(300px,50svh,600px)}
+@media(min-width:769px){.ns-hero-track:not(.ns-scroll-enabled) .ns-cinema{min-height:clamp(520px,80svh,860px)}}
+@media(max-width:768px){.ns-hero-track:not(.ns-scroll-enabled) .ns-cinema .ns-packing-scene{height:clamp(300px,50svh,600px)}}
+/* Without scripting, browsers force native controls on <video>; the decorative water layer is hidden and the stage gradient remains. */
+@media(scripting:none){.ns-cinema .ns-water-film,.ns-cinema .ns-film{display:none}}
+
+/* 16:9 still-life hero (2026-09-26 feedback: warm natural set instead of blue "electronics" stage).
+ * The film is the whole hero: cover-fitted, product on the right, copy over the calm wall on the left.
+ * Stage colours are sampled from the film's wall/floor so crop edges on narrow screens blend in.
+ * Depth comes from scroll dolly and a small pointer parallax; no tilt (a full-bleed plate would show its edges). */
+.ns-hero-track:has(.ns-still-life){background:#645448}
+.ns-still-life.ns-hero.ns-cinema{--ns-stage-wall:#645448;--ns-stage-shadow:rgba(38,28,20,.62);--ns-stage-floor:#AFA197;background:var(--ns-stage-wall)}
+.ns-still-life .ns-packing-scene{grid-column:1/-1;grid-row:1/-1;perspective:none;overflow:clip}
+.ns-still-life .ns-film-rig{inset:-2%;top:-2%;right:auto;width:104%;height:104%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06));transform-origin:66% 55%}
+.ns-still-life .ns-film-frame{mask-image:none}
+.ns-still-life .ns-film,.ns-still-life .ns-film-poster{object-fit:cover;object-position:66% 50%}
+.ns-still-life .ns-water-shade{z-index:2;pointer-events:none;background:linear-gradient(90deg,var(--ns-stage-shadow) 0%,rgba(38,28,20,.28) 30%,transparent 46%),linear-gradient(0deg,var(--ns-stage-shadow) 0%,rgba(38,28,20,.18) 14%,transparent 24%)}
+.ns-still-life .ns-hero-copy{z-index:4}
+.ns-still-life .ns-hero-copy h1,.ns-still-life .ns-story-intro,.ns-still-life .ns-hero-action p{text-shadow:0 1px 18px rgba(38,28,20,.35)}
+.ns-still-life .ns-cinema-bottom{z-index:5}
+.ns-still-life #motion-toggle,.ns-still-life #film-replay{background:rgba(38,28,20,.55);border-color:rgba(255,255,255,.7);backdrop-filter:blur(6px)}
+.ns-still-life #motion-toggle:is(:hover,:focus-visible),.ns-still-life #film-replay:is(:hover,:focus-visible){background:rgba(38,28,20,.85)}
+.ns-still-life .ns-progress{background:rgba(255,255,255,.35)}
+.ns-still-life .ns-progress>span{background:var(--ns-paper)}
+.ns-still-life .ns-button:is(:hover,:focus-visible){background:#EFE6DB}
+@media(max-width:768px){
+ /* Portrait: copy sits on the wall colour, the film keeps the whole box by cropping only the empty left wall. */
+ .ns-still-life .ns-packing-scene{grid-row:2;grid-column:1}
+ .ns-still-life .ns-film-rig{inset:auto;top:50%;left:50%;width:min(100cqw,calc(100cqh * 1.16));height:auto;aspect-ratio:1.16;transform:translate3d(-50%,-50%,0) scale(var(--ns-dolly,1));transform-origin:50% 55%}
+ .ns-still-life .ns-film,.ns-still-life .ns-film-poster{object-position:97% 50%}
+ .ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 5%,var(--color-mask) 97%,transparent),linear-gradient(0deg,transparent,var(--color-mask) 6%,var(--color-mask) 94%,transparent);mask-composite:intersect}
+ .ns-still-life .ns-water-shade{background:linear-gradient(0deg,var(--ns-stage-shadow) 0%,transparent 20%)}
+}
+@media(max-height:500px) and (min-width:600px){
+ .ns-still-life .ns-packing-scene{grid-row:1;grid-column:2;height:340px}
+ .ns-still-life .ns-film-rig{inset:auto;top:50%;left:50%;width:min(100cqw,calc(100cqh * 1.16));height:auto;aspect-ratio:1.16;transform:translate3d(-50%,-50%,0)!important}
+ .ns-still-life .ns-film,.ns-still-life .ns-film-poster{object-position:97% 50%}
+ .ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 10%,var(--color-mask) 96%,transparent),linear-gradient(0deg,transparent,var(--color-mask) 8%,var(--color-mask) 92%,transparent);mask-composite:intersect}
+}
+@media(prefers-reduced-motion:reduce){.ns-still-life .ns-film-rig{transform:none!important}}
+@media(prefers-reduced-motion:reduce) and (max-width:768px){.ns-still-life .ns-film-rig{transform:translate3d(-50%,-50%,0)!important}}
+/* Heroes wider than ~1.9:1 (e.g. 1920x1080 minus header) would crop the lid under cover-fit:
+ * fit the plate to the hero height on the right and let its left edge fade into the sampled wall colour. */
+@media(min-width:769px) and (min-height:501px){@container (min-aspect-ratio:19/10){
+ .ns-still-life .ns-film-rig{inset:-2% 0 auto auto;width:auto;height:104%;aspect-ratio:16/9}
+ .ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 14%);mask-composite:add}
+}}
+
+/* v4 hero (2026-09-26 feedback: flat type/CTA; reference = full-bleed plate, bold bottom-left headline
+ * with bracket accent, stage dots, and a bottom-centre quick-consult bar). Brand blue var(--ns-brand) (spec.md). */
+.ns-hero-v4{--ns-brand-ink:var(--ns-on-brand)}
+.ns-hero-track:has(.ns-hero-v4){height:560svh;min-height:1600px}
+.ns-hero-v4.ns-hero.ns-cinema{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+/* Bigger plate: the scene is scaled up around the box so the product reads larger. */
+.ns-hero-v4 .ns-film-rig{transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06));transform-origin:58% 55%}
+.ns-hero-v4 .ns-water-shade{background:linear-gradient(90deg,rgba(28,20,14,.74) 0%,rgba(28,20,14,.42) 28%,transparent 46%),linear-gradient(0deg,rgba(28,20,14,.78) 0%,rgba(28,20,14,.3) 30%,transparent 46%)}
+.ns-hero-v4 .ns-hero-copy{grid-column:1;grid-row:1;align-self:center;padding:0 var(--ns-space) 4vh;max-width:min(560px,34vw)}
+.ns-hero-v4 .ns-hero-copy h1,.ns-hero-v4 .ns-hero-copy .ns-story-intro{font-size:clamp(30px,3.4vw,58px);font-weight:700;line-height:1.16;letter-spacing:-.035em;max-width:none}
+.ns-bracket{white-space:nowrap}
+.ns-hero-v4 .ns-story-intro{max-width:none}
+.ns-bracket:before{content:"[\00a0";font-weight:300;opacity:.85;margin-right:.08em}
+.ns-bracket:after{content:"\00a0]";font-weight:300;opacity:.85;margin-left:.08em;margin-right:.06em}
+.ns-hero-v4 .ns-hero-action{margin-top:clamp(12px,2vh,22px);gap:clamp(16px,3vh,28px)}
+.ns-hero-v4 .ns-hero-action p{font-size:clamp(15px,1.2vw,18px);max-width:22em;font-weight:400;line-height:1.6;opacity:.92}
+.ns-stage-dots{display:flex;align-items:center;gap:14px;margin:0;padding:0;list-style:none}
+.ns-stage-dots li{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);transition:background var(--dur-short) var(--ease-out),box-shadow var(--dur-short) var(--ease-out)}
+.ns-hero-v4:is([data-story-phase=empty]) [data-stage=empty],.ns-hero-v4:is([data-story-phase=packs]) [data-stage=packs],.ns-hero-v4:is([data-story-phase=ice]) [data-stage=ice],.ns-hero-v4:is([data-story-phase=packed]) [data-stage=packed]{background:var(--ns-paper);box-shadow:0 0 0 5px rgba(255,255,255,.22)}
+/* Bottom bar: caption left, quick-consult bar centred, small film controls right. */
+.ns-hero-v4 .ns-cinema-bottom{grid-row:2;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--space-md);min-height:0;padding:0 var(--ns-space) clamp(18px,3vh,32px)}
+.ns-hero-v4 #packing-caption{justify-self:start;font-size:13px;opacity:.85}
+.ns-hero-v4 .ns-film-controls{justify-self:end;gap:var(--space-xs)}
+.ns-hero-v4 #motion-toggle,.ns-hero-v4 #film-replay{min-height:36px;padding:0 12px;font-size:12px;border-radius:999px;background:rgba(28,20,14,.45);border:1px solid rgba(255,255,255,.55)}
+.ns-hero-v4 .ns-progress{inset:auto 0 0;left:0;right:0;height:3px;background:rgba(255,255,255,.18)}
+.ns-hero-v4 .ns-progress>span{background:var(--ns-brand)}
+.ns-quick{display:flex;align-items:stretch;background:var(--ns-paper);color:var(--ns-ink);border-radius:10px;padding:6px;gap:6px;box-shadow:0 18px 50px rgba(20,14,8,.28)}
+.ns-quick-title{display:flex;align-items:center;padding:0 22px;margin:-6px 0 -6px -6px;border-radius:10px 0 0 10px;background:#1E1A17;color:var(--ns-paper);font-size:14px;font-weight:600;white-space:nowrap}
+.ns-quick-field{display:flex}
+.ns-quick select{appearance:none;min-width:200px;min-height:44px;padding:0 40px 0 16px;border:0;border-radius:6px;background:#F3F1EE url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232E2E2E' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 16px center;font:inherit;font-size:14px;color:var(--ns-ink)}
+.ns-quick-go{min-height:44px;padding:0 18px;border:1px solid #D9D4CE;border-radius:6px;background:var(--ns-paper);color:var(--ns-ink);font:inherit;font-size:14px;cursor:pointer}
+.ns-quick-go:is(:hover,:focus-visible){border-color:var(--ns-ink)}
+.ns-hero-v4 .ns-quick-kakao{min-height:44px;padding:0 20px;border-radius:6px;background:var(--ns-kakao);color:var(--ns-kakao-ink);font-size:14px;font-weight:600;gap:var(--space-sm);border:0}
+.ns-hero-v4 .ns-quick-kakao:is(:hover,:focus-visible){background:var(--ns-kakao-hover);color:var(--ns-kakao-ink)} /* KakaoTalk yellow (spec.md var(--ns-kakao)) */
+.ns-quick :focus-visible{outline:3px solid var(--ns-brand);outline-offset:2px}
+@media(max-width:1100px) and (min-width:769px){.ns-hero-v4 #packing-caption{display:none}.ns-hero-v4 .ns-cinema-bottom{grid-template-columns:auto 1fr}.ns-quick{justify-self:start}}
+@media(max-width:768px){
+ .ns-hero-track:has(.ns-hero-v4){height:460svh;min-height:1400px}
+ .ns-hero-v4.ns-hero.ns-cinema{grid-template-rows:auto minmax(0,1fr) auto}
+ .ns-hero-v4 .ns-hero-copy{grid-row:1;align-self:start;max-width:none;padding:var(--space-lg) var(--space-lg) 0}
+ .ns-hero-v4 .ns-hero-copy h1,.ns-hero-v4 .ns-hero-copy .ns-story-intro{font-size:clamp(26px,7.4vw,34px)}
+ .ns-hero-v4 .ns-hero-action{flex-direction:column;align-items:flex-start;gap:var(--space-sm);margin-top:var(--space-xs)}
+ .ns-hero-v4 .ns-hero-action p{font-size:14px}
+ .ns-hero-v4 .ns-film-rig{transform:translate3d(-50%,-50%,0) scale(calc(var(--ns-dolly,1) + .06));transform-origin:50% 55%}
+ .ns-hero-v4 .ns-cinema-bottom{grid-row:3;grid-template-columns:1fr auto;padding:0 var(--space-md) var(--space-md);gap:var(--space-xs)}
+ .ns-hero-v4 #packing-caption{grid-column:1/-1;font-size:12px}
+ .ns-quick{grid-column:1/-1;order:2;flex-wrap:wrap}
+ .ns-quick-title{display:none}
+ .ns-quick-field{flex:1 1 100%}.ns-quick select{width:100%;min-width:0}
+ .ns-quick-go,.ns-hero-v4 .ns-quick-kakao{flex:1 1 0;justify-content:center}
+ .ns-hero-v4 .ns-film-controls{grid-column:2;grid-row:1}
+}
+@media(max-height:500px) and (min-width:600px){.ns-hero-v4 .ns-quick{display:none}.ns-hero-v4 .ns-hero-copy{max-width:50vw}}
+@media(prefers-reduced-motion:reduce){.ns-hero-v4 .ns-film-rig{transform:scale(1.06)!important;transform-origin:58% 55%}}
+@media(prefers-reduced-motion:reduce) and (max-width:768px){.ns-hero-v4 .ns-film-rig{transform:translate3d(-50%,-50%,0)!important}}
+
+/* v4 type motion v2 (2026-09-26 feedback: "stiff, flat, fast" -> GSAP SplitText + ScrollTrigger + Lenis, see hero-type.js).
+ * CSS only sets the static look; hero-type.js owns all headline motion. The earlier opacity swap is disabled for v4. */
+.ns-hero-v4.ns-story-ready .ns-story-intro{opacity:1;transform:none}
+.ns-hero-v4.ns-story-ready .ns-hero-copy h1{opacity:1;transform:none}
+.ns-hero-v4.ns-type-ready .ns-hero-copy h1,.ns-hero-v4.ns-type-ready .ns-story-intro{visibility:visible}
+.ns-hero-v4 .ns-bracket{white-space:nowrap}
+.ns-hero-v4 .ns-bracket:before,.ns-hero-v4 .ns-bracket:after{content:none}
+.ns-hero-v4 .ns-hero-copy h1 span{display:inline}
+.ns-hero-v4 .ns-hero-copy :is(h1,.ns-story-intro) .ns-br{display:inline-block;font-weight:300;opacity:.85}
+.ns-hero-v4 .ns-hero-copy :is(h1,.ns-story-intro) .ns-br-w{display:inline-block}
+.ns-hero-v4 .ns-br-w{display:inline-block;padding-inline:.28em}
+.ns-hero-v4 .ns-type-char{display:inline-block;will-change:transform,filter,opacity}
+@keyframes ns-soft-rise{from{opacity:0;translate:0 18px}to{opacity:1;translate:0 0}}
+.ns-hero-v4.ns-story-ready .ns-hero-action p{animation:ns-soft-rise 1.4s cubic-bezier(.16,1,.3,1) 1s both}
+.ns-hero-v4.ns-story-ready .ns-stage-dots{animation:ns-soft-rise 1.4s cubic-bezier(.16,1,.3,1) 1.2s both}
+.ns-hero-v4.ns-story-ready .ns-quick{animation:ns-soft-rise 1.4s cubic-bezier(.16,1,.3,1) 1.4s both}
+@media(max-width:768px){.ns-hero-v4 .ns-hero-copy h1 br{display:none}}
+@media(prefers-reduced-motion:reduce){.ns-hero-v4 .ns-hero-action p,.ns-hero-v4 .ns-stage-dots,.ns-hero-v4 .ns-quick{animation:none!important}}
+/* Header v2 floats over the home hero: keep the copy clear of it (header height is measured by motion.js). */
+@media(max-width:768px){.ns-hero-v4 .ns-hero-copy{padding-top:calc(var(--ns-hdr-h,124px) + 8px)}}
+@media(max-width:768px) and (max-height:700px){.ns-hero-v4 .ns-stage-dots,.ns-hero-v4 #packing-caption,.ns-hero-v4 .ns-quick-field{display:none}}
+@media(max-width:768px){.ns-hero-v4 .ns-story-intro .ns-bracket,.ns-hero-v4 h1 .ns-bracket{margin-left:.25em}}
+@media(max-width:768px) and (max-height:620px){.ns-hero-v4 .ns-hero-action p{display:none}}
+@media(min-width:769px){.ns-hero-v4 .ns-film,.ns-hero-v4 .ns-film-poster{object-position:86% 50%}}
+@media(min-width:769px){.ns-hero-v4 .ns-quick{grid-column:2}}
+
+/* ===== Mobile / tablet responsive pass (2026-09-26, "변질없이": desktop ≥1025px unchanged) ===== */
+/* Bug fix (all widths): with reduced motion / Save-Data the scroll runway is off, so the v4 track must not keep its 460–560svh height. */
+.ns-hero-track:not(.ns-scroll-enabled):has(.ns-hero-v4){height:auto;min-height:0}
+@media(prefers-reduced-motion:reduce){.ns-hero-track:has(.ns-hero-v4){height:auto;min-height:0}}
+@media(max-width:1024px){
+ /* 고객센터 dropdown sits at the right end of the nav pill: open it right-aligned so it stays on screen. */
+ .ns-menu-support .ns-menu-panel{left:auto;right:0}
+}
+@media(max-width:768px){
+ /* Legibility: nothing below 12px. */
+ .ns-announcement,.ns-announcement span{font-size:12px}
+ .ns-page-heading>a,.ns-product-breadcrumb,.ns-product-breadcrumb a,.ns-product-breadcrumb span{font-size:12px}
+ .ns-product-tag{font-size:12px}
+ /* Touch targets ≥44px for stand-alone links and controls (inline links inside sentences are left as text). */
+ .ns-text-link,.ns-shop-note a,.ns-form-actions a,.ns-purchase-channels a,.ns-purchase-channels button,.ns-product-breadcrumb a{display:inline-flex;align-items:center;min-height:44px}
+ .ns-product-breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px}
+ .ns-filter{min-height:44px;min-width:48px}
+ .ns-footer-links a,.ns-footer-links button{min-width:44px;justify-content:center;padding-inline:6px}
+ .ns-product-actions .ns-button,.ns-product-actions button{min-height:48px}
+ /* Floating quick buttons: smaller and tucked into the corner so they cover less content. */
+ .ns-floating{right:10px;bottom:12px;gap:6px}
+ .ns-floating>a,.ns-floating>button{width:44px;height:44px;opacity:.94}
+ /* Content that sits at the right edge gets room so the floating buttons do not cover it. */
+ .ns-faq summary{padding-right:56px}
+}
+@media(max-width:380px){
+ .ns-subtabs a{padding:0 14px;font-size:13px}
+ .ns-contact-actions .ns-form-hint{font-size:12px}
+}
+@media(max-width:768px){.ns-product-breadcrumb a,.ns-page-heading>a{padding-inline:4px;min-width:44px;justify-content:center}}
+
+/* Sea hero (2026-09-26): film background is now a bright seaside (sampled sky #f7f7f9, sea in copy band #bcc7d4).
+ * White type would sit near 1.7:1, so the copy turns deep navy over a light haze; product film unchanged in handling. */
+.ns-hero-track:has(.ns-still-life){background:#b7c4d2}
+.ns-still-life.ns-hero.ns-cinema{--ns-stage-wall:#b7c4d2;background:#b7c4d2}
+.ns-hero-v4 .ns-water-shade{background:linear-gradient(90deg,rgba(244,247,251,.66) 0%,rgba(244,247,251,.34) 30%,rgba(244,247,251,0) 50%),linear-gradient(0deg,rgba(15,34,56,.28) 0%,rgba(15,34,56,0) 22%)}
+.ns-hero-v4 .ns-hero-copy h1,.ns-hero-v4 .ns-hero-copy .ns-story-intro,.ns-hero-v4 .ns-hero-action p{color:var(--ns-ink-navy);text-shadow:0 1px 14px rgba(255,255,255,.55)}
+.ns-hero-v4 .ns-br{color:var(--ns-brand);opacity:1}
+.ns-hero-v4 .ns-stage-dots li{background:rgba(15,34,56,.35)}
+.ns-hero-v4:is([data-story-phase=empty]) [data-stage=empty],.ns-hero-v4:is([data-story-phase=packs]) [data-stage=packs],.ns-hero-v4:is([data-story-phase=ice]) [data-stage=ice],.ns-hero-v4:is([data-story-phase=packed]) [data-stage=packed]{background:var(--ns-ink-navy);box-shadow:0 0 0 5px rgba(15,34,56,.14)}
+@media(max-width:768px){.ns-hero-v4 .ns-water-shade{background:linear-gradient(180deg,rgba(244,247,251,.7) 0%,rgba(244,247,251,0) 40%)}}

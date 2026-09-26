@@ -1,0 +1,296 @@
+/* Hallmark · macrostructure: Photographic / Catalogue · genre: modern-minimal · tone: quiet product-led · anchor hue: blue 259deg
+ * pre-emit critique: P4 H4 E4 S4 R4 V4 (after v4 punch-list fixes) · independent review: hallmark-review-v4.md (P4 H4 E3 S4 R3 V4 before fixes)
+ * Brand typography and home hierarchy are explicit client requirements. */
+html,body{overflow-x:clip}
+h1,h2,h3{font-style:normal;overflow-wrap:anywhere;min-width:0}
+button,a,summary{font-family:var(--ns-font)}
+summary:active{opacity:.8}
+button:disabled,input:disabled,select:disabled,textarea:disabled,[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+button[aria-busy="true"]{cursor:progress}
+[role="status"]{font-size:14px;min-height:1lh}
+.ns-film-status:empty,.n2j-ns-mapping-status:empty{min-height:0}
+.ns-main-nav>a{transition:opacity var(--dur-short) var(--ease-out)}
+.ns-menu-panel a{transition:none}
+.ns-menu-panel a:is(:hover,:focus-visible){padding-left:0;color:inherit;background:transparent;text-decoration:underline;text-underline-offset:2px}
+.ns-button{transition:background-color var(--dur-micro) var(--ease-out)}
+.ns-button>span{transition:none!important;transform:none!important}
+.ns-footer-links a{transition:none}
+.ns-footer-links a:after,.ns-detail-tabs a:after{display:none}
+.ns-footer-links a:hover,.ns-detail-tabs a:hover{text-decoration:underline;text-underline-offset:2px;color:inherit}
+.ns-social a,.ns-social button,.ns-floating a,.ns-floating button{transition:none}
+.ns-floating a:is(:hover,:focus-visible),.ns-floating button:is(:hover,:focus-visible){box-shadow:0 0 0 2px var(--ns-focus)}
+.ns-product-image{transition:none}
+.ns-product-image:after{transition:transform var(--dur-short) var(--ease-out);font-size:14px}
+.ns-product p,.ns-product-price,.ns-product-gallery>p,.ns-form-hint,.ns-footer-bottom,.ns-footer-bottom small{font-size:14px}
+.ns-product-tag{font-size:12px}
+.ns-product-price{font-variant-numeric:tabular-nums}
+.ns-product-open:is(:hover,:focus-visible) h3{color:inherit}
+.ns-inquiry input,.ns-inquiry select,.ns-search input{min-height:44px;border-width:1px}
+.ns-inquiry input:focus-visible,.ns-inquiry select:focus-visible,.ns-inquiry textarea:focus-visible{outline:2px solid var(--ns-focus);outline-offset:1px}
+.ns-product-description>p{max-width:65ch}
+.ns-eyebrow{display:none}
+.ns-main-nav a,.ns-utility a,.ns-footer-links a,.ns-menu summary,.ns-footer-contact,.ns-detail-tabs a{white-space:nowrap}
+@media(max-width:768px){
+ .ns-section-heading{display:block}
+ .ns-main-nav>a,.ns-utility>a,.ns-menu summary,.ns-footer-links a,.ns-detail-tabs a{min-height:44px;display:inline-flex;align-items:center}
+ .ns-utility>a{min-width:36px;justify-content:center}
+ .ns-floating>a,.ns-floating>button{width:44px;height:44px}
+ .ns-footer-links{gap:var(--space-xs) var(--space-lg)}
+ .ns-footer-bottom{flex-wrap:wrap;gap:var(--space-lg)}
+ .ns-product h3{font-size:16px}
+ .ns-product p,.ns-product-price{font-size:14px}
+ .ns-product-tag{font-size:11px}
+ .ns-home-popular .ns-product-grid{gap:var(--space-xl) var(--space-md)}
+ .ns-product-image:after{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ .ns-product-image:after,.ns-product-image img,.ns-menu summary span,.ns-faq summary span{transition:none;transform:none}
+ .ns-reveal,.ns-reveal-pending{opacity:1;transform:none}
+}
+
+/* Final review corrections: spacing, form states, rows and contrast. */
+.ns-footer-links{align-items:center}
+.ns-button,.ns-main-nav>a,.ns-menu summary,.ns-utility>a,.ns-footer-links>a,.ns-film-controls>button{line-height:1}
+.ns-naver{color:var(--ns-ink)}
+input,select,textarea{outline:2px solid transparent;outline-offset:1px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,.ns-search input:focus-visible{outline:2px solid var(--ns-focus);outline-offset:1px}
+input:active,select:active,textarea:active{outline-color:var(--ns-focus)}
+.ns-form-hint{min-height:1lh}
+.ns-text-link{border-bottom:0;padding-bottom:0;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+
+/* 2026-09-26 feedback: product photos fill the whole card (no empty margins);
+ * hover bar uses the client brand blue var(--ns-brand) (spec.md/customer form) with the spec's on-blue ink var(--ns-on-brand) (4.7:1). */
+.ns-product-image{padding:0;background:var(--ns-soft)}
+.ns-product-image img{width:100%;height:100%;object-fit:cover;object-position:center;mix-blend-mode:normal;transform:none}
+.ns-product-image:after{background:var(--ns-brand);color:var(--ns-on-brand);font-weight:600}
+
+/* Header v2 (2026-09-26 reference: logo left, centred white pill menu, brand pill CTA right).
+ * Client form keeps Q&A · cart · login · mypage at the far right; Q&A pill is white (user 2026-09-26). */
+.ns-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--space-step-6);min-height:0;padding:18px var(--ns-space);background:transparent;border-bottom:0;pointer-events:none}
+.ns-header>*{pointer-events:auto}
+.ns-header.is-scrolled{box-shadow:none}
+.ns-logo{justify-self:start;width:auto;display:inline-flex;align-items:center;padding:6px 14px;border-radius:14px;background:var(--ns-paper);box-shadow:0 6px 24px rgba(20,24,32,.08)}
+.ns-logo img{width:118px;height:46px;object-fit:contain}
+.ns-main-nav{justify-self:center;margin:0;gap:4px;padding:6px 10px;border-radius:999px;background:var(--ns-paper);box-shadow:0 6px 24px rgba(20,24,32,.1);font-size:15px}
+.ns-main-nav>a,.ns-menu summary{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;transition:background var(--dur-short) var(--ease-out),color var(--dur-short) var(--ease-out)}
+.ns-main-nav>a:is(:hover,:focus-visible),.ns-menu summary:is(:hover,:focus-visible),.ns-menu[open] summary{background:var(--ns-brand-soft);color:var(--ns-ink)}
+.ns-menu-panel{top:56px;left:0;border-radius:16px;border:0;box-shadow:0 16px 40px rgba(20,24,32,.14)}
+.ns-utility{justify-self:end;margin:0;gap:8px;font-size:13px}
+.ns-utility>a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:0 14px;border-radius:999px;background:var(--ns-paper);box-shadow:0 6px 24px rgba(20,24,32,.08);color:var(--ns-ink)}
+.ns-utility>a:is(:hover,:focus-visible){background:var(--ns-brand-soft);color:var(--ns-ink)}
+.ns-utility>a[data-route=inquiry]{order:9;padding:0 24px;background:var(--ns-paper);color:var(--ns-ink);font-weight:600;font-size:14px;gap:8px}
+.ns-utility>a[data-route=inquiry]:before{content:"";width:18px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 14'%3E%3Crect x='1' y='1' width='16' height='12' rx='1.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M1.5 2l7.5 6 7.5-6' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 14'%3E%3Crect x='1' y='1' width='16' height='12' rx='1.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M1.5 2l7.5 6 7.5-6' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center/contain no-repeat}
+.ns-utility>a[data-route=inquiry]:is(:hover,:focus-visible){background:var(--ns-brand-soft);color:var(--ns-ink)}
+.ns-utility>a.ns-mypage>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.ns-utility svg{width:18px;height:18px}
+/* Home: the header floats over the full-bleed hero film instead of pushing it down. */
+body:has(main[data-page=home]) .ns-header{position:sticky;top:0;margin-bottom:calc(-1 * var(--ns-hdr-h,82px))}
+body:has(main[data-page=home]) .ns-hero-track{--ns-header-h:0px}
+.ns-hero-v4.ns-hero.ns-cinema{top:0;height:100svh}
+.ns-hero-v4 .ns-hero-copy{padding-top:var(--ns-hdr-h,82px)}
+@media(max-width:1100px){.ns-main-nav>a,.ns-menu summary{padding:0 14px}.ns-utility>a{padding:0 10px}.ns-utility>a[data-route=inquiry]{padding:0 16px}}
+@media(max-width:900px){
+ .ns-header{grid-template-columns:auto 1fr;row-gap:10px;padding:12px var(--space-md)}
+ .ns-main-nav{grid-column:1/-1;grid-row:2;justify-self:stretch;justify-content:space-between;order:0;width:auto;border-top:0;margin-top:0}
+ .ns-logo img{width:96px;height:38px}
+ .ns-utility{gap:6px}.ns-utility>a{min-width:40px;min-height:40px;padding:0 10px;font-size:12px}
+ .ns-utility>a[data-route=inquiry]{padding:0 14px;font-size:12px}.ns-utility>a[data-route=inquiry]:before{display:none}
+}
+@media(max-width:380px){.ns-utility>a[data-type],.ns-utility>a[data-route=login]{padding:0 8px}.ns-main-nav>a,.ns-menu summary{padding:0 10px;font-size:14px}}
+.ns-utility>a.ns-mypage{display:inline-flex}
+.ns-utility>a.ns-mypage svg{display:block;width:18px;height:18px}
+/* Home: the floating header sits directly on the full-bleed film, so the notice strip is hidden there (other pages keep it). */
+body:has(main[data-page=home]) .ns-announcement{display:none}
+
+/* 고객센터 서브탭 + 1:1 문의 폼 (2026-09-26). 폼 디자인은 아임웹 입력폼 위젯 브리지(widgets/widget_inquiry.html)와 같은 값을 쓴다. */
+.ns-menu-support .ns-menu-panel{min-width:180px}
+.ns-subtabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--space-step-6)}
+.ns-subtabs a{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--ns-line);background:var(--ns-paper);font-size:14px;color:var(--ns-ink);transition:background var(--dur-short) var(--ease-out),border-color var(--dur-short) var(--ease-out)}
+.ns-subtabs a:is(:hover,:focus-visible){background:var(--ns-brand-soft);border-color:#BFD6FF}
+.ns-subtabs a[aria-current=page]{background:#2E2E2E;border-color:#2E2E2E;color:var(--ns-paper)}
+.ns-contact{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--space-step-16);background:var(--ns-soft);padding-top:var(--space-step-16);padding-bottom:var(--space-step-16);scroll-margin-top:120px}
+.ns-eyebrow{font-size:12px;letter-spacing:.14em;color:var(--ns-link);margin:0 0 var(--space-step-3)}
+.ns-contact-intro h2{margin:0}
+.ns-contact-intro>p:not(.ns-eyebrow){margin-top:var(--space-step-5);max-width:36ch;font-size:15px;line-height:1.7;color:var(--ns-muted)}
+.ns-contact-kakao{display:inline-flex;align-items:center;gap:8px;margin-top:var(--space-step-8);min-height:44px;padding:0 20px;border-radius:999px;background:var(--ns-kakao);color:var(--ns-kakao-ink);font-size:14px;font-weight:600}
+.ns-contact-kakao:is(:hover,:focus-visible){background:var(--ns-kakao-hover)}
+.ns-contact-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px;padding:32px;border-radius:20px;background:var(--ns-paper);box-shadow:0 18px 50px rgba(20,24,32,.06)}
+.ns-field{display:grid;gap:8px;min-width:0}
+.ns-field-wide{grid-column:1/-1}
+.ns-field label{font-size:13px;font-weight:600;color:var(--ns-ink)}
+.ns-field label span{color:var(--ns-required)}
+.ns-contact-form :is(input:not([type=checkbox]),select,textarea){width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--ns-field-line);border-radius:10px;background:var(--ns-field-bg);font:inherit;font-size:15px;color:var(--ns-ink);transition:border-color var(--dur-short) var(--ease-out),box-shadow var(--dur-short) var(--ease-out),background var(--dur-short) var(--ease-out)}
+.ns-contact-form textarea{resize:vertical;min-height:140px}
+.ns-contact-form :is(input,select,textarea):focus-visible{outline:0;border-color:var(--ns-brand);background:var(--ns-paper);box-shadow:0 0 0 3px rgba(58,134,255,.22)}
+.ns-contact-form [aria-invalid=true]{border-color:var(--ns-required);box-shadow:0 0 0 3px rgba(229,72,77,.15)}
+.ns-consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.6;color:var(--ns-muted)}
+.ns-consent input{width:20px;height:20px;margin-top:1px;accent-color:var(--ns-brand);flex-shrink:0}
+.ns-consent a{color:var(--ns-link);text-decoration:underline;text-underline-offset:3px}
+.ns-contact-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.ns-contact-submit{min-height:52px;padding:0 36px;border:0;border-radius:999px;background:var(--ns-brand);color:var(--ns-on-brand);font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background var(--dur-short) var(--ease-out)}
+.ns-contact-submit:is(:hover,:focus-visible){background:var(--ns-brand-hover)}
+.ns-contact-submit:focus-visible{outline:3px solid #163B73;outline-offset:3px}
+#contact-status{margin:0;font-size:14px;min-height:1lh}
+#contact-status[data-state=error]{color:var(--ns-error)}
+#contact-status[data-state=ok]{color:var(--ns-link)}
+@media(max-width:900px){.ns-contact{grid-template-columns:minmax(0,1fr);gap:var(--space-step-10)}}
+@media(max-width:560px){.ns-contact-form{grid-template-columns:minmax(0,1fr);padding:22px 18px}.ns-contact-submit{width:100%}}
+.ns-contact-form select{appearance:none;-webkit-appearance:none;padding-right:40px;background:var(--ns-field-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232E2E2E' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 16px center}
+/* Floating header gets a frosted backdrop once the page scrolls, except while it sits over the home hero film. */
+body:not(.ns-hero-in-view) .ns-header.is-scrolled{background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);box-shadow:0 1px 0 rgba(20,24,32,.06)}
+
+/* Footer v2 (2026-09-26 reference: link row / logo + business info / CUSTOMER CENTER / BANKING INFO / copyright).
+ * Data: 사업자등록증·통신판매업 신고증·고객사_정보.md·계좌 이미지. Kakao/Naver footer buttons removed per user. */
+.ns-footer.ns-footer-v2{display:block;padding-top:0;background:#FFF4F4;color:var(--ns-footer-ink);font-size:14px}
+.ns-footer-v2 .ns-footer-links{display:flex;flex-wrap:wrap;align-items:center;gap:0;padding:26px 0;border-bottom:1px solid rgba(46,46,46,.14);margin:0}
+.ns-footer-v2 .ns-footer-links a{position:relative;display:inline-flex;align-items:center;min-height:32px;padding:0 16px;color:#2E2E2E;font-size:14px}
+.ns-footer-v2 .ns-footer-links a:first-child{padding-left:0}
+.ns-footer-v2 .ns-footer-links a+a:before{content:"";position:absolute;left:0;top:50%;width:1px;height:11px;background:rgba(46,46,46,.22);transform:translateY(-50%)}
+.ns-footer-v2 .ns-footer-links strong{font-weight:700}
+.ns-footer-main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,.7fr) minmax(0,.8fr);gap:40px;padding:44px 0;border-bottom:1px solid rgba(46,46,46,.14)}
+.ns-footer-logo{display:block;width:128px;height:auto;margin-bottom:24px;border-radius:8px;mix-blend-mode:multiply}
+.ns-footer-company p{display:flex;flex-wrap:wrap;margin:0;line-height:1.95}
+.ns-footer-company p span{position:relative;padding-right:22px}
+.ns-footer-company p span+span:before{content:"/";position:absolute;left:-14px;color:rgba(46,46,46,.35)}
+.ns-footer-company a{color:inherit;text-decoration:none}
+.ns-footer-company .ns-footer-verify{color:var(--ns-link);margin-left:4px}
+.ns-footer-col h2{margin:6px 0 16px;font-size:14px;font-weight:700;letter-spacing:.02em;color:#2E2E2E}
+.ns-footer-big{display:inline-block;margin:0 0 14px;font-size:26px;font-weight:700;letter-spacing:-.01em;color:#2E2E2E;text-decoration:none;font-variant-numeric:tabular-nums}
+.ns-footer-col p{margin:0;line-height:1.7}
+.ns-footer-copy{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding:24px 0 32px;font-size:12px;letter-spacing:.02em;color:#7A7F8C}
+@media(max-width:1024px){.ns-footer-main{grid-template-columns:1fr 1fr}.ns-footer-company{grid-column:1/-1}}
+@media(max-width:768px){
+ .ns-footer-v2 .ns-footer-links{padding:18px 0}
+ .ns-footer-v2 .ns-footer-links a{min-height:44px;padding:0 12px;font-size:13px}
+ .ns-footer-main{grid-template-columns:1fr;gap:28px;padding:32px 0}
+ .ns-footer-company p{display:block;line-height:1.8;font-size:13px}
+ .ns-footer-company p span{display:block;padding:0}.ns-footer-company p span+span:before{content:none}
+ .ns-footer-big{font-size:22px;margin-bottom:8px}
+ .ns-footer-copy{flex-direction:column;padding-bottom:88px}
+}
+
+/* interactions.js wraps link labels so split characters stay inline inside flex links. */
+.ns-hover-text{display:inline;white-space:pre}
+.ns-hover-char{display:inline-block}
+.ns-menu summary .ns-hover-text,.ns-menu summary .ns-hover-char{margin-left:0}
+
+/* 이용 안내 / Q&A accordion v2 (2026-09-26). Native <details>; anime.js eases the answer in (interactions.js). */
+.ns-support-heading .ns-eyebrow{margin-bottom:10px}
+.ns-support-lead{margin-top:14px;font-size:15px;line-height:1.7;color:var(--ns-muted);max-width:30ch}
+.ns-faq-v2 details{border-top:1px solid var(--ns-rule)}
+.ns-faq-v2 details:last-child{border-bottom:1px solid var(--ns-rule)}
+.ns-faq-v2 summary{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:24px 4px;font-size:17px;font-weight:600;color:var(--ns-ink);cursor:pointer;list-style:none;transition:background var(--dur-short) var(--ease-out)}
+.ns-faq-v2 summary::-webkit-details-marker{display:none}
+.ns-faq-v2 summary:is(:hover,:focus-visible){background:var(--ns-panel-2)}
+.ns-faq-v2 summary:focus-visible{outline:3px solid var(--ns-brand);outline-offset:2px}
+.ns-faq-q{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--ns-brand);font-variant-numeric:tabular-nums}
+.ns-faq-v2 .ns-faq-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--ns-brand-soft);color:var(--ns-link);font-size:20px;font-weight:400;line-height:1;transition:transform .35s cubic-bezier(.16,1,.3,1),background .2s}
+.ns-faq-v2 details[open] .ns-faq-icon{transform:rotate(45deg);background:var(--ns-brand);color:var(--ns-on-brand)}
+.ns-faq-v2 details[open] summary{color:var(--ns-on-brand)}
+.ns-faq-a{padding:0 52px 26px 54px;font-size:15px;line-height:1.85;color:#4B5263}
+.ns-faq-a p{margin:0 0 8px;padding:0;font-size:inherit;color:inherit;line-height:inherit}
+.ns-faq-a a{color:var(--ns-link);text-decoration:underline;text-underline-offset:3px}
+.ns-faq-list{margin:4px 0 10px;padding:14px 18px;list-style:none;border-radius:12px;background:var(--ns-panel-2)}
+.ns-faq-list li{position:relative;padding-left:14px}
+.ns-faq-list li:before{content:"";position:absolute;left:0;top:.8em;width:5px;height:5px;border-radius:50%;background:var(--ns-brand)}
+.ns-faq-more{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin-top:28px;padding:20px 24px;border-radius:16px;background:var(--ns-panel)}
+.ns-faq-more p{margin:0;font-size:15px;color:var(--ns-ink)}
+.ns-faq-more-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 22px;border-radius:999px;background:var(--ns-brand);color:var(--ns-on-brand);font-weight:700;font-size:14px}
+.ns-faq-more-link:is(:hover,:focus-visible){background:var(--ns-brand-hover)}
+@media(max-width:768px){
+ .ns-faq-v2 summary{grid-template-columns:auto 1fr auto;gap:12px;padding:20px 2px;font-size:15px}
+ .ns-faq-a{padding:0 8px 22px 46px;font-size:14px}
+ .ns-faq-more{padding:18px}
+ .ns-faq-more-link{width:100%;justify-content:center}
+}
+
+/* Footer map (2026-09-26): Google Maps keyless embed + Naver/Google direction links; anime.js reveal + pin drop (interactions.js). */
+.ns-footer-map{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:40px;align-items:center;padding:40px 0;border-bottom:1px solid rgba(46,46,46,.14)}
+.ns-footer-map-info h2{margin:0 0 14px;font-size:14px;font-weight:700;color:#2E2E2E}
+.ns-footer-map-addr{margin:0 0 6px;font-size:18px;font-weight:600;color:#2E2E2E;line-height:1.5}
+.ns-footer-map-info p{margin:0 0 4px;line-height:1.7}
+.ns-footer-map-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.ns-footer-map-links a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:999px;background:#fff;border:1px solid rgba(46,46,46,.14);color:#2E2E2E;font-size:13px;text-decoration:none;transition:background .2s,border-color .2s}
+.ns-footer-map-links a:is(:hover,:focus-visible){background:var(--ns-brand-soft);border-color:#BFD6FF}
+.ns-footer-map-frame{position:relative;height:280px;border-radius:20px;overflow:hidden;background:#E9EEF5;box-shadow:0 18px 40px rgba(20,24,32,.08);isolation:isolate}
+.ns-footer-map-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:saturate(.9)}
+.ns-map-pin{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:2}
+.ns-map-pin span{position:absolute;left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;border:2px solid var(--ns-brand);opacity:0}
+body:has(main[data-page=directions]) .ns-footer .ns-footer-map{display:none}
+.ns-directions .ns-footer-map{border:0;padding:0}
+.ns-directions .ns-footer-map-frame{height:420px}
+@media(max-width:900px){.ns-footer-map{grid-template-columns:1fr;gap:20px}.ns-footer-map-frame{height:240px}.ns-directions .ns-footer-map-frame{height:320px}}
+@media(max-width:768px){.ns-footer-map-links a{min-height:44px}.ns-footer-map-addr{font-size:16px}}
+/* Legacy .ns-faq rules rotate/enlarge every span in an open summary (meant for the old "+" icon). Scope them to the icon only. */
+.ns-faq-v2 summary span:not(.ns-faq-icon),.ns-faq-v2 details[open] summary span:not(.ns-faq-icon){transform:none;font-size:inherit}
+.ns-faq-v2 summary .ns-faq-q{font-size:13px}
+.ns-faq-v2 summary .ns-faq-icon{font-size:20px}
+.ns-support .ns-faq-more{grid-column:2}
+@media(max-width:900px){.ns-support .ns-faq-more{grid-column:1/-1}}
+/* Footer map is a collapsible panel opened by the 찾아오시는 길 link (2026-09-26). */
+.ns-footer-map[hidden]{display:none}
+.ns-footer-v2 .ns-footer-map{border-bottom:1px solid rgba(46,46,46,.14)}
+.ns-map-caret{display:inline-block;margin-left:4px;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.ns-footer-map-toggle[aria-expanded=true] .ns-map-caret{transform:rotate(180deg)}
+.ns-footer-map-toggle[aria-expanded=true]{color:var(--ns-link)}
+/* Hover v2 (2026-09-26, user: letter ripple looked like flipping text) — sliding nav pill + drawn underline, driven by anime.js. */
+.ns-main-nav.ns-has-pill{position:relative;isolation:isolate}
+.ns-nav-pill{position:absolute;left:0;top:6px;bottom:6px;width:0;border-radius:999px;background:var(--ns-brand-soft-2);box-shadow:inset 0 0 0 1px var(--ns-brand-line);opacity:0;z-index:-1;pointer-events:none}
+.ns-main-nav.ns-has-pill>a:is(:hover,:focus-visible),.ns-main-nav.ns-has-pill .ns-menu summary:hover{background:transparent}
+.ns-main-nav.ns-has-pill .ns-menu[open] summary{background:transparent}
+.ns-has-line{position:relative}
+.ns-hover-line{position:absolute;left:var(--ns-line-x,0);right:var(--ns-line-x,0);bottom:6px;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:left center;pointer-events:none}
+.ns-menu-panel .ns-hover-line{bottom:4px}
+.ns-footer-v2 .ns-footer-links a.ns-has-line{--ns-line-x:16px}
+.ns-footer-v2 .ns-footer-links a.ns-has-line:first-child .ns-hover-line{left:0;right:16px}
+.ns-subtabs a.ns-has-line{--ns-line-x:20px}
+.ns-subtabs .ns-hover-line{bottom:10px}
+.ns-main-nav.ns-has-pill>a,.ns-main-nav.ns-has-pill>a:hover{opacity:1}
+.ns-has-line,.ns-has-line:is(:hover,:focus-visible){text-decoration:none}
+
+/* Sub-page photo banners (2026-09-26): client photos from Google Drive (hero-169/banner-provenance.json).
+ * Header floats over the banner like on home; anime.js adds a slow settle-in zoom and scroll parallax (interactions.js). */
+body:has(.ns-page-banner) .ns-header{position:sticky;top:0;margin-bottom:calc(-1 * var(--ns-hdr-h,94px))}
+.ns-page-heading.ns-page-banner{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:clamp(340px,36vw,480px);padding-top:calc(var(--ns-hdr-h,94px) + 40px);padding-bottom:44px;border-bottom:0;color:#fff;background:#1c2a3a}
+.ns-banner-media{position:absolute;inset:0;z-index:-2;overflow:hidden}
+.ns-banner-media img{width:100%;height:100%;object-fit:cover;transform-origin:50% 50%;will-change:transform}
+.ns-page-banner:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(12,22,36,.42) 0%,rgba(12,22,36,.12) 34%,rgba(12,22,36,.28) 60%,rgba(12,22,36,.74) 100%)}
+.ns-page-banner>a{color:rgba(255,255,255,.82);text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.ns-page-banner h1{color:#fff;font-size:clamp(34px,4vw,56px);font-weight:600;letter-spacing:-.02em;text-shadow:0 2px 18px rgba(0,0,0,.28)}
+.ns-page-banner p{color:rgba(255,255,255,.9);font-size:16px;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+.ns-page-banner .ns-subtabs a{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.42);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ns-page-banner .ns-subtabs a:is(:hover,:focus-visible){background:rgba(255,255,255,.26);border-color:#fff}
+.ns-page-banner .ns-subtabs a[aria-current=page]{background:#fff;border-color:#fff;color:#2E2E2E}
+@media(max-width:768px){
+ .ns-page-heading.ns-page-banner{min-height:300px;padding-top:calc(var(--ns-hdr-h,124px) + 24px);padding-bottom:28px}
+ .ns-page-banner p{font-size:14px}
+}
+
+/* Hallmark v4 punch-list fixes (hallmark-review-v4.md, 2026-09-26). */
+/* gate 40 contrast */
+.ns-faq-v2 summary .ns-faq-q{color:var(--ns-link)}
+.ns-footer-copy,.ns-footer-copy small{font-size:12px;color:var(--ns-footer-ink)}
+/* gates 39/15 focus: visible outline, no fading */
+.ns-contact-form :is(input,select,textarea):focus-visible{outline:2px solid var(--ns-focus);outline-offset:1px;box-shadow:none;transition:none}
+.ns-contact-form :is(input,select,textarea){transition:none}
+/* gate 25 Korean line breaking + measure */
+.ns-support-lead,.ns-contact-intro>p:not(.ns-eyebrow){max-width:45ch}
+:is(p,li,h1,h2,h3,summary,.ns-faq-title){word-break:keep-all}
+/* gate 35 underline offset */
+.ns-consent a,.ns-faq-a a{text-underline-offset:2px}
+/* gate 36 chevron sits on the label baseline */
+.ns-menu summary span[aria-hidden]{display:inline-block;transform:translateY(-3px)}
+.ns-menu[open] summary span[aria-hidden]{transform:translateY(-3px) rotate(180deg)}
+/* gate 50/51 grid tracks + long words */
+@media(max-width:1024px){.ns-footer-main{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.ns-footer-map{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:768px){.ns-footer-main{grid-template-columns:minmax(0,1fr)}}
+.ns-story-intro,.ns-footer-big,.ns-footer-company p span{overflow-wrap:anywhere;min-width:0}
+/* breadcrumb size on desktop */
+.ns-page-heading>a{font-size:12px}
+/* small screens: keep the wordmark readable */
+@media(max-width:380px){.ns-logo img{width:88px;height:34px}.ns-logo{padding:5px 10px}}
+/* floating quick buttons must not cover forms / the map */
+body:has(main[data-page=contact]) .ns-floating,body:has(main[data-page=directions]) .ns-floating{display:none}
+@media(max-width:768px){body:has(main[data-page=product]) .ns-floating{display:none}}
+.ns-directions{padding-bottom:var(--space-step-16)}
