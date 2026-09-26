@@ -273,3 +273,53 @@
 .ns-hero-v4 .ns-stage-dots li{background:rgba(15,34,56,.35)}
 .ns-hero-v4:is([data-story-phase=empty]) [data-stage=empty],.ns-hero-v4:is([data-story-phase=packs]) [data-stage=packs],.ns-hero-v4:is([data-story-phase=ice]) [data-stage=ice],.ns-hero-v4:is([data-story-phase=packed]) [data-stage=packed]{background:var(--ns-ink-navy);box-shadow:0 0 0 5px rgba(15,34,56,.14)}
 @media(max-width:768px){.ns-hero-v4 .ns-water-shade{background:linear-gradient(180deg,rgba(244,247,251,.7) 0%,rgba(244,247,251,0) 40%)}}
+
+/* Mobile full-frame film (2026-09-26 user: "모바일에서도 히어로 영상이 그대로 나오게").
+ * The 16:9 film is shown whole — full width, nothing cropped, no dolly zoom — instead of the 1.16 crop at 97%. */
+@media(max-width:768px){
+ .ns-hero-v4.ns-still-life .ns-film-rig{inset:auto;top:50%;left:0;width:100%;height:auto;aspect-ratio:16/9;transform:translate3d(0,-50%,0)!important;transition:none}
+ .ns-hero-v4.ns-still-life .ns-film,.ns-hero-v4.ns-still-life .ns-film-poster{object-fit:contain;object-position:50% 50%}
+ .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:linear-gradient(0deg,transparent,var(--color-mask) 5%,var(--color-mask) 95%,transparent);mask-composite:add}
+}
+@media(max-height:500px) and (min-width:600px){
+ .ns-hero-v4.ns-still-life .ns-film-rig{aspect-ratio:16/9;width:min(100%,calc(100cqh * 16 / 9))}
+ .ns-hero-v4.ns-still-life .ns-film,.ns-hero-v4.ns-still-life .ns-film-poster{object-fit:contain;object-position:50% 50%}
+}
+/* The bands above/below the whole film show the same sea, blurred (poster frame: sky/sea never change), so the frame does not float on flat colour. */
+@media(max-width:768px){
+ .ns-hero-v4.ns-still-life .ns-packing-scene{overflow:hidden}
+ .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:"";position:absolute;inset:-8%;z-index:-3;pointer-events:none;background:url(assets/hero-sea-poster.jpg) 50% 50%/cover no-repeat;filter:blur(22px) saturate(.9);opacity:.85;mask-image:linear-gradient(180deg,transparent 0%,#000 22%,#000 78%,transparent 100%)}
+}
+/* CLS: before anime.js splits it the intro wrapped to two lines, then snapped to one (Lighthouse mobile 0.27 shift).
+ * It fits one line at every phone width once split, so keep it on one line from first paint. */
+@media(max-width:768px){.ns-hero-v4 .ns-hero-copy :is(h1,.ns-story-intro){white-space:nowrap}}
+/* Landscape phones: copy left, whole 16:9 film right (the old rule put the film in a grid column that did not exist, width 0). */
+@media(max-height:500px) and (min-width:600px){
+ .ns-hero-v4.ns-hero.ns-cinema{grid-template-columns:minmax(0,40%) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+ .ns-hero-v4 .ns-hero-copy{grid-column:1;grid-row:1;align-self:center;max-width:none;padding:calc(var(--ns-hdr-h) + 4px) var(--space-md) 0 var(--space-lg)}
+ .ns-hero-v4 .ns-hero-copy :is(h1,.ns-story-intro){font-size:clamp(22px,3.4vw,30px);white-space:nowrap}
+ .ns-hero-v4.ns-still-life .ns-packing-scene{grid-column:2;grid-row:1;position:relative;inset:auto;height:auto;align-self:stretch;margin-top:var(--ns-hdr-h)}
+ .ns-hero-v4.ns-still-life .ns-film-rig{inset:auto;top:50%;left:0;width:100%;height:auto;aspect-ratio:16/9;transform:translate3d(0,-50%,0)!important}
+ .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:none}
+ .ns-hero-v4 .ns-cinema-bottom{grid-column:1/-1;grid-row:2}
+}
+@media(max-height:500px) and (min-width:600px){
+ .ns-hero-v4 .ns-hero-copy :is(h1,.ns-story-intro) .ns-bracket{margin-left:.25em}
+ .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 8%)}
+ .ns-hero-v4 .ns-water-shade{background:linear-gradient(90deg,rgba(244,247,251,.66) 0%,rgba(244,247,251,0) 45%)}
+}
+
+/* Phone hero v5 (2026-09-26 user: "모바일 히어로가 풀로 나와서 PC처럼 스크롤 시 얼음·생선이 박스로, 그 뒤 헤더가 튀어나오게").
+ * The whole screen is one sea scene: a portrait backdrop made from the film's own frame (sky and breakwater extended
+ * with local Open Generative AI, hero-169/mobile-bg/) and the film laid exactly over the untouched window, so the
+ * box is never cropped. Geometry (generation canvas 640×1408): window x 618–1887 of the 1920 film, top 507, height 544.7. */
+@media(max-width:768px) and (orientation:portrait){
+ .ns-hero-v4.ns-still-life .ns-packing-scene{position:absolute;inset:0;grid-row:1/-1;grid-column:1/-1;z-index:0;height:auto;overflow:hidden;container-type:size}
+ .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:none}
+ .ns-hero-v4.ns-still-life .ns-film-rig{inset:auto;top:50%;left:50%;width:max(100cqw,calc(100cqh * 640 / 1408));height:auto;aspect-ratio:640/1408;transform:translate3d(-50%,-50%,0)!important;transition:none;background:url(assets/hero-sea-mobile-bg.jpg) 50% 50%/100% 100% no-repeat}
+ .ns-hero-v4.ns-still-life .ns-film-frame{position:absolute;left:-48.70%;top:36.009%;width:151.30%;height:38.686%;max-width:none;max-height:none;aspect-ratio:auto;mask-image:linear-gradient(180deg,transparent,var(--color-mask) 4%,var(--color-mask) 96%,transparent)}
+ .ns-hero-v4.ns-still-life .ns-film,.ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:50% 50%}
+ .ns-hero-v4 .ns-hero-copy{position:relative;z-index:4}
+ .ns-hero-v4 .ns-cinema-bottom{position:relative;z-index:4}
+ .ns-hero-v4 .ns-water-shade{background:linear-gradient(180deg,rgba(244,247,251,.62) 0%,rgba(244,247,251,0) 30%),linear-gradient(0deg,rgba(15,34,56,.30) 0%,rgba(15,34,56,0) 22%)}
+}

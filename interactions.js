@@ -31,7 +31,7 @@
       if (img.dataset.nsBanner) return;
       img.dataset.nsBanner = '1';
       const banner = img.closest('.ns-page-banner');
-      animate(img, { scale: [1.14, 1.04], opacity: [0.2, 1], duration: 2200, ease: 'outExpo' });
+      animate(img, { scale: [1.1, 1], opacity: [0.2, 1], duration: 2200, ease: 'outExpo' });  // settles at 1: the banner edits must show the whole original (ENG-021)
       animate(img, { translateY: ['0%', '12%'], ease: 'linear', autoplay: onScroll({ target: banner, enter: 'top top', leave: 'bottom top', sync: 0.25 }) });
       animate(banner.querySelectorAll(':scope > p, :scope > .ns-subtabs'), { y: [16, 0], opacity: [0, 1], duration: 900, ease: 'outCubic', delay: stagger(90, { start: 350 }) });
     });
@@ -56,6 +56,18 @@
         if (!d.open) return;
         const parts = d.querySelectorAll('.ns-faq-a > *');
         if (parts.length) animate(parts, { y: [-8, 0], opacity: [0, 1], duration: 520, ease: 'outCubic', delay: stagger(60) });
+      });
+    });
+
+    // Mobile hamburger: the rounded card drops in with a soft overshoot, then its pills follow one by one.
+    document.querySelectorAll('.ns-burger').forEach(d => {
+      if (d.dataset.nsBurger) return;
+      d.dataset.nsBurger = '1';
+      d.addEventListener('toggle', () => {
+        if (!d.open) return;
+        const panel = d.querySelector('.ns-burger-panel');
+        animate(panel, { y: [-14, 0], scale: [0.96, 1], opacity: [0, 1], duration: 520, ease: 'outBack(1.4)' });
+        animate(panel.querySelectorAll('.ns-burger-group > *, .ns-burger-member a'), { y: [10, 0], opacity: [0, 1], duration: 420, ease: 'outCubic', delay: stagger(22, { start: 80 }) });
       });
     });
 

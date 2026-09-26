@@ -93,7 +93,7 @@ body:has(main[data-page=home]) .ns-hero-track{--ns-header-h:0px}
  .ns-header{grid-template-columns:auto 1fr;row-gap:10px;padding:12px var(--space-md)}
  .ns-main-nav{grid-column:1/-1;grid-row:2;justify-self:stretch;justify-content:space-between;order:0;width:auto;border-top:0;margin-top:0}
  .ns-logo img{width:96px;height:38px}
- .ns-utility{gap:6px}.ns-utility>a{min-width:40px;min-height:40px;padding:0 10px;font-size:12px}
+ .ns-utility{gap:6px}.ns-utility>a{min-width:44px;min-height:44px;padding:0 10px;font-size:12px}
  .ns-utility>a[data-route=inquiry]{padding:0 14px;font-size:12px}.ns-utility>a[data-route=inquiry]:before{display:none}
 }
 @media(max-width:380px){.ns-utility>a[data-type],.ns-utility>a[data-route=login]{padding:0 8px}.ns-main-nav>a,.ns-menu summary{padding:0 10px;font-size:14px}}
@@ -294,3 +294,64 @@ body:has(.ns-page-banner) .ns-header{position:sticky;top:0;margin-bottom:calc(-1
 body:has(main[data-page=contact]) .ns-floating,body:has(main[data-page=directions]) .ns-floating{display:none}
 @media(max-width:768px){body:has(main[data-page=product]) .ns-floating{display:none}}
 .ns-directions{padding-bottom:var(--space-step-16)}
+
+/* ENG-022 responsive review fixes (2026-09-26, Playwright device sweep): touch targets on phones. */
+@media(max-width:768px){
+ .ns-page-heading>a{display:inline-flex;align-items:center;align-self:flex-start;width:auto;min-height:44px}
+ .ns-footer-big{display:inline-flex;align-items:center;min-height:44px}
+}
+/* Header height is known per breakpoint; declaring it up front means motion.js only confirms the value
+ * instead of changing it after first paint (Lighthouse mobile CLS 0.13 came from the 82px fallback). */
+body{--ns-hdr-h:94px}
+@media(max-width:900px){body{--ns-hdr-h:140px}}
+@media(max-width:380px){body{--ns-hdr-h:134px}}
+/* ENG-021 banners: PC edit is 3:1, mobile edit 4:5. The box follows the image ratio so cover only trims generated margin,
+ * never the original photo (checked by hero-169/banner-edit/check_banners.py). */
+.ns-banner-media picture{display:block;width:100%;height:100%}
+.ns-page-heading.ns-page-banner{aspect-ratio:3/1;width:100%;box-sizing:border-box}
+.ns-banner-media img{object-position:50% 50%}
+@media(max-width:600px){.ns-page-heading.ns-page-banner{aspect-ratio:4/5;min-height:0}}
+/* Landscape phones (≤500px tall): a two-row header ate 140 of ~390px. One row here: logo · menu · utilities. */
+@media(max-height:500px) and (min-width:600px){
+ .ns-header{grid-template-columns:auto minmax(0,1fr) auto;padding:8px var(--space-md)}
+ .ns-main-nav{grid-column:2;grid-row:1;justify-self:center;width:auto;justify-content:center}
+ body{--ns-hdr-h:72px}
+}
+
+/* Mobile header v3 (2026-09-26 user: "모바일 상단헤더를 드롭다운 햄버거로, 둥근 헤더 디자인 유지").
+ * ≤768px: logo pill · cart pill · round hamburger pill. The menu opens as a rounded white card under the header. */
+.ns-burger{display:none}
+@media(max-width:768px){
+ .ns-header{grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;row-gap:0;column-gap:8px;padding:12px var(--space-md)}
+ .ns-header .ns-main-nav{display:none}
+ .ns-utility{grid-column:3;grid-row:1;justify-self:end}
+ .ns-utility>a:not([data-route=cart]){display:none}
+ .ns-burger{display:block;grid-column:4;grid-row:1}
+ .ns-burger>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:999px;background:var(--ns-paper);box-shadow:0 6px 24px rgba(20,24,32,.08);color:var(--ns-ink);cursor:pointer}
+ .ns-burger>summary::-webkit-details-marker{display:none}
+ .ns-burger>summary:is(:hover,:focus-visible){background:var(--ns-brand-soft)}
+ .ns-burger-icon{position:relative;display:block;width:18px;height:14px}
+ .ns-burger-icon i{position:absolute;left:0;width:100%;height:2px;border-radius:2px;background:currentColor;transition:transform var(--dur-short,.2s) var(--ease-out,ease),opacity var(--dur-short,.2s)}
+ .ns-burger-icon i:nth-child(1){top:0}.ns-burger-icon i:nth-child(2){top:6px}.ns-burger-icon i:nth-child(3){top:12px}
+ .ns-burger[open] .ns-burger-icon i:nth-child(1){transform:translateY(6px) rotate(45deg)}
+ .ns-burger[open] .ns-burger-icon i:nth-child(2){opacity:0}
+ .ns-burger[open] .ns-burger-icon i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+ .ns-burger-panel{position:absolute;left:var(--space-md);right:var(--space-md);top:calc(100% + 4px);z-index:60;display:grid;gap:18px;padding:22px 20px 20px;border-radius:28px;background:var(--ns-paper);box-shadow:0 18px 48px rgba(20,24,32,.16);max-height:calc(100svh - 96px);overflow:auto;overscroll-behavior:contain}
+ .ns-burger-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .ns-burger-group>p{grid-column:1/-1;margin:0 0 2px 4px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ns-muted)}
+ .ns-burger-panel a{display:flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#F3F5F8;color:var(--ns-ink);font-size:15px;text-decoration:none}
+ .ns-burger-panel a:is(:hover,:focus-visible){background:var(--ns-brand-soft)}
+ .ns-burger-panel a[aria-current=page]{background:var(--ns-ink-navy);color:#fff}
+ .ns-burger-member{display:flex;gap:6px;padding-top:14px;border-top:1px solid var(--ns-line)}
+ .ns-burger-member a{flex:1 1 0;justify-content:center;font-size:14px}
+ body{--ns-hdr-h:72px}
+}
+@media(max-width:380px){body{--ns-hdr-h:72px}.ns-burger-panel a{font-size:14px;padding:0 12px}}
+@media(max-width:768px){body:has(.ns-burger[open]) .ns-floating{opacity:0;pointer-events:none;transition:opacity .2s}}
+/* 인기상품 flowing row (≤768px, Swiper). Linear timing turns autoplay into a continuous flow; edges fade out. */
+.ns-home-popular .ns-product-grid.swiper-wrapper{display:flex;gap:0}
+.ns-popular-flow{overflow:hidden;margin-inline:calc(-1 * var(--space-md));padding-inline:var(--space-md);mask-image:linear-gradient(90deg,transparent,#000 var(--space-md),#000 calc(100% - var(--space-md)),transparent)}
+.ns-popular-flow.is-flowing .swiper-wrapper{transition-timing-function:linear!important}
+.ns-popular-flow .ns-product{height:auto}
+/* header-pop.js: while tucked the header is off-screen; the transform itself is animated by anime.js. */
+body.ns-hdr-tucked .ns-header{pointer-events:none}

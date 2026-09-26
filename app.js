@@ -44,8 +44,9 @@
   function applyFilter(){if(!$('#product-search'))return;const term=$('#product-search').value.trim().toLocaleLowerCase();let count=0;document.querySelectorAll('.ns-product').forEach(e=>{const match=(filter==='all'||e.dataset.kind===filter)&&e.dataset.name.toLocaleLowerCase().includes(term);e.hidden=!match;if(match)count++;});$('#empty-products').hidden=count>0;$('#product-status').textContent=`상품 ${count}개`;document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===filter)));}
   document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;applyFilter();}));
   $('#product-search')?.addEventListener('input',applyFilter);
-  document.addEventListener('click',e=>{document.querySelectorAll('.ns-menu[open]').forEach(m=>{if(!m.contains(e.target)||e.target.closest('.ns-menu-panel a'))m.open=false;});});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ns-menu[open]').forEach(m=>{m.open=false;m.querySelector('summary').focus();});});
+  document.addEventListener('click',e=>{document.querySelectorAll('.ns-menu[open],.ns-burger[open]').forEach(m=>{if(!m.contains(e.target)||e.target.closest('.ns-menu-panel a,.ns-burger-panel a'))m.open=false;});});
+  document.querySelectorAll('.ns-burger-panel a').forEach(a=>{if(a.getAttribute('href')===(location.pathname.split('/').pop()||'index.html'))a.setAttribute('aria-current','page');});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ns-menu[open],.ns-burger[open]').forEach(m=>{m.open=false;m.querySelector('summary').focus();});});
   $('#inquiry-form')?.addEventListener('submit',async e=>{e.preventDefault();const text=`[${$('#inquiry-topic').value}]\n${$('#inquiry-message').value.trim()}`;try{await navigator.clipboard.writeText(text);$('#inquiry-status').textContent='복사했습니다. 카카오톡 채널에 붙여넣어 보내주세요.';}catch{$('#inquiry-message').select();$('#inquiry-status').textContent='자동 복사를 사용할 수 없습니다. 선택된 내용을 직접 복사해 주세요.';}});
   syncCart();applyFilter();if($('#cart-page'))renderCart();
   renderProduct();
