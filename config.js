@@ -1,6 +1,6 @@
 /* 실제 아임웹 페이지 URL과 공개 채널 주소를 확인한 뒤 채웁니다. */
 window.NATURE_LINKS = {
-  home: '', shop: '', bakdae: '', dried: '', popular: '', new: '', support: '', cart: '', login: '', mypage: '', inquiry: '', contact: '',
+  home: '', shop: '', bakdae: '', dried: '', popular: '', new: '', support: '', cart: '', login: '', mypage: '', inquiry: '', contact: '', notice: '',
   privacy: '', terms: '', smartstore: '', instagram: '', blog: '',
   kakao: 'https://pf.kakao.com/_xfxosrX/chat',
   channel: 'https://pf.kakao.com/_xfxosrX',
@@ -11,4 +11,5 @@ window.NATURE_PRODUCT_URLS = {};
 
 /* 위젯 DOM ID를 한 곳에서 지정합니다. 네이티브 상품 데이터·구매 처리는 아임웹이 담당합니다. */
 /* inquiry = 아임웹 "입력폼" 위젯 DOM ID (1:1 문의). NATURE_LINKS.contact = 입력폼이 있는 '1:1 문의하기' 페이지 주소. */
-window.NATURE_WIDGET_IDS = {shop: "", inquiry: "", detail: ""};
+/* notice = 아임웹 "게시판" 위젯 DOM ID (공지사항). 비워 두면 코드 위젯 바로 위 게시판을 자동으로 찾습니다. */
+window.NATURE_WIDGET_IDS = {shop: "", inquiry: "", detail: "", notice: ""};

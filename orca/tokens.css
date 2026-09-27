@@ -1,0 +1,78 @@
+/* Nature shared design tokens. Brand: #3A86FF / #FFF4F4; Pretendard 400 / 300. */
+:root{
+  --ns-blue: oklch(63.71399% 0.1952546 259.50871);
+  --ns-pink: oklch(97.57184% 0.0118416 17.35951);
+  --ns-ink: oklch(30.11838% 0.0000000 89.87556);
+  --ns-paper: oklch(100.00000% 0.0000000 89.87556);
+  --ns-dark: oklch(44.29806% 0.1532895 259.68178);
+  --ns-line: oklch(91.15943% 0.0253988 255.56455);
+  --ns-soft: oklch(97.10865% 0.0096414 252.81034);
+  --ns-green: oklch(72.49652% 0.2014298 149.52598);
+  --ns-yellow: oklch(91.38530% 0.1908997 101.37166);
+  --ns-muted: oklch(54.32348% 0.0340519 262.41114);
+  --ns-focus: oklch(35.93501% 0.1053622 258.76997);
+  --ns-overlay: rgba(18,39,65,.4);
+  --ns-font: Pretendard,Verdana,Dotum,AppleGothic,sans-serif;
+  --ns-ease: cubic-bezier(.22,1,.36,1);
+  --ns-space: var(--space-xl);
+  --ns-on-blue: oklch(24.40183% 0.0527262 259.00718);
+  --ns-motion-fast: 180ms;
+  --ns-motion-medium: 420ms;
+  --ns-motion-slow: 720ms;
+  --ns-scene-ink: oklch(24.40183% 0.0527262 259.00718);
+  --ns-scene-bg: oklch(63.71399% 0.1952546 259.50871);
+  --color-old-film-ink: oklch(25.36053% 0.0074934 118.34906);
+  --color-old-film-caption: oklch(90.20387% 0.0133067 82.40138);
+  --color-old-film-rule: oklch(57.10247% 0.0166620 115.29376);
+  --color-mask: oklch(0.00000% 0.0000000 0.00000);
+  --color-old-film-muted: oklch(87.46361% 0.0108970 100.84430);
+  --color-old-film-label: oklch(77.12385% 0.0168665 114.47208);
+  --color-old-film-progress: oklch(49.18274% 0.0171165 111.24094);
+  --color-film-surround: oklch(72.24831% 0.0319160 235.83614);
+  --color-accent: var(--ns-blue);
+  --color-accent-ink: var(--ns-on-blue);
+  --font-display: var(--ns-font);
+  --font-body: var(--ns-font);
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in: cubic-bezier(.7,0,.84,0);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+  --space-step-25: 100px;
+  --space-step-3: 12px;
+  --space-step-5: 20px;
+  --space-step-2: 8px;
+  --space-step-4: 16px;
+  --space-step-10: 40px;
+  --space-step-8: 32px;
+  --space-step-7: 28px;
+  --space-step-6: 24px;
+  --space-step-1: 4px;
+  --space-step-11: 44px;
+  --space-step-24: 96px;
+  --space-step-14: 56px;
+  --space-step-18: 72px;
+  --space-step-16: 64px;
+  --space-step-22: 88px;
+  --space-step-12: 48px;
+  --space-step-20: 80px;
+  --space-step-360: 1440px;
+  --space-step-29: 116px;
+  --space-step-9: 36px;
+  --space-step-15: 60px;
+  --space-step-21: 84px;
+}
+
+@media(max-width:768px){:root{--ns-space:var(--space-lg)}}
+@media(min-width:1440px){:root{--ns-space:var(--space-2xl)}}
+
+/* 2026-09-26 session tokens (Hallmark gate 48): colours used by header v2, accordion, contact, footer v2, banners. */
+:root{--ns-brand:#3A86FF;--ns-brand-hover:#6BA4FF;--ns-brand-soft:#EEF4FF;--ns-brand-soft-2:#E3EDFF;--ns-brand-line:#CFE0FF;--ns-link:#164EA6;--ns-ink-navy:#0F2238;--ns-on-brand:#102039;--ns-kakao:#FEE500;--ns-kakao-hover:#F2D900;--ns-kakao-ink:#191919;--ns-error:#C62828;--ns-required:#E5484D;--ns-field-line:#D7E3F3;--ns-field-bg:#FAFBFD;--ns-panel:#F1F6FC;--ns-panel-2:#F6F9FF;--ns-footer-ink:#5B6070;--ns-rule:#E3E8F0}

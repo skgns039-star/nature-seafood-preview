@@ -355,3 +355,34 @@ body{--ns-hdr-h:94px}
 .ns-popular-flow .ns-product{height:auto}
 /* header-pop.js: while tucked the header is off-screen; the transform itself is animated by anime.js. */
 body.ns-hdr-tucked .ns-header{pointer-events:none}
+
+/* 공지사항 게시판 (2026-09-27) — 미리보기 모양. 아임웹에서는 게시판 위젯 + widget_notice.html 브리지가 같은 모양을 입힌다. */
+.ns-notice{max-width:1080px;margin-inline:auto}
+.ns-board{margin-top:28px}
+.ns-board-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ns-board-count{font-size:14px;color:#5B6576;margin:0}.ns-board-count strong{color:#2E2E2E}
+.ns-board-search{display:flex;gap:8px}
+.ns-board-search input{min-height:44px;width:min(260px,60vw);padding:0 16px;border:1px solid #D7E3F3;border-radius:999px;background:#FAFBFD;font:inherit;font-size:14px}
+.ns-board-search input:focus{outline:0;border-color:#3A86FF;box-shadow:0 0 0 3px rgba(58,134,255,.22)}
+.ns-board-search button{min-height:44px;padding:0 18px;border:0;border-radius:999px;background:#2E2E2E;color:#fff;font:inherit;font-size:14px;cursor:pointer}
+.ns-board-list{list-style:none;margin:0;padding:0;border-top:2px solid #2E2E2E}
+.ns-board-list li{border-bottom:1px solid #E6ECF4}
+.ns-board-list a{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:64px;padding:14px 12px;color:#2E2E2E;text-decoration:none;transition:background .2s}
+.ns-board-list a:hover,.ns-board-list a:focus-visible{background:#EEF4FF}
+.ns-board-list a:focus-visible{outline:3px solid #163B73;outline-offset:-3px}
+.ns-board-no{font-size:14px;color:#8A93A3;text-align:center;font-variant-numeric:tabular-nums}
+.ns-board-badge{justify-self:center;display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;background:#3A86FF;color:#102039;font-size:12px;font-weight:700}
+.ns-board-title{font-size:16px;font-weight:500;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.is-pinned .ns-board-title{font-weight:700}
+.ns-board-meta{display:flex;gap:14px;font-size:13px;color:#8A93A3;font-variant-numeric:tabular-nums}
+.ns-board-paging{display:flex;justify-content:center;gap:6px;margin-top:28px}
+.ns-board-paging a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border-radius:999px;color:#2E2E2E;text-decoration:none;font-size:14px}
+.ns-board-paging a[aria-current=page]{background:#2E2E2E;color:#fff}
+.ns-board-note{margin-top:20px;font-size:13px;color:#8A93A3;text-align:center}
+@media(max-width:640px){
+ .ns-board-list a{grid-template-columns:minmax(0,1fr);gap:6px;padding:16px 8px}
+ .ns-board-no{display:none}.ns-board-badge{justify-self:start}
+ .ns-board-title{white-space:normal}
+ .ns-board-search{width:100%;padding-right:56px}.ns-board-search input{flex:1;width:auto;min-width:0}
+}
+@media(max-width:1024px){.ns-board-tools{padding-right:56px}}@media(max-width:640px){.ns-board-tools{padding-right:0}}
