@@ -36,16 +36,17 @@
   }
 
   // ---------- media selection (PC 16:9 / phone portrait composition share one timeline) ----------
+  const MV = '?v=4';   // media cache-buster (v4 2026-09-28: in-place idle loop, Korean workers, printed box logo)
   function pickMedia() {
     const key = phone.matches ? 'm' : 'pc';
     if (key === mediaKey) return;
     mediaKey = key;
     root.dataset.media = key;
     const prevP = p;
-    video.src = T.media[key].video;
-    if (idle) { idle.dataset.src = T.media[key].idle || `orca/media/idle-${key}.mp4`; idle.poster = T.media[key].poster; if (pageLoaded) armIdle(); }
-    video.poster = T.media[key].poster;
-    finalImg.src = T.media[key].final;
+    video.src = T.media[key].video + MV;
+    if (idle) { idle.dataset.src = (T.media[key].idle || `orca/media/idle-${key}.mp4`) + MV; idle.poster = T.media[key].poster + MV; if (pageLoaded) armIdle(); }
+    video.poster = T.media[key].poster + MV;
+    finalImg.src = T.media[key].final + MV;
     video.addEventListener('loadedmetadata', () => { shown = mediaTimeAt(prevP); try { video.currentTime = shown; } catch (e) {} }, { once: true });  // same p, this platform's media time
   }
 

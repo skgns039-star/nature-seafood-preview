@@ -62,11 +62,10 @@ body:has(.oh-track) .ns-hero-track{display:none}
 @media(max-width:768px) and (orientation:portrait){.oh-brand{width:calc(min(70vw,300px) * var(--k) + 150px * (1 - var(--k)))}}
 
 /* v3 idle layer: seamless loop (boat floating, waves breaking) above the scrub video, fades out over INTRO.
- * Depth: slow breathing zoom + pointer parallax on this layer only; the brand lockup floats gently. */
+ * Depth: pointer parallax on this layer only; the brand lockup floats gently. v4: no breathing zoom — the loop itself
+ * keeps the boat in place (start frame = end frame), a slow zoom read as the boat coming forward / auto-play. */
 .oh-idle{position:absolute;inset:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 62%;z-index:1;pointer-events:none;opacity:1;
- transform:translate3d(calc(var(--oh-px,0) * -18px),calc(var(--oh-py,0) * -12px),0) scale(1.02);transition:opacity .25s linear,transform .9s cubic-bezier(.2,.7,.2,1);
- animation:oh-breathe 12s ease-in-out infinite alternate}
-@keyframes oh-breathe{from{scale:1}to{scale:1.035}}
+ transform:translate3d(calc(var(--oh-px,0) * -18px),calc(var(--oh-py,0) * -12px),0) scale(1.02);transition:opacity .25s linear,transform .9s cubic-bezier(.2,.7,.2,1)}
 .oh-track.is-idle .oh-brand img{animation:oh-float 6s ease-in-out infinite}
 .oh-track.is-idle .oh-brand img:nth-child(2){animation-delay:-.6s}.oh-track.is-idle .oh-brand img:nth-child(n+3){animation-delay:-1.2s}
 @keyframes oh-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
