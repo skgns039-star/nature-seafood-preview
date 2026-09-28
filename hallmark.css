@@ -250,7 +250,7 @@ body:has(main[data-page=directions]) .ns-footer .ns-footer-map{display:none}
 
 /* Sub-page photo banners (2026-09-26): client photos from Google Drive (hero-169/banner-provenance.json).
  * Header floats over the banner like on home; anime.js adds a slow settle-in zoom and scroll parallax (interactions.js). */
-body:has(.ns-page-banner) .ns-header{position:sticky;top:0;margin-bottom:calc(-1 * var(--ns-hdr-h,94px))}
+body:is(:has(.ns-page-banner),:has(.ns-shop-film)) .ns-header{position:sticky;top:0;margin-bottom:calc(-1 * var(--ns-hdr-h,94px))}
 .ns-page-heading.ns-page-banner{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:clamp(340px,36vw,480px);padding-top:calc(var(--ns-hdr-h,94px) + 40px);padding-bottom:44px;border-bottom:0;color:#fff;background:#1c2a3a}
 .ns-banner-media{position:absolute;inset:0;z-index:-2;overflow:hidden}
 .ns-banner-media img{width:100%;height:100%;object-fit:cover;transform-origin:50% 50%;will-change:transform}
@@ -357,7 +357,7 @@ body{--ns-hdr-h:94px}
 body.ns-hdr-tucked .ns-header{pointer-events:none}
 
 /* 공지사항 게시판 (2026-09-27) — 미리보기 모양. 아임웹에서는 게시판 위젯 + widget_notice.html 브리지가 같은 모양을 입힌다. */
-.ns-notice{max-width:1080px;margin-inline:auto}
+
 .ns-board{margin-top:28px}
 .ns-board-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .ns-board-count{font-size:14px;color:#5B6576;margin:0}.ns-board-count strong{color:#2E2E2E}

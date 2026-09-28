@@ -7,7 +7,7 @@
   root.dataset.olInit = '1';
   const video = root.querySelector('.ol-video');
   const MV = '?v=6';   // v6 (2026-09-28): 2x slower (RIFE), Topaz 4K, original box print restored, steady water
-  const phone = matchMedia('(max-width: 768px) and (orientation: portrait)');
+  const phone = matchMedia('(max-width: 1100px) and (orientation: portrait)');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let key = null, visible = true;
 

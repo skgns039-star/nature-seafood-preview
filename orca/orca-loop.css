@@ -20,7 +20,7 @@ body:has(.ol-hero) .ns-hero-track{display:none}
 .ol-tagline.ol-en{width:54% !important}
 
 
-@media(max-width:768px) and (orientation:portrait){
+@media(max-width:1100px) and (orientation:portrait){
  .ol-brand{width:min(64vw,280px)}
  }
 @media(max-height:500px) and (orientation:landscape){.ol-brand{width:min(24vw,34vh,240px);top:calc(var(--ns-hdr-h,64px) + 8px)}}
@@ -40,7 +40,7 @@ body:has(.ol-hero) .ns-hero-track{display:none}
 .ol-copy,.ol-hero .ns-quick{animation:ol-rise 1.1s cubic-bezier(.16,1,.3,1) .35s both}
 @keyframes ol-rise{from{opacity:0;translate:0 calc(-50% + 18px)}}
 .ol-hero .ns-quick{animation-name:ol-rise-bar}@keyframes ol-rise-bar{from{opacity:0;translate:0 18px}}
-@media(max-width:768px) and (orientation:portrait){
+@media(max-width:1100px) and (orientation:portrait){
  .ol-brand{width:min(46vw,200px)}
  .ol-copy{top:calc(var(--ns-hdr-h,72px) + 1.5vh + min(46vw,200px) * .72 + 30px);translate:none;max-width:none;right:var(--ol-x)}
  .ol-copy h1{font-size:clamp(24px,7vw,34px)}
@@ -52,4 +52,9 @@ body:has(.ol-hero) .ns-hero-track{display:none}
 @media(max-height:500px) and (orientation:landscape){.ol-copy h1{font-size:clamp(22px,3.4vw,30px)}.ol-copy p{display:none}.ol-hero .ns-quick{display:none}}
 @media(prefers-reduced-motion:reduce){.ol-video{display:none}.ol-copy,.ol-hero .ns-quick{animation:none}}
 /* tablet portrait (wider than 3:5): the 9:16 film is cropped top/bottom → anchor its bottom so the box stack sits above the quick bar */
-@media(max-width:768px) and (orientation:portrait) and (min-aspect-ratio:3/5){.ol-hero{--ol-y:80%}.ol-hero .ns-quick{bottom:16px}}
+@media(max-width:1100px) and (orientation:portrait) and (min-aspect-ratio:3/5){.ol-hero{--ol-y:80%}.ol-hero .ns-quick{bottom:16px}
+ /* v7.1: portrait tablets (up to 1100px, e.g. iPad) use the 9:16 film too, so the box stack is never cropped. The horizon
+  * sits high here, so the copy moves up beside the lockup (left of it) and clears the passing boat's mast */
+ .ol-brand{width:clamp(200px,28vw,300px)}
+ .ol-copy{top:calc(var(--ns-hdr-h,72px) + 1.5vh + 24px);right:auto;max-width:calc(50% - clamp(100px,14vw,150px) - var(--ol-x) - 16px)}
+ .ol-copy h1{font-size:clamp(24px,4.4vw,44px)}.ol-copy p{text-wrap:balance}}

@@ -52,7 +52,7 @@
    raf=0;if(failed||playing||video.readyState<2||!Number.isFinite(video.duration))return;
    const target=Math.min(Math.max(0,video.duration-.05),desired*video.duration);
    if(shown<0)shown=target;
-   shown+=(target-shown)*.09;if(Math.abs(target-shown)<.02)shown=target;
+   shown+=(target-shown)*.2;   // 2026-09-28 b: follows the scroll faster (was .09 — ice fell too late)if(Math.abs(target-shown)<.02)shown=target;
    if(!video.seeking&&Math.abs(video.currentTime-shown)>.02)video.currentTime=shown;
    if(shown!==target||video.seeking)request();
   }
