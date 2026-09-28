@@ -5,9 +5,11 @@
     (root.documentElement||root).dataset.nsMotionReady='1';
     const q=s=>root.querySelector(s),all=s=>[...root.querySelectorAll(s)];
     const reduce=matchMedia('(prefers-reduced-motion: reduce)'),fine=matchMedia('(hover: hover) and (pointer: fine)');
+    // 2026-09-29 (user): the film hero plays exactly as on PC even with 동작 줄이기 on; reading content below still honours it.
+    const heroReduce={matches:false,addEventListener(){}};
     const hero=q('.ns-cinema'),track=q('.ns-hero-track'),scene=q('.ns-packing-scene'),header=q('.ns-header');
     let paused=false,queued=false,progress=0,pointerFrame=0,pointerX=0,pointerY=0;
-    const film=window.NatureFilm?.attach(root,reduce);
+    const film=window.NatureFilm?.attach(root,heroReduce);
     const reveal=[]; // Film is the one orchestrated scene; reading content remains still.
     let observer;
     function showAll(){reveal.forEach(e=>{e.classList.add('is-visible');e.classList.remove('ns-reveal-pending');});observer?.disconnect();}
@@ -20,13 +22,13 @@
     function resetPointer(){cancelAnimationFrame(pointerFrame);pointerFrame=0;pointerX=pointerY=0;setPointerVars();}
     function paintPointer(){pointerFrame=0;setPointerVars();}
     function syncReduced(){const toggle=q('#motion-toggle');if(toggle){toggle.disabled=reduce.matches;toggle.textContent=reduce.matches?'모션 줄임 사용 중':paused?'모션 재개 ▷':'모션 정지 Ⅱ';}}
-    function syncTrack(){track?.classList.toggle('ns-scroll-enabled',!reduce.matches&&!navigator.connection?.saveData);}
+    function syncTrack(){track?.classList.toggle('ns-scroll-enabled',!heroReduce.matches&&!navigator.connection?.saveData);}
     syncReduced();syncTrack();
     const story=hero?.classList.contains('ns-ocean-story');
     const clamp=v=>Math.max(0,Math.min(1,v));
     function storyFrame(p){
       if(!story)return;
-      hero.classList.toggle('ns-story-ready',!reduce.matches&&!navigator.connection?.saveData);
+      hero.classList.toggle('ns-story-ready',!heroReduce.matches&&!navigator.connection?.saveData);
       const title=clamp((p-.15)/.08),intro=1-title;
       hero.style.setProperty('--ns-intro-o',intro.toFixed(4));
       hero.style.setProperty('--ns-intro-y',`${-16*(1-intro)}px`);
@@ -44,19 +46,18 @@
       track.style.setProperty('--ns-header-h',`${header?.offsetHeight||0}px`);document.body.style.setProperty('--ns-hdr-h',`${header?.offsetHeight||0}px`);
       track.style.setProperty('--ns-notice-h',`${q('.ns-announcement')?.offsetHeight||0}px`);
       const r=track.getBoundingClientRect(),top=parseFloat(getComputedStyle(hero).top)||0;
-      if(!paused&&!reduce.matches)progress=Math.max(0,Math.min(1,(top-r.top)/Math.max(1,track.offsetHeight-hero.offsetHeight)));
-      if(reduce.matches)progress=0;
+      if(!paused&&!heroReduce.matches)progress=Math.max(0,Math.min(1,(top-r.top)/Math.max(1,track.offsetHeight-hero.offsetHeight)));
       hero.style.setProperty('--ns-progress',progress.toFixed(4));
       hero.dataset.motionProgress=progress.toFixed(4);
       // Scroll dolly: the packing scene eases slightly toward the viewer as the box fills.
-      const a=reduce.matches?1:clamp(progress/.23),dolly=.94+.08*(1-(1-a)**3);
+      const a=clamp(progress/.23),dolly=.94+.08*(1-(1-a)**3);
       hero.style.setProperty('--ns-dolly',dolly.toFixed(4));
       film?.update(progress,paused);film?.paint?.();
       const caption=q('#packing-caption');if(caption&&!story)caption.textContent=progress>.55?'한 상자에 담은 군산박대':'군산박대 · 개별 포장';
     }
     function schedule(){if(!queued){queued=true;requestAnimationFrame(draw);}}
     window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);
-    reduce.addEventListener('change',()=>{syncTrack();if(reduce.matches)showAll();syncReduced();storyFrame(reduce.matches?1:progress);resetPointer();schedule();});
+    reduce.addEventListener('change',()=>{syncTrack();if(reduce.matches)showAll();syncReduced();storyFrame(progress);resetPointer();schedule();});
     fine.addEventListener('change',resetPointer);
     window.addEventListener('blur',resetPointer);
     root.addEventListener('focusin',e=>{const item=e.target.closest('.ns-reveal-pending');if(item){item.classList.remove('ns-reveal-pending');item.classList.add('is-visible');observer?.unobserve(item);}});

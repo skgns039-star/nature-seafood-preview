@@ -66,15 +66,10 @@
 @media(max-width:768px) and (max-height:680px){.ns-hero.ns-cinema{min-height:400px}.ns-cinema .ns-hero-copy{bottom:64px}.ns-cinema .ns-hero-copy h1{font-size:26px}.ns-cinema-kicker{display:none}.ns-cinema .ns-packing-scene{top:9%;height:32%}.ns-cinema .ns-hero-copy p{margin:var(--space-step-2) 0 var(--space-step-3);font-size:12px}}
 @media(hover:none){.ns-product-image:after{transform:none;padding:var(--space-step-2) var(--space-step-2);font-size:10px}.ns-product-image{padding-bottom:var(--space-step-9)}.ns-product-arrow{display:none}}
 @media(prefers-reduced-motion:reduce){
- html{scroll-behavior:auto}.ns-hero-track{height:auto;min-height:0}.ns-hero.ns-cinema{position:relative;top:0}
+ html{scroll-behavior:auto}
+ /* 2026-09-29: the film hero (.ns-hero-track/.ns-cinema/.ns-packing-scene) is no longer frozen here — user wants it as on PC */
  .ns-reveal,.ns-reveal-pending{opacity:1;transform:none;transition:none}
- .ns-cinema .ns-hero-product{transform:none!important}
- .ns-cinema .ns-packing-scene{transition:none;--ns-px:0px!important;--ns-py:0px!important}
- .ns-cinema .ns-packing-scene{transform:translateY(-50%)!important}
  .ns-product-image img,.ns-product-image:after,.ns-button>span,.ns-menu-panel a,.ns-menu summary>span,.ns-faq summary span{transition:none}
-}
-@media(prefers-reduced-motion:reduce) and (max-width:768px){
- .ns-cinema .ns-packing-scene{transform:translateX(-50%)!important}
 }
 /* Short landscape screens need document flow, not a clipped sticky viewport. */
 @media(max-height:500px) and (min-width:600px){

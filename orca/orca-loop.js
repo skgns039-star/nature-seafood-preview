@@ -8,7 +8,8 @@
   const video = root.querySelector('.ol-video');
   const MV = '?v=7';   // v6 (2026-09-28): 2x slower (RIFE), Topaz 4K, original box print restored, steady water
   const phone = matchMedia('(max-width: 1100px) and (orientation: portrait)');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  // 2026-09-29 (user: "PC랑 똑같이 영상 … 휴대폰화면에서도"): the loop plays even with 동작 줄이기 on (it used to fall back to the still poster).
+  const reduce = { matches: false, addEventListener() {} };
   let key = null, visible = true;
 
   function pick() {
@@ -32,6 +33,9 @@
   video.addEventListener('error', () => { root.classList.remove('is-playing'); root.dataset.degraded = 'video-error'; });
   new IntersectionObserver(es => { visible = es[0].isIntersecting; document.body.classList.toggle('ns-hero-in-view', visible); visible ? play() : video.pause(); }).observe(root);   // same class the old hero set: floating buttons hide over the hero (hero-video.css)
   document.addEventListener('visibilitychange', () => document.hidden ? video.pause() : play());
+  // 2026-09-29: the header overlaps the film by its real height (the fixed 72px guess left a 2px strip below the film on 74px headers)
+  // iOS Low Power Mode / in-app browsers (KakaoTalk) can refuse muted autoplay → start on the first touch instead.
+  ['touchstart', 'touchend', 'click'].forEach(t => addEventListener(t, () => { if (video.paused) play(); }, { passive: true }));
   phone.addEventListener('change', pick);
   reduce.addEventListener('change', () => { key = null; pick(); });
   // the film is fetched after window load so the brand lockup and poster paint first (poster = film's first frame)

@@ -50,7 +50,6 @@ body:has(.ol-hero) .ns-hero-track{display:none}
  @keyframes ol-rise{from{opacity:0;translate:0 18px}}
 }
 @media(max-height:500px) and (orientation:landscape){.ol-copy h1{font-size:clamp(22px,3.4vw,30px)}.ol-copy p{display:none}.ol-hero .ns-quick{display:none}}
-@media(prefers-reduced-motion:reduce){.ol-video{display:none}.ol-copy,.ol-hero .ns-quick{animation:none}}
 /* tablet portrait (wider than 3:5): the 9:16 film is cropped top/bottom → anchor its bottom so the box stack sits above the quick bar */
 @media(max-width:1100px) and (orientation:portrait) and (min-aspect-ratio:3/5){.ol-hero{--ol-y:80%}.ol-hero .ns-quick{bottom:16px}
  /* v7.1: portrait tablets (up to 1100px, e.g. iPad) use the 9:16 film too, so the box stack is never cropped. The horizon
@@ -58,3 +57,6 @@ body:has(.ol-hero) .ns-hero-track{display:none}
  .ol-brand{width:clamp(200px,28vw,300px)}
  .ol-copy{top:calc(var(--ns-hdr-h,72px) + 1.5vh + 24px);right:auto;max-width:calc(50% - clamp(100px,14vw,150px) - var(--ol-x) - 16px)}
  .ol-copy h1{font-size:clamp(24px,4.4vw,44px)}.ol-copy p{text-wrap:balance}}
+/* 2026-09-29 phones: the header floats over the film (fixed) instead of a sticky header pulled up by a guessed 72px — the
+ * guess left a 2px strip on 74px headers, so the film now fills the first screen exactly. */
+@media(max-width:768px){body:has(main[data-page=home]) .ns-header{position:fixed;top:0;left:0;right:0;margin-bottom:0}}

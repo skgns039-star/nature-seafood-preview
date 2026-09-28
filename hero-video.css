@@ -59,14 +59,6 @@
  .ns-cinema .ns-hero-copy h1,.ns-cinema .ns-hero-copy .ns-story-intro{font-size:30px}
  .ns-cinema-bottom{grid-row:2;grid-column:1/-1}
 }
-@media(prefers-reduced-motion:reduce){
- .ns-hero-track{height:auto;min-height:0}
- .ns-hero.ns-cinema{position:relative;top:0}
- .ns-cinema .ns-packing-scene{transform:none!important;transition:none}
- .ns-cinema .ns-hero-copy h1{opacity:1!important;transform:none!important}
- .ns-story-intro{visibility:hidden!important}
- .ns-cinema .ns-progress{display:none}
-}
 
 /* Static fallback has no empty scroll runway. */
 .ns-hero-track:not(.ns-scroll-enabled){height:auto;min-height:0}
@@ -97,11 +89,6 @@
  .ns-cinema .ns-packing-scene{grid-row:1;grid-column:2;height:340px;perspective:none}
  .ns-film-rig{top:50%;left:50%;right:auto;width:min(100cqw,calc(100cqh * 1.1321));transform:translate3d(-50%,-50%,0)!important}
 }
-@media(prefers-reduced-motion:reduce){
- .ns-film-rig{transform:translate3d(0,-50%,0)!important;transition:none}
- .ns-cinema .ns-water-film{transform:none;transition:none}
-}
-@media(prefers-reduced-motion:reduce) and (max-width:768px){.ns-film-rig{transform:translate3d(-50%,-50%,0)!important}}
 .ns-hero-track:not(.ns-scroll-enabled) .ns-cinema .ns-packing-scene{height:auto;min-height:clamp(300px,50svh,600px)}
 @media(min-width:769px){.ns-hero-track:not(.ns-scroll-enabled) .ns-cinema{min-height:clamp(520px,80svh,860px)}}
 @media(max-width:768px){.ns-hero-track:not(.ns-scroll-enabled) .ns-cinema .ns-packing-scene{height:clamp(300px,50svh,600px)}}
@@ -141,8 +128,6 @@
  .ns-still-life .ns-film,.ns-still-life .ns-film-poster{object-position:97% 50%}
  .ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 10%,var(--color-mask) 96%,transparent),linear-gradient(0deg,transparent,var(--color-mask) 8%,var(--color-mask) 92%,transparent);mask-composite:intersect}
 }
-@media(prefers-reduced-motion:reduce){.ns-still-life .ns-film-rig{transform:none!important}}
-@media(prefers-reduced-motion:reduce) and (max-width:768px){.ns-still-life .ns-film-rig{transform:translate3d(-50%,-50%,0)!important}}
 /* Heroes wider than ~1.9:1 (e.g. 1920x1080 minus header) would crop the lid under cover-fit:
  * fit the plate to the hero height on the right and let its left edge fade into the sampled wall colour. */
 @media(min-width:769px) and (min-height:501px){@container (min-aspect-ratio:19/10){
@@ -203,8 +188,6 @@
  .ns-hero-v4 .ns-film-controls{grid-column:2;grid-row:1}
 }
 @media(max-height:500px) and (min-width:600px){.ns-hero-v4 .ns-quick{display:none}.ns-hero-v4 .ns-hero-copy{max-width:50vw}}
-@media(prefers-reduced-motion:reduce){.ns-hero-v4 .ns-film-rig{transform:scale(1.06)!important;transform-origin:58% 55%}}
-@media(prefers-reduced-motion:reduce) and (max-width:768px){.ns-hero-v4 .ns-film-rig{transform:translate3d(-50%,-50%,0)!important}}
 
 /* v4 type motion v2 (2026-09-26 feedback: "stiff, flat, fast" -> GSAP SplitText + ScrollTrigger + Lenis, see hero-type.js).
  * CSS only sets the static look; hero-type.js owns all headline motion. The earlier opacity swap is disabled for v4. */
@@ -223,7 +206,6 @@
 .ns-hero-v4.ns-story-ready .ns-stage-dots{animation:ns-soft-rise 1.4s cubic-bezier(.16,1,.3,1) 1.2s both}
 .ns-hero-v4.ns-story-ready .ns-quick{animation:ns-soft-rise 1.4s cubic-bezier(.16,1,.3,1) 1.4s both}
 @media(max-width:768px){.ns-hero-v4 .ns-hero-copy h1 br{display:none}}
-@media(prefers-reduced-motion:reduce){.ns-hero-v4 .ns-hero-action p,.ns-hero-v4 .ns-stage-dots,.ns-hero-v4 .ns-quick{animation:none!important}}
 /* Header v2 floats over the home hero: keep the copy clear of it (header height is measured by motion.js). */
 @media(max-width:768px){.ns-hero-v4 .ns-hero-copy{padding-top:calc(var(--ns-hdr-h,124px) + 8px)}}
 @media(max-width:768px) and (max-height:700px){.ns-hero-v4 .ns-stage-dots,.ns-hero-v4 #packing-caption,.ns-hero-v4 .ns-quick-field{display:none}}
@@ -233,9 +215,8 @@
 @media(min-width:769px){.ns-hero-v4 .ns-quick{grid-column:2}}
 
 /* ===== Mobile / tablet responsive pass (2026-09-26, "변질없이": desktop ≥1025px unchanged) ===== */
-/* Bug fix (all widths): with reduced motion / Save-Data the scroll runway is off, so the v4 track must not keep its 460–560svh height. */
+/* Bug fix (all widths): with Save-Data the scroll runway is off, so the v4 track must not keep its 460–560svh height. */
 .ns-hero-track:not(.ns-scroll-enabled):has(.ns-hero-v4){height:auto;min-height:0}
-@media(prefers-reduced-motion:reduce){.ns-hero-track:has(.ns-hero-v4){height:auto;min-height:0}}
 @media(max-width:1024px){
  /* 고객센터 dropdown sits at the right end of the nav pill: open it right-aligned so it stays on screen. */
  .ns-menu-support .ns-menu-panel{left:auto;right:0}
@@ -353,3 +334,7 @@
  .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-fit:contain;object-position:50% 50%}
  .ns-shop-film .ns-packing-scene::before{content:"";position:absolute;inset:-8%;z-index:-1;pointer-events:none;background:url(assets/hero-sea-poster.jpg) 50% 50%/cover no-repeat;filter:blur(26px) saturate(1.05)}
 }
+
+/* 2026-09-29 (user: "PC랑 똑같이 영상과 인터렉티브 모션 그래픽 … 휴대폰화면에서도 풀로"): the film hero no longer switches to
+ * the still poster when the phone has 동작 줄이기 (prefers-reduced-motion) on — the scroll film and dolly play as on PC. */
+@media(max-width:768px) and (orientation:portrait){body:has(.ns-shop-film) .ns-announcement{display:none}}   /* phones: the film starts at the very top and fills the first screen, like the home */
