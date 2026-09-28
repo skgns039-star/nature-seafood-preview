@@ -6,7 +6,7 @@
   if (!root || root.dataset.olInit) return;
   root.dataset.olInit = '1';
   const video = root.querySelector('.ol-video');
-  const MV = '?v=5';
+  const MV = '?v=6';   // v6 (2026-09-28): 2x slower (RIFE), Topaz 4K, original box print restored, steady water
   const phone = matchMedia('(max-width: 768px) and (orientation: portrait)');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let key = null, visible = true;
@@ -18,7 +18,9 @@
     root.dataset.media = k;
     root.classList.remove('is-playing');
     if (reduce.matches) { video.removeAttribute('src'); video.load(); return; }
-    video.src = `orca/media/loop-${k}.mp4${MV}`;
+    // large/high-density desktop screens get the 4K film; everyone else the 1440p one (phones: 1440×2560)
+    const big = k === 'pc' && screen.width * (devicePixelRatio || 1) >= 2880 && !(navigator.connection && navigator.connection.saveData);
+    video.src = `orca/media/loop-${k}${big ? '-4k' : ''}.mp4${MV}`;
     play();
   }
   function play() {
