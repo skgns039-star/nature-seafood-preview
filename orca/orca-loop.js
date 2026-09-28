@@ -30,7 +30,7 @@
   }
   video.addEventListener('playing', () => root.classList.add('is-playing'));
   video.addEventListener('error', () => { root.classList.remove('is-playing'); root.dataset.degraded = 'video-error'; });
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; visible ? play() : video.pause(); }).observe(root);
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; document.body.classList.toggle('ns-hero-in-view', visible); visible ? play() : video.pause(); }).observe(root);   // same class the old hero set: floating buttons hide over the hero (hero-video.css)
   document.addEventListener('visibilitychange', () => document.hidden ? video.pause() : play());
   phone.addEventListener('change', pick);
   reduce.addEventListener('change', () => { key = null; pick(); });

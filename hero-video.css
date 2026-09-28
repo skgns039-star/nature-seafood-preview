@@ -323,3 +323,12 @@
  .ns-hero-v4 .ns-cinema-bottom{position:relative;z-index:4}
  .ns-hero-v4 .ns-water-shade{background:linear-gradient(180deg,rgba(244,247,251,.62) 0%,rgba(244,247,251,0) 30%),linear-gradient(0deg,rgba(15,34,56,.30) 0%,rgba(15,34,56,0) 22%)}
 }
+
+/* 전체상품 packing film (2026-09-28): same film, no headline column → full width, and short landscape phones keep the
+ * sticky scroll scrub too (the home version switched it off there because the headline needed the left half). */
+.ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{grid-template-columns:minmax(0,1fr)}
+@media(max-height:500px) and (min-width:600px){
+ .ns-shop-film.ns-hero-track{height:560svh;min-height:0}
+ .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{position:sticky;top:0;height:100svh;grid-template-rows:minmax(0,1fr) auto}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{grid-column:1/-1}
+}

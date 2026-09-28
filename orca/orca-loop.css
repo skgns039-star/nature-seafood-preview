@@ -1,0 +1,55 @@
+/* NatureSea food — Orca hero v5 (2026-09-28): one seamless looping film, no scroll scrub, no unloading.
+ * The box logo is printed inside the film frame itself (original logo, multiplied into the box faces before
+ * animation) — there is no separate logo layer over the boxes. The brand lockup is the original-pixel extraction
+ * (brand/extract.py), static (no floating). */
+.ol-hero{position:relative;width:100%;height:100svh;margin:0;overflow:hidden;isolation:isolate;background:#cfe0ee}
+body:has(.ol-hero) .ns-hero-track{display:none}
+.ol-media,.ol-media>*{position:absolute;inset:0;width:100%;height:100%}
+.ol-video,.ol-poster img{object-fit:cover;object-position:50% var(--ol-y,60%);display:block;border:0}
+.ol-poster{z-index:0}.ol-poster img{width:100%;height:100%}
+.ol-video{z-index:1;opacity:0;transition:opacity .4s linear}
+.ol-hero.is-playing .ol-video{opacity:1}
+
+.ol-brand{position:absolute;z-index:3;left:50%;top:calc(var(--ns-hdr-h,94px) + 1.5vh);width:min(30vw,40vh,440px);transform:translateX(-50%);
+  display:grid;justify-items:center;gap:calc(.8vw + 4px);margin:0;pointer-events:none}
+.ol-brand::before{content:"";position:absolute;inset:-18% -22%;z-index:-1;background:radial-gradient(closest-side,rgba(255,255,255,.88),rgba(255,255,255,.55) 55%,rgba(255,255,255,0))}
+.ol-brand img{display:block;width:100%;height:auto;user-select:none}
+.ol-emblem{width:49% !important}
+.ol-extrude{filter:drop-shadow(0 1px 0 #123f73) drop-shadow(0 1px 0 #10386a) drop-shadow(.5px 1px 0 #0e3262) drop-shadow(.5px 1px 0 #0c2c59) drop-shadow(.5px 1px 0 #0a2750) drop-shadow(0 12px 16px rgba(8,30,62,.26))}
+.ol-tagline{width:92% !important;filter:drop-shadow(0 1px 6px rgba(255,255,255,.9))}
+.ol-tagline.ol-en{width:54% !important}
+
+
+@media(max-width:768px) and (orientation:portrait){
+ .ol-brand{width:min(64vw,280px)}
+ }
+@media(max-height:500px) and (orientation:landscape){.ol-brand{width:min(24vw,34vh,240px);top:calc(var(--ns-hdr-h,64px) + 8px)}}
+/* ultra-wide screens crop the film's height → anchor lower so the box stack on the quay stays whole */
+@media(min-aspect-ratio:2/1){.ol-hero{--ol-y:85%}}
+
+/* v7 (2026-09-28): headline + quick-order bar from the previous hero (values measured from it: 58px/700 #0f2238,
+ * brackets #3A86FF 300, bar = hero-video.css .ns-quick reused as is). Left column; the big brand lockup stays centred. */
+.ol-copy{position:absolute;z-index:3;left:var(--ol-x);top:31%;translate:0 -50%;max-width:min(560px,40vw);color:#0f2238;text-shadow:0 1px 14px rgba(255,255,255,.55)}
+.ol-hero{--ol-x:clamp(16px,3.4vw,64px)}
+.ol-copy h1{margin:0;font-size:clamp(30px,3.05vw,58px);font-weight:700;line-height:1.16;letter-spacing:-.035em}
+.ol-br{color:#3A86FF;font-weight:300}.ol-br-w{padding-inline:.28em}.ol-bracket{white-space:nowrap}
+.ol-copy p{margin:20px 0 0;font-size:clamp(14px,.95vw,18px);line-height:1.6}
+.ol-hero .ns-quick{position:absolute;z-index:4;left:var(--ol-x);bottom:clamp(16px,4vh,40px)}
+.ol-hero .ns-quick-kakao{min-height:44px;padding:0 20px;border-radius:6px;background:var(--ns-kakao);color:var(--ns-kakao-ink);font-size:14px;font-weight:600;gap:var(--space-sm);border:0}
+.ol-hero .ns-quick-kakao:is(:hover,:focus-visible){background:var(--ns-kakao-hover);color:var(--ns-kakao-ink)}
+.ol-copy,.ol-hero .ns-quick{animation:ol-rise 1.1s cubic-bezier(.16,1,.3,1) .35s both}
+@keyframes ol-rise{from{opacity:0;translate:0 calc(-50% + 18px)}}
+.ol-hero .ns-quick{animation-name:ol-rise-bar}@keyframes ol-rise-bar{from{opacity:0;translate:0 18px}}
+@media(max-width:768px) and (orientation:portrait){
+ .ol-brand{width:min(46vw,200px)}
+ .ol-copy{top:calc(var(--ns-hdr-h,72px) + 1.5vh + min(46vw,200px) * .72 + 30px);translate:none;max-width:none;right:var(--ol-x)}
+ .ol-copy h1{font-size:clamp(24px,7vw,34px)}
+ .ol-copy p{margin-top:8px}
+ .ol-hero .ns-quick{right:var(--ol-x);flex-wrap:nowrap}
+ .ol-hero .ns-quick-field{display:none}              /* phones: two buttons only, so the box stack stays in view */
+ @keyframes ol-rise{from{opacity:0;translate:0 18px}}
+}
+@media(max-height:500px) and (orientation:landscape){.ol-copy h1{font-size:clamp(22px,3.4vw,30px)}.ol-copy p{display:none}.ol-hero .ns-quick{display:none}}
+@media(prefers-reduced-motion:reduce){.ol-video{display:none}.ol-copy,.ol-hero .ns-quick{animation:none}}
+/* tablet portrait (wider than 3:5): the 9:16 film is cropped top/bottom → anchor its bottom so the box stack sits above the quick bar */
+@media(max-width:768px) and (orientation:portrait) and (min-aspect-ratio:3/5){.ol-hero{--ol-y:80%}.ol-hero .ns-quick{bottom:16px}}
