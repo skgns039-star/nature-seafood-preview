@@ -341,3 +341,15 @@
 .ns-shop-film-copy p{margin:0;font-size:clamp(14px,.85vw,16px);font-weight:300;line-height:1.7;color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,0,0,.35)}
 .ns-shop-film-copy::before{content:"";position:absolute;z-index:-1;inset:-120px -260px -90px -160px;pointer-events:none;
  background:radial-gradient(closest-side,rgba(8,18,32,.8),rgba(8,18,32,.74) 50%,rgba(8,18,32,.42) 75%,rgba(8,18,32,0));filter:blur(22px)}
+
+/* 2026-09-28 c (user: 포스터 부분 생선이 잘림 → 좌우로 넓혀서 다 보이게): 전체상품 film framing follows the product (box + fish sit
+ * at ~40–92% of the frame), not the old right-hand layout; the scroll zoom grows around the product; windows narrower than
+ * 4:3 show the whole frame with the same scene blurred behind it (no cropped fish). */
+@media(min-width:769px){
+ .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-position:72% 50%}
+ .ns-shop-film .ns-hero-v4 .ns-film-rig{transform-origin:66% 62%}
+}
+@media(min-width:769px) and (max-aspect-ratio:4/3){
+ .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-fit:contain;object-position:50% 50%}
+ .ns-shop-film .ns-packing-scene::before{content:"";position:absolute;inset:-8%;z-index:-1;pointer-events:none;background:url(assets/hero-sea-poster.jpg) 50% 50%/cover no-repeat;filter:blur(26px) saturate(1.05)}
+}

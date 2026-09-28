@@ -44,7 +44,10 @@
   function notifyFrame(){if(Number.isFinite(video.duration)&&video.duration>0)video.dispatchEvent(new CustomEvent('ns:film-frame',{bubbles:true,detail:{progress:video.currentTime/video.duration}}));}
   video.addEventListener('timeupdate',()=>{notifyFrame();queueAmbient();});
   video.addEventListener('seeked',notifyFrame);
-  function load(){if(loaded)return;loaded=true;video.src=(video.dataset.srcSmall&&matchMedia('(max-width: 768px)').matches)?video.dataset.srcSmall:video.dataset.src;video.load();}
+  // 2026-09-28: phones get the same 1080p film as PC (the 960 cut looked soft on 3x screens); saveData keeps the small one.
+  function load(){if(loaded)return;loaded=true;video.src=(video.dataset.srcSmall&&saveData)?video.dataset.srcSmall:video.dataset.src;video.load();}
+  // iOS Safari buffers a muted inline video only after it has played once → prime it on the first touch (then pause at once).
+  addEventListener('touchstart',()=>{load();video.play()?.then(()=>{if(!playing)video.pause();}).catch(()=>{});},{once:true,passive:true});
   function markReady(){if(!reduce.matches||playing)video.dataset.ready='true';if(status)status.textContent='';}
   // Eased scrubbing: the film time glides toward the scroll target so packs and ice settle in slowly.
   let shown=-1;

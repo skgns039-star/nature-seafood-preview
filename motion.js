@@ -61,7 +61,7 @@
     window.addEventListener('blur',resetPointer);
     root.addEventListener('focusin',e=>{const item=e.target.closest('.ns-reveal-pending');if(item){item.classList.remove('ns-reveal-pending');item.classList.add('is-visible');observer?.unobserve(item);}});
     if(hero&&scene){
-      hero.addEventListener('pointermove',e=>{if(paused||reduce.matches||!fine.matches||e.pointerType!=='mouse'||document.hidden)return;const r=hero.getBoundingClientRect();pointerX=Math.max(-12,Math.min(12,((e.clientX-r.left)/r.width-.5)*24));pointerY=Math.max(-7,Math.min(7,((e.clientY-r.top)/r.height-.5)*14));if(!pointerFrame)pointerFrame=requestAnimationFrame(paintPointer);});
+      // 2026-09-28: cursor-follow tilt removed (user: "마우스에 따라서 움직이는 모션은 어지럽게 보임"); scroll film unchanged
       hero.addEventListener('pointerleave',resetPointer);
       hero.addEventListener('pointercancel',resetPointer);
       q('#motion-toggle')?.addEventListener('click',e=>{paused=!paused;e.currentTarget.setAttribute('aria-pressed',String(paused));e.currentTarget.textContent=paused?'모션 재개 ▷':'모션 정지 Ⅱ';resetPointer();schedule();});
