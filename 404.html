@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>네이처씨푸드</title>
+<!-- N2J SITE-SHELL v1.1 (2026-09-29): GitHub Pages serves this for any missing address. It forwards to the matching page
+     (old name.html, iMweb paths /shop_cart /shop_mypage, /?mode=login|join) or to the home — at a sub-path
+     (/<repo>/ on *.github.io) or at the root of a custom domain, so a domain change needs no edit here. -->
+<script>
+(() => {
+  const seg = location.pathname.split('/').filter(Boolean);
+  const base = location.hostname.endsWith('.github.io') && seg.length ? '/' + seg.shift() + '/' : '/';
+  const last = seg[seg.length - 1] || '';
+  const map = { shop_cart: 'cart.html', shop_mypage: 'mypage.html', login: 'login.html', join: 'login.html', shop: 'shop.html', notice: 'notice.html', qna: 'qna.html' };
+  const pages = ['index','shop','bakdae','dried','popular','new','product','cart','login','mypage','support','qna','contact','notice','directions','privacy','terms'];
+  const name = last.replace(/\.html?$/i, '');
+  const to = map[name] || (pages.includes(name) ? name + '.html' : '');
+  location.replace(base + to + (to ? location.search : '') + location.hash);
+})();
+</script>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Pretendard,system-ui,sans-serif;background:#fff;color:#102039}a{color:#3A86FF}</style>
+</head>
+<body>
+<p>페이지를 옮기는 중입니다. 이동하지 않으면 <a href="./">네이처씨푸드 홈</a>으로 가 주세요.</p>
+</body>
+</html>
