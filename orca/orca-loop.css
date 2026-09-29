@@ -60,3 +60,14 @@ body:has(.ol-hero) .ns-hero-track{display:none}
 /* 2026-09-29 phones: the header floats over the film (fixed) instead of a sticky header pulled up by a guessed 72px — the
  * guess left a 2px strip on 74px headers, so the film now fills the first screen exactly. */
 @media(max-width:768px){body:has(main[data-page=home]) .ns-header{position:fixed;top:0;left:0;right:0;margin-bottom:0}}
+/* 2026-09-29 phones only (user: "모바일 메인 히어로 타이포 가독성 — 폰트 더 작게, 위로, 파랑에 가려 안 보이니 색 변경" / "PC는 변질 없어야";
+ * chosen: "흰 글자 + 반투명 남색 박스"). Smaller copy right under the lockup, white on a translucent navy panel (like the
+ * rounded quick bar below) so it reads on sky, islands or sea. Phones only (≤600px portrait) — tablets and PC unchanged. */
+@media(max-width:600px) and (orientation:portrait){
+ .ol-copy{top:calc(var(--ns-hdr-h,72px) + 1.5vh + min(46vw,200px) * .72 + 20px);right:auto;max-width:calc(100% - 2 * var(--ol-x));
+  padding:10px 14px 11px;border-radius:14px;background:rgba(9,28,54,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  color:#fff;text-shadow:none}
+ .ol-copy h1{font-size:clamp(19px,5.3vw,23px);line-height:1.22}
+ .ol-copy p{margin-top:5px;font-size:12.5px;line-height:1.45;font-weight:500;color:rgba(255,255,255,.94)}
+ .ol-copy .ol-br{color:#A9D0FF}
+}
