@@ -1,11 +1,11 @@
 /* Home "인기상품" on phones: two cards per view, flowing continuously (touch to drag, lifts to resume).
  * Library: Swiper 14.2.0 (nolimits4web/swiper, ★41.9k, MIT) — see library/design-patterns/OSS_MOTION_CATALOG.md.
  * Above 768px the Swiper is destroyed and the original 5/3-column grid returns untouched.
- * No script / reduced motion: the grid stays (reduced motion keeps the swipeable row but never auto-flows). */
+ * No script: the grid stays. 2026-09-29 (user: "0.8초로 우측으로 흘러가게" → 멈춤 없이 계속, 카드 1장당 0.8초, 카드가 오른쪽으로):
+ * the row flows left→right at 0.8 s per card, also with 동작 줄이기 on (it used to stand still there). */
 (() => {
   'use strict';
   const mq = matchMedia('(max-width: 768px)');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let swiper = null;
 
   function mount() {
@@ -20,11 +20,11 @@
       grid.querySelectorAll(':scope > .ns-product').forEach(c => c.classList.add('swiper-slide'));
       swiper = new window.Swiper(host, {
         slidesPerView: 2, spaceBetween: 12, loop: true, grabCursor: true,
-        speed: reduce.matches ? 400 : 5200,
-        autoplay: reduce.matches ? false : { delay: 0, disableOnInteraction: false, pauseOnMouseEnter: true },
+        speed: 800,
+        autoplay: { delay: 0, reverseDirection: true, disableOnInteraction: false, pauseOnMouseEnter: true },
         a11y: { enabled: true, prevSlideMessage: '이전 상품', nextSlideMessage: '다음 상품' }
       });
-      host.classList.toggle('is-flowing', !reduce.matches);
+      host.classList.add('is-flowing');
     } else if (!mq.matches && swiper) {
       const host = swiper.el;
       swiper.destroy(true, true); swiper = null;
