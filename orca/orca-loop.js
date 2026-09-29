@@ -21,7 +21,8 @@
     if (reduce.matches) { video.removeAttribute('src'); video.load(); return; }
     // large/high-density desktop screens get the 4K film; everyone else the 1440p one (phones: 1440×2560)
     const big = k === 'pc' && screen.width * (devicePixelRatio || 1) >= 2880 && !(navigator.connection && navigator.connection.saveData);
-    video.src = `orca/media/loop-${k}${big ? '-4k' : ''}.mp4${MV}`;
+    // iMweb: the film lives on the GitHub preview (imweb-map.js assetBase); preview: relative as before
+    video.src = (window.NATURE_IMWEB?.asset || (p => p))(`orca/media/loop-${k}${big ? '-4k' : ''}.mp4${MV}`);
     play();
   }
   function play() {

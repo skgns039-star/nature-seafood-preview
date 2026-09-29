@@ -20,7 +20,7 @@
       grid.querySelectorAll(':scope > .ns-product').forEach(c => c.classList.add('swiper-slide'));
       swiper = new window.Swiper(host, {
         slidesPerView: 2, spaceBetween: 12, loop: true, grabCursor: true,
-        speed: 800,
+        speed: 2400,   // 2026-09-29 b (user: "그리드 흘러가는 거 느리게"): 0.8 s → 2.4 s per card, still left→right
         autoplay: { delay: 0, reverseDirection: true, disableOnInteraction: false, pauseOnMouseEnter: true },
         a11y: { enabled: true, prevSlideMessage: '이전 상품', nextSlideMessage: '다음 상품' }
       });
