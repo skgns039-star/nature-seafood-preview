@@ -40,7 +40,7 @@
     $('#product-store').onclick=()=>external('smartstore');
     $('.ns-gallery-open').onclick=()=>show(`<img class="ns-lightbox-photo" src="${p.image}" alt="${p.alt}">`);
   }
-  let filter=['bakdae','dried'].includes($('#top').dataset.page)?$('#top').dataset.page:(new URLSearchParams(location.search).get('category')||'all');
+  let filter=['bakdae','dried'].includes($('#top')?.dataset.page)?$('#top').dataset.page:(new URLSearchParams(location.search).get('category')||'all');
   function applyFilter(){if(!$('#product-search'))return;const term=$('#product-search').value.trim().toLocaleLowerCase();let count=0;document.querySelectorAll('.ns-product').forEach(e=>{const match=(filter==='all'||e.dataset.kind===filter)&&e.dataset.name.toLocaleLowerCase().includes(term);e.hidden=!match;if(match)count++;});$('#empty-products').hidden=count>0;$('#product-status').textContent=`상품 ${count}개`;document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===filter)));}
   document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;applyFilter();}));
   $('#product-search')?.addEventListener('input',applyFilter);
