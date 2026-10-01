@@ -8,8 +8,19 @@
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:contain;object-position:center}
 }
 
-/* Customer service PC banner was cropped inside the source file. Reuse the complete existing product poster. */
-@media(min-width:601px){
- .ns-page-banner:has(.ns-support-safe-media){background:var(--ns-ink,#2E2E2E)}
- .ns-banner-media .ns-support-safe-media{position:absolute;right:0;top:0;width:auto;height:100%;max-width:100%;object-fit:contain;object-position:right center;transform:none!important;mask-image:linear-gradient(90deg,transparent,var(--color-mask,#000) 8%)}
+/* Keep the original image/video and the host branding bar visible together. Measured by n2j-imweb.js. */
+html[data-n2j-host-bar] .ol-hero,
+html[data-n2j-host-bar] .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{
+ height:calc(100svh - var(--ns-host-bottom-inset,0px) - var(--ns-host-top-inset,0px));
 }
+
+/* 2026-10-01: show every pixel of the selected banner. Captions cannot cover packaging. */
+body:has(.ns-page-banner) .ns-header{margin-bottom:0}
+.ns-page-heading.ns-page-banner{display:block;width:100%;height:auto;min-height:0;aspect-ratio:auto;padding:0;overflow:visible;background:#1c2a3a}
+.ns-page-banner:before{display:none}
+.ns-page-banner .ns-banner-media{position:relative;inset:auto;z-index:0;width:100%;height:auto;overflow:visible}
+.ns-page-banner .ns-banner-media picture{display:block;width:100%;height:auto}
+.ns-page-banner .ns-banner-media img{display:block;position:static;width:100%;height:auto;max-width:100%;max-height:none;object-fit:contain;object-position:center;transform:none!important;translate:none!important;scale:none!important;opacity:1!important;mask-image:none;will-change:auto}
+.ns-banner-caption{padding:28px var(--ns-space) 32px}
+.ns-banner-caption>a{display:inline-flex;align-items:center;min-height:44px;color:#fff;font-size:12px}
+@media(max-width:600px){.ns-banner-caption{padding:20px 20px 24px}}

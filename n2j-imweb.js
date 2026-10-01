@@ -30,6 +30,17 @@
   }
   function bleed() {                      // full-width wrappers, measured (100vw would add the scrollbar width)
     const vw = document.documentElement.clientWidth;
+    // The free-plan branding bar has a random class. Preserve it and reserve its measured height.
+    const bar = [...document.body.children].flatMap(e => [e, ...e.children]).find(e => {
+      if (!e.textContent.includes('이 사이트는 아임웹으로 제작되었습니다.')) return false;
+      const r = e.getBoundingClientRect();
+      return getComputedStyle(e).position === 'fixed' && r.width >= vw * .9 && r.height > 0 &&
+        r.height < innerHeight / 3 && Math.abs(r.bottom - innerHeight) < 2;
+    });
+    const hero = document.querySelector('#orca-hero,.ns-shop-film,.ns-page-banner');
+    document.documentElement.toggleAttribute('data-n2j-host-bar', !!bar);
+    document.documentElement.style.setProperty('--ns-host-bottom-inset', (bar ? bar.getBoundingClientRect().height : 0) + 'px');
+    document.documentElement.style.setProperty('--ns-host-top-inset', (hero ? Math.max(0, hero.getBoundingClientRect().top + scrollY) : 0) + 'px');
     wraps().forEach(w => {
       free(w);
       w.style.setProperty('width', vw + 'px', 'important');

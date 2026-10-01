@@ -14,13 +14,14 @@
 
   function pick() {
     const k = phone.matches ? 'm' : 'pc';
-    if (k === key) return;
-    key = k;
+    // Cover scaling must account for height too (the smaller PC file is 2560×1440).
+    const big = k === 'pc' && Math.max(root.clientWidth / 2560, root.clientHeight / 1440) * (devicePixelRatio || 1) > 1 && !(navigator.connection && navigator.connection.saveData);
+    const selection = k + (big ? '-4k' : '');
+    if (selection === key) return;
+    key = selection;
     root.dataset.media = k;
     root.classList.remove('is-playing');
     if (reduce.matches) { video.removeAttribute('src'); video.load(); return; }
-    // large/high-density desktop screens get the 4K film; everyone else the 1440p one (phones: 1440×2560)
-    const big = k === 'pc' && screen.width * (devicePixelRatio || 1) >= 2880 && !(navigator.connection && navigator.connection.saveData);
     // iMweb: the film lives on the GitHub preview (imweb-map.js assetBase); preview: relative as before
     video.src = (window.NATURE_IMWEB?.asset || (p => p))(`orca/media/loop-${k}${big ? '-4k' : ''}.mp4${MV}`);
     play();
@@ -38,6 +39,7 @@
   // iOS Low Power Mode / in-app browsers (KakaoTalk) can refuse muted autoplay → start on the first touch instead.
   ['touchstart', 'touchend', 'click'].forEach(t => addEventListener(t, () => { if (video.paused) play(); }, { passive: true }));
   phone.addEventListener('change', pick);
+  addEventListener('resize', pick);
   reduce.addEventListener('change', () => { key = null; pick(); });
   // the film is fetched after window load so the brand lockup and poster paint first (poster = film's first frame)
   if (document.readyState === 'complete') pick(); else addEventListener('load', pick, { once: true });
