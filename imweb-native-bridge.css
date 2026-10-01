@@ -1,0 +1,9 @@
+/* Hide only connected sources. Failures keep native controls visible. */
+.n2j-native-source{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;pointer-events:none!important}
+.n2j-ns.n2j-ns [hidden]{display:none!important}
+.n2j-ns.n2j-ns [data-n2j-inquiry]:not([data-bridge=connected]) .ns-contact-actions{display:none}
+.n2j-ns.n2j-ns [data-n2j-inquiry]:not([data-bridge=connected])>.ns-field,
+.n2j-ns.n2j-ns [data-n2j-inquiry]:not([data-bridge=connected])>.ns-consent{display:none}
+@media(pointer:coarse){.n2j-ns.n2j-ns .ns-contact-form :is(input,select,textarea){font-size:16px}}
+/* Native rows may have no number/date; give the actual title the full track. */
+.n2j-ns.n2j-ns [data-n2j-notice] .ns-board-list .ns-board-title{grid-column:1 / -1}

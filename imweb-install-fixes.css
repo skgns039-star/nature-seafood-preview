@@ -1,0 +1,15 @@
+/* Installation fixes: keep hidden labels intrinsic, and fit the entire film on short screens. */
+.ns-sr-only{min-width:0!important;max-width:1px!important;min-height:0!important;max-height:1px!important}
+@media(max-height:500px) and (min-width:600px){
+ .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{height:calc(100svh - var(--ns-notice-h,36px))}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{container-type:size}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{left:50%;width:min(100cqw,calc(100cqh * 16 / 9));height:auto;transform:translate3d(-50%,-50%,0)!important}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:contain;object-position:center}
+}
+
+/* Customer service PC banner was cropped inside the source file. Reuse the complete existing product poster. */
+@media(min-width:601px){
+ .ns-page-banner:has(.ns-support-safe-media){background:var(--ns-ink,#2E2E2E)}
+ .ns-banner-media .ns-support-safe-media{position:absolute;right:0;top:0;width:auto;height:100%;max-width:100%;object-fit:contain;object-position:right center;transform:none!important;mask-image:linear-gradient(90deg,transparent,var(--color-mask,#000) 8%)}
+}
