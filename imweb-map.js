@@ -42,6 +42,8 @@
   const SET = window.NATURE_IMWEB_SET || {};
   Object.assign(M.routes, SET.routes || {});
   window.NATURE_WIDGET_IDS = Object.assign(window.NATURE_WIDGET_IDS || {}, Object.fromEntries(Object.entries(SET.widgetIds || {}).filter(([, v]) => v)));
+  const path = location.pathname.replace(/\/$/, '') || '/';
+  if (SET.shopWidgets?.[path]) window.NATURE_WIDGET_IDS.shop = SET.shopWidgets[path];
   window.NATURE_PRODUCT_URLS = Object.assign(window.NATURE_PRODUCT_URLS || {}, SET.productUrls || {});
   if (M.preview) return;
 
