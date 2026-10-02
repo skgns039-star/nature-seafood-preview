@@ -14,13 +14,41 @@ html[data-n2j-host-bar] .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{
  height:calc(100svh - var(--ns-host-bottom-inset,0px) - var(--ns-host-top-inset,0px));
 }
 
-/* 2026-10-01: show every pixel of the selected banner. Captions cannot cover packaging. */
+/* 2026-10-02 X3 (user: "서브페이지 히어로배너 사이드 그라데이션 넣지말아줘", "전체 히어로 섹션 배경 타이포그래피 안에 그라데이션 다없애",
+   "타이포그래피를 히어로 섹션 배경에 좌측아래로", "애니메이션효과 동일하게"):
+   - sub-page photo heroes keep every pixel of the photo (own ratio, no crop) and carry only the title + description,
+     in one solid box at the bottom left. No navy panel under the photo, no HOME link; tabs sit in one row below the hero.
+   - no gradient anywhere in the 13 heroes: overlays, caption backdrops, text fills and masks are switched off here
+     (this file loads last on the preview and is inlined in the iMweb head, so it wins without a GitHub push).
+   - the title/description entrance is pure CSS on pre-split characters, so it plays on the first paint on the preview
+     and on iMweb alike (the iMweb scripts arrive late and used to split the title after it was already shown). */
 body:has(.ns-page-banner) .ns-header{margin-bottom:0}
-.ns-page-heading.ns-page-banner{display:block;width:100%;height:auto;min-height:0;aspect-ratio:auto;padding:0;overflow:visible;background:#1c2a3a}
-.ns-page-banner:before{display:none}
+.ns-page-heading.ns-page-banner{position:relative;display:block;width:100%;height:auto;min-height:0;aspect-ratio:auto;margin:0;padding:0;overflow:hidden;border:0;background:#1c2a3a;color:#fff}
+.ns-page-heading.ns-page-banner:before,.ns-page-heading.ns-page-banner:after{content:none;display:none;background:none}
 .ns-page-banner .ns-banner-media{position:relative;inset:auto;z-index:0;width:100%;height:auto;overflow:visible}
 .ns-page-banner .ns-banner-media picture{display:block;width:100%;height:auto}
-.ns-page-banner .ns-banner-media img{display:block;position:static;width:100%;height:auto;max-width:100%;max-height:none;object-fit:contain;object-position:center;transform:none!important;translate:none!important;scale:none!important;opacity:1!important;mask-image:none;will-change:auto}
-.ns-banner-caption{padding:28px var(--ns-space) 32px}
-.ns-banner-caption>a{display:inline-flex;align-items:center;min-height:44px;color:#fff;font-size:12px}
-@media(max-width:600px){.ns-banner-caption{padding:20px 20px 24px}}
+.ns-page-banner .ns-banner-media img{display:block;position:static;width:100%;height:auto;max-width:100%;max-height:none;object-fit:contain;object-position:center;transform:none!important;translate:none!important;scale:none!important;opacity:1!important;-webkit-mask-image:none;mask-image:none;will-change:auto}
+.ns-page-banner .ns-banner-caption,.ns-shop-film .ns-shop-film-copy{position:absolute;z-index:3;left:clamp(16px,3.4vw,64px);right:auto;top:auto;bottom:clamp(16px,3vw,44px);width:auto;max-width:min(560px,calc(100% - 32px));margin:0;padding:clamp(14px,1.5vw,22px) clamp(16px,1.9vw,28px);box-sizing:border-box;border-radius:12px;background:rgba(16,30,48,.8);background-image:none;color:#fff;text-align:left;pointer-events:none;animation:nsCapBox .45s ease-out both}
+.ns-shop-film .ns-shop-film-copy{bottom:calc(clamp(16px,3vw,44px) + 20px)}
+.ns-shop-film .ns-shop-film-copy::before,.ns-shop-film .ns-shop-film-copy::after{content:none;display:none;background:none}
+.ns-page-banner .ns-banner-caption h1,.ns-shop-film .ns-shop-film-copy h1{margin:0;padding:0;font-size:clamp(26px,3vw,48px);font-weight:600;line-height:1.2;letter-spacing:-.02em;color:#fff;background:none;-webkit-text-fill-color:currentColor;text-shadow:none}
+.ns-page-banner .ns-banner-caption p,.ns-shop-film .ns-shop-film-copy p{margin:8px 0 0;padding:0;max-width:40ch;font-size:clamp(13px,1.05vw,16px);font-weight:400;line-height:1.6;color:#fff;background:none;-webkit-text-fill-color:currentColor;text-shadow:none;animation:nsCapLine .9s cubic-bezier(.33,1,.68,1) .35s both}
+.ns-cap-chars{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em;white-space:nowrap}
+.ns-cap-chars>span{display:inline-block;white-space:pre;animation:nsCapChar 1.1s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(120ms + var(--i,0) * 28ms)}
+@keyframes nsCapBox{from{opacity:0}to{opacity:1}}
+@keyframes nsCapChar{from{transform:translateY(110%);opacity:0;filter:blur(6px)}to{transform:none;opacity:1;filter:none}}
+@keyframes nsCapLine{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.ns-page-banner .ns-banner-caption,.ns-shop-film .ns-shop-film-copy,.ns-page-banner .ns-banner-caption p,.ns-shop-film .ns-shop-film-copy p,.ns-cap-chars>span{animation:none}}
+/* Tabs: one row right under the hero (customer-centre pages). */
+.ns-subtabs.ns-hero-tabs{display:flex;flex-wrap:nowrap;gap:8px;margin:0;padding:16px clamp(16px,3.4vw,64px);background:none}
+.ns-subtabs.ns-hero-tabs a{flex:0 0 auto;white-space:nowrap}
+@media(max-width:420px){.ns-subtabs.ns-hero-tabs{gap:4px}.ns-subtabs.ns-hero-tabs a{padding:0 10px;font-size:12px}}
+/* Gradient switches for the two video heroes (home loop, shop film). */
+.ol-hero{background:#62807f}
+.ol-brand::before{content:none;display:none;background:none}
+.ns-shop-film .ns-water-shade,.ns-shop-film .ns-film-light{display:none!important;background:none!important}
+.ns-shop-film .ns-film-ambient{background:#1c2a3a!important}
+.ns-shop-film .ns-film-frame,.ns-shop-film .ns-hero-product,.ns-shop-film .ns-packing-scene::before{-webkit-mask-image:none!important;mask-image:none!important}
+/* Terms / privacy: the text written in iMweb admin (설정 → 약관) is loaded into .ns-policy-body (2026-10-02 widget Y1). */
+.ns-policy-body{max-width:960px;margin:24px auto 32px;text-align:left;font-size:15px;line-height:1.85;color:inherit;word-break:keep-all;overflow-wrap:anywhere}
+.ns-policy-body strong{font-weight:700}

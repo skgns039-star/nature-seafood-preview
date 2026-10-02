@@ -14,7 +14,8 @@
     // 1) Headings rise out of a line mask character by character, blur clearing, when they scroll into view.
     const headings = document.querySelectorAll('.ns-section-heading h2, .ns-page-heading h1, .ns-support-heading h2, .ns-contact-intro h2, .ns-inquiry h2, .ns-footer-col h2');
     headings.forEach(el => {
-      if (el.closest('.ns-hero-v4') || el.dataset.nsType) return;
+      // Hero titles (sub-page caption, shop film) animate in CSS from the first paint — X3 2026-10-02, same on iMweb.
+      if (el.closest('.ns-hero-v4, .ns-banner-caption, .ns-shop-film-copy') || el.dataset.nsType) return;
       el.dataset.nsType = '1';
       splitText(el, { lines: { wrap: 'clip' }, chars: { class: 'ns-type-char' }, accessible: true }).addEffect(self => {
         utils.set(self.chars, { y: '110%', opacity: 0, filter: 'blur(6px)' });
@@ -33,7 +34,6 @@
       const banner = img.closest('.ns-page-banner');
       animate(img, { scale: [1.1, 1], opacity: [0.2, 1], duration: 2200, ease: 'outExpo' });  // settles at 1: the banner edits must show the whole original (ENG-021)
       animate(img, { translateY: ['0%', '12%'], ease: 'linear', autoplay: onScroll({ target: banner, enter: 'top top', leave: 'bottom top', sync: 0.25 }) });
-      animate(banner.querySelectorAll(':scope > p, :scope > .ns-subtabs'), { y: [16, 0], opacity: [0, 1], duration: 900, ease: 'outCubic', delay: stagger(90, { start: 350 }) });
     });
 
     // Directions page map: the frame rises from its bottom edge, then the location ring pulses.

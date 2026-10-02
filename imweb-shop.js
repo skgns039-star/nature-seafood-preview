@@ -1,6 +1,8 @@
-/* Enhance ONLY the configured native shop widgets. No product records, clones or fetches.
+/* Enhance ONLY the configured native shop widgets. No product records or fetches.
  * Keep original nodes, links, listeners, IDs and iMweb's product/analytics ownership.
- * Mobile home: each original card travels right at one slot / 800ms; the wrap is offscreen.
+ * Home flow (all widths, 2026-10-02): each card travels right at one slot / 800ms; the wrap is offscreen.
+ * When the row is wider than the 5 originals can cover (PC shows 5), decorative copies are appended
+ * (aria-hidden, inert, no ids) so the line never shows a gap; they are removed when the flow stops.
  */
 (() => {
   'use strict';
@@ -11,13 +13,24 @@
   function stop(state) {
     state.animations.forEach(a => a.cancel());
     state.animations = [];
+    state.row?.querySelectorAll(':scope>.n2j-shop-clone').forEach(e => e.remove());
     state.row?.classList.remove('n2j-shop-flow');
+  }
+  function copy(card) {
+    const c = card.cloneNode(true);
+    c.classList.add('n2j-shop-clone');
+    c.setAttribute('aria-hidden', 'true');
+    c.inert = true;
+    [c, ...c.querySelectorAll('[id]')].forEach(e => e.removeAttribute('id'));
+    c.querySelectorAll('img').forEach(i => { i.loading = 'eager'; });
+    c.querySelectorAll('a,button,[tabindex]').forEach(e => e.setAttribute('tabindex', '-1'));
+    return c;
   }
   function update(widget, state) {
     const config = window.NATURE_IMWEB_SET || {};
     const flow = config.shopFlow || {};
     const row = widget.querySelector('._item_wrap');
-    const cards = row ? [...row.children].filter(e => e.matches('._shop_item')) : [];
+    const cards = row ? [...row.children].filter(e => e.matches('._shop_item:not(.n2j-shop-clone)')) : [];
     // Native theme sections are often max-width constrained. Break out this widget only.
     const viewport = document.documentElement.clientWidth;
     widget.style.width = viewport + 'px';
@@ -36,20 +49,23 @@
       if (numeric || price) { label?.remove(); return; }
       if (!label) { const p = document.createElement('p'); p.className = 'n2j-price-inquiry'; p.textContent = '가격 문의'; detail.append(p); }
     });
-    const enabled = widget.id === flow.widgetId && innerWidth <= (flow.maxWidth || 768) && !reduced.matches && cards.length >= 3 && typeof Element.prototype.animate === 'function';
+    const enabled = widget.id === flow.widgetId && (!flow.maxWidth || innerWidth <= flow.maxWidth) && !reduced.matches && cards.length >= 3 && typeof Element.prototype.animate === 'function';
     const key = [viewport, enabled, cards.length, flow.millisecondsPerCard].join(':');
     if (state.key === key && state.row === row && cards.every((c,i) => c === state.cards[i])) return;
     stop(state); state.key = key; state.row = row; state.cards = cards;
-    widget.dataset.shopFlow = enabled ? 'right-800ms' : reduced.matches ? 'reduced-motion' : 'grid';
+    const duration = Number(flow.millisecondsPerCard) || 800;
+    widget.dataset.shopFlow = enabled ? 'right-' + duration + 'ms' : reduced.matches ? 'reduced-motion' : 'grid';
     if (!enabled) return;
     row.classList.add('n2j-shop-flow');
     const step = cards[0].getBoundingClientRect().width + parseFloat(getComputedStyle(row).columnGap);
-    const duration = Number(flow.millisecondsPerCard) || 800;
-    cards.forEach((card, i) => {
+    // A card jumps from the right end back to -1 slot; the band must reach past the visible row.
+    const items = [...cards];
+    while (step > 0 && items.length < cards.length * 4 && (items.length - 1) * step < row.clientWidth) cards.forEach(card => items.push(row.appendChild(copy(card))));
+    items.forEach((card, i) => {
       const animation = card.animate([
         {transform:`translateX(${-step * (i + 1)}px)`},
-        {transform:`translateX(${step * (cards.length - i - 1)}px)`}
-      ], {duration: cards.length * duration, iterations: Infinity, easing: 'linear'});
+        {transform:`translateX(${step * (items.length - i - 1)}px)`}
+      ], {duration: items.length * duration, iterations: Infinity, easing: 'linear'});
       animation.currentTime = (i + 1) * duration;
       state.animations.push(animation);
     });

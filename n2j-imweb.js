@@ -13,7 +13,7 @@
   if (window.__n2jImweb) return;
   window.__n2jImweb = true;
   const BASE = new URL('.', document.currentScript.src).href;
-  const COMMON = ['config.js', 'imweb-map.js?v=84afa51377', 'products.js', 'app.js', 'vendor/anime.umd.min.js', 'interactions.js', 'n2j-shell.js'];
+  const COMMON = ['config.js', 'imweb-map.js?v=84afa51377', 'products.js', 'app.js', 'vendor/anime.umd.min.js', 'interactions.js?v=d9c430f00c', 'n2j-shell.js'];
   const wraps = () => [...document.querySelectorAll('.n2j-ns')];
 
   const freed = new WeakSet();
