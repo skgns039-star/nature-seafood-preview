@@ -1,11 +1,15 @@
-/* Installation fixes: keep hidden labels intrinsic, and fit the entire film on short screens. */
+/* Installation fixes: keep hidden labels intrinsic, and keep the host notice-bar offset on short screens. */
 .ns-sr-only{min-width:0!important;max-width:1px!important;min-height:0!important;max-height:1px!important}
 @media(max-height:500px) and (min-width:600px){
  .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{height:calc(100svh - var(--ns-notice-h,36px))}
+ /* 2026-10-02 H1 (user: 좌측 여백이 생겼어, 왜 변질된 거야? / 가로 모드 모바일 전수검사): this file loads after hero-video.css,
+  * so its old "fit the entire film, object-fit:contain" rule for short screens (landscape phones, e.g. 가로 844×390) was
+  * winning the cascade and showing the exact empty-band bug the user is rejecting on this breakpoint too. Matches
+  * hero-video.css's shop-film landscape fix now: full-bleed cover, no letterbox. */
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{container-type:size}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{left:50%;width:min(100cqw,calc(100cqh * 16 / 9));height:auto;transform:translate3d(-50%,-50%,0)!important}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:-2%;top:-2%;left:auto;right:auto;width:104%;height:104%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06))!important}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:none}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:contain;object-position:center}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:92% 58%}
 }
 
 /* Keep the original image/video and the host branding bar visible together. Measured by n2j-imweb.js. */

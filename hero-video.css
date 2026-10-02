@@ -128,12 +128,11 @@
  .ns-still-life .ns-film,.ns-still-life .ns-film-poster{object-position:97% 50%}
  .ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 10%,var(--color-mask) 96%,transparent),linear-gradient(0deg,transparent,var(--color-mask) 8%,var(--color-mask) 92%,transparent);mask-composite:intersect}
 }
-/* Heroes wider than ~1.9:1 (e.g. 1920x1080 minus header) would crop the lid under cover-fit:
- * fit the plate to the hero height on the right and let its left edge fade into the sampled wall colour. */
-@media(min-width:769px) and (min-height:501px){@container (min-aspect-ratio:19/10){
- .ns-still-life .ns-film-rig{inset:-2% 0 auto auto;width:auto;height:104%;aspect-ratio:16/9}
- .ns-still-life .ns-film-frame{mask-image:linear-gradient(90deg,transparent,var(--color-mask) 14%);mask-composite:add}
-}}
+/* 2026-10-02 H1 (user: 좌측 여백이 생겼어, 왜 변질된 거야?): the "wider than 1.9:1" rule below used to switch the rig to
+ * width:auto/height:104% (fit by height, anchored right) instead of the normal 104% cover box — on any desktop window
+ * that happened to be short/wide (not exactly 16:9) this left the uncovered left side showing the hero's flat stage
+ * colour, i.e. exactly the side band the user is reporting. .ns-still-life's own base rule (above, 104%/104% cover)
+ * already fills ultra-wide windows correctly on its own; this special case is removed, not replaced. */
 
 /* v4 hero (2026-09-26 feedback: flat type/CTA; reference = full-bleed plate, bold bottom-left headline
  * with bracket accent, stage dots, and a bottom-centre quick-consult bar). Brand blue var(--ns-brand) (spec.md). */
@@ -310,7 +309,15 @@
 .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{grid-template-columns:minmax(0,1fr)}
 @media(max-height:500px) and (min-width:600px){
  .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{position:sticky;top:0;height:100svh;grid-template-rows:minmax(0,1fr) auto}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{grid-column:1/-1}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{grid-column:1/-1;grid-row:1/-1;position:absolute;inset:0;height:auto;margin-top:0;z-index:0}
+ /* 2026-10-02 H1 (가로 844×390 landscape phones: same "다른 사진 띠" bug as the desktop/portrait cases above — the
+  * generic landscape rules higher in this file size the rig to a letterboxed 16:9 box with object-fit:contain,
+  * assuming the two-column headline layout that .ns-shop-film turns off (single column, no headline beside the film).
+  * Back to the normal full-bleed cover rig here too, same anchor as the desktop narrow-aspect bucket (box is close
+  * to the right/bottom edges of the frame). */
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:-2%;top:-2%;left:auto;right:auto;width:104%;height:104%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06));transform-origin:92% 58%}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:92% 58%}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:none}
 }
 
 /* 2026-09-28 b: the wood page banner is gone; its typography (HOME / 전체상품 / line, same sizes) sits on the film,
@@ -324,15 +331,35 @@
  background:radial-gradient(closest-side,rgba(8,18,32,.8),rgba(8,18,32,.74) 50%,rgba(8,18,32,.42) 75%,rgba(8,18,32,0));filter:blur(22px)}
 
 /* 2026-09-28 c (user: 포스터 부분 생선이 잘림 → 좌우로 넓혀서 다 보이게): 전체상품 film framing follows the product (box + fish sit
- * at ~40–92% of the frame), not the old right-hand layout; the scroll zoom grows around the product; windows narrower than
- * 4:3 show the whole frame with the same scene blurred behind it (no cropped fish). */
+ * at ~40–92% of the frame), not the old right-hand layout; the scroll zoom grows around the product.
+ * 2026-10-02 H1 (user: 좌측 여백이 생겼어, 왜 변질된 거야?): the old "windows narrower than 4:3 switch to contain + a
+ * blurred backdrop photo" branch below is removed — a contain fit is exactly the kind of "다른 사진 띠" (mismatched second
+ * photo layer) the user is rejecting. The film now stays object-fit:cover at every desktop width; only the anchor point
+ * (object-position-x) moves further right as the window gets relatively taller, so the box — which sits at ~66–99% of
+ * the frame's width and only ~7% above the frame's bottom edge — never crops off the right/bottom side it is nearest to. */
 @media(min-width:769px){
- .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-position:72% 50%}
- .ns-shop-film .ns-hero-v4 .ns-film-rig{transform-origin:66% 62%}
+ .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-fit:cover;object-position:72% 58%}
+ .ns-shop-film .ns-hero-v4 .ns-film-rig{transform-origin:66% 58%}
 }
-@media(min-width:769px) and (max-aspect-ratio:4/3){
- .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-fit:contain;object-position:50% 50%}
- .ns-shop-film .ns-packing-scene::before{content:"";position:absolute;inset:-8%;z-index:-1;pointer-events:none;background:url(assets/hero-sea-poster.jpg) 50% 50%/cover no-repeat;filter:blur(26px) saturate(1.05)}
+@media(min-width:769px){@container(max-aspect-ratio:8/5){
+ .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-position:85% 58%}
+}}
+@media(min-width:769px){@container(max-aspect-ratio:7/5){
+ .ns-shop-film .ns-film,.ns-shop-film .ns-film-poster{object-position:92% 58%}
+}}
+
+/* 2026-10-02 H1 (user 캡처 390px: "영상 위 빈 하늘 띠 + 아래 다른 바위 사진 띠가 따로 쌓임"): the portrait "Phone hero v5"
+ * rule above (generic .ns-hero-v4.ns-still-life, now only matched by shop) zoomed into a cropped window of the film and
+ * filled the rest of the frame with a second, separately-generated background photo (hero-sea-mobile-bg.jpg) — on this
+ * video the seam between the two images is visible as a hard horizontal line with mismatched rock colour/texture,
+ * exactly the "다른 사진 띠" the user is rejecting. Phones get the same honest single-photo cover as desktop/landscape:
+ * no second image layer, just the one film cropped and anchored toward the box (right/bottom of the frame). */
+@media(max-width:768px) and (orientation:portrait){
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{position:absolute;inset:0;grid-row:1/-1;grid-column:1/-1;z-index:0;height:auto;overflow:hidden;container-type:size}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:-2%;top:-2%;left:auto;right:auto;width:104%;height:104%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06))!important;transition:transform var(--dur-short) var(--ease-out);background:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{position:static;left:auto;top:auto;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;mask-image:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:88% 54%}
 }
 
 /* 2026-09-29 (user: "PC랑 똑같이 영상과 인터렉티브 모션 그래픽 … 휴대폰화면에서도 풀로"): the film hero no longer switches to

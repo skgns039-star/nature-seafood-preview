@@ -1,6 +1,7 @@
 /* Enhance ONLY the configured native shop widgets. No product records or fetches.
  * Keep original nodes, links, listeners, IDs and iMweb's product/analytics ownership.
- * Home flow (all widths, 2026-10-02): each card travels right at one slot / 800ms; the wrap is offscreen.
+ * Home flow (all widths — PC, tablet, phone, incl. landscape — same speed/direction, see NATURE_IMWEB_SET.shopFlow):
+ * each card travels right at one slot / flow.millisecondsPerCard (2026-10-02 H1: 3600ms); the wrap is offscreen.
  * When the row is wider than the 5 originals can cover (PC shows 5), decorative copies are appended
  * (aria-hidden, inert, no ids) so the line never shows a gap; they are removed when the flow stops.
  */

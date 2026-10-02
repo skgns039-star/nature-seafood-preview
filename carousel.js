@@ -1,11 +1,16 @@
-/* Home "인기상품" on phones: two cards per view, flowing continuously (touch to drag, lifts to resume).
+/* Home "인기상품" on phones/tablets: two cards per view, flowing continuously (touch to drag, lifts to resume).
  * Library: Swiper 14.2.0 (nolimits4web/swiper, ★41.9k, MIT) — see library/design-patterns/OSS_MOTION_CATALOG.md.
- * Above 768px the Swiper is destroyed and the original 5/3-column grid returns untouched.
+ * Above 768px (and not landscape-short) the Swiper is destroyed and the original 5/3-column grid returns untouched.
  * No script: the grid stays. 2026-09-29 (user: "0.8초로 우측으로 흘러가게" → 멈춤 없이 계속, 카드 1장당 0.8초, 카드가 오른쪽으로):
- * the row flows left→right at 0.8 s per card, reduced-motion uses the static grid for accessible reading. */
+ * the row flows left→right, reduced-motion uses the static grid for accessible reading.
+ * 2026-10-02 H1 (user: "메인페이지 인기상품 흘러가는 모션 더 느리게 바꾸고 모바일 반응형도 똑같이 흘러가는 모션으로 바꿔"):
+ * 0.8s -> 2.4s (2026-10-02 feedback #6) -> 2.4s * 1.5 = 3.6s per card (this change), same speed/config as the imweb
+ * shopFlow widget (build_imweb.py millisecondsPerCard) so PC and mobile/tablet always match. The breakpoint also now
+ * covers landscape phones (e.g. 844x390): width<=768 covered portrait/most tablets, but a landscape phone is WIDER
+ * than 768 while still short, so it fell through to the static grid before — added a short-height OR branch. */
 (() => {
   'use strict';
-  const mq = matchMedia('(max-width: 768px)');
+  const mq = matchMedia('(max-width: 768px), (max-height: 500px) and (min-width: 600px)');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let swiper = null;
 
@@ -21,7 +26,7 @@
       grid.querySelectorAll(':scope > .ns-product').forEach(c => c.classList.add('swiper-slide'));
       swiper = new window.Swiper(host, {
         slidesPerView: 2, spaceBetween: 12, loop: true, grabCursor: true,
-        speed: 2400,   // 2026-10-02 feedback #6: 0.8 s felt too fast -> 2.4 s per card, still left->right
+        speed: 3600,   // 2026-10-02 H1: 2.4 s felt too fast still -> 3.6 s per card (x1.5), still left->right
         autoplay: { delay: 0, reverseDirection: true, disableOnInteraction: false, pauseOnMouseEnter: false },
         a11y: { enabled: true, prevSlideMessage: '이전 상품', nextSlideMessage: '다음 상품' }
       });
