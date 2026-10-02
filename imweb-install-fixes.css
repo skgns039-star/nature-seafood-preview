@@ -15,9 +15,11 @@ html[data-n2j-host-bar] .ns-shop-film .ns-hero-v4.ns-hero.ns-cinema{
 }
 
 /* 2026-10-02 X3 (user: "서브페이지 히어로배너 사이드 그라데이션 넣지말아줘", "전체 히어로 섹션 배경 타이포그래피 안에 그라데이션 다없애",
-   "타이포그래피를 히어로 섹션 배경에 좌측아래로", "애니메이션효과 동일하게"):
+   "타이포그래피를 히어로 섹션 배경에 좌측아래로", "애니메이션효과 동일하게"), amended 2026-10-02 feedback #4
+   (user: "우측 여백이 생기고 거기에 타이포그래피가 들어갔어, 타이포그래피만 기존 히어로 이미지에 넣으라고" — no empty
+   side panel, no solid caption box; readability comes only from a text-shadow, same as a plain caption on a photo):
    - sub-page photo heroes keep every pixel of the photo (own ratio, no crop) and carry only the title + description,
-     in one solid box at the bottom left. No navy panel under the photo, no HOME link; tabs sit in one row below the hero.
+     directly on the photo at the bottom left — no background panel, no HOME link; tabs sit in one row below the hero.
    - no gradient anywhere in the 13 heroes: overlays, caption backdrops, text fills and masks are switched off here
      (this file loads last on the preview and is inlined in the iMweb head, so it wins without a GitHub push).
    - the title/description entrance is pure CSS on pre-split characters, so it plays on the first paint on the preview
@@ -27,12 +29,12 @@ body:has(.ns-page-banner) .ns-header{margin-bottom:0}
 .ns-page-heading.ns-page-banner:before,.ns-page-heading.ns-page-banner:after{content:none;display:none;background:none}
 .ns-page-banner .ns-banner-media{position:relative;inset:auto;z-index:0;width:100%;height:auto;overflow:visible}
 .ns-page-banner .ns-banner-media picture{display:block;width:100%;height:auto}
-.ns-page-banner .ns-banner-media img{display:block;position:static;width:100%;height:auto;max-width:100%;max-height:none;object-fit:contain;object-position:center;transform:none!important;translate:none!important;scale:none!important;opacity:1!important;-webkit-mask-image:none;mask-image:none;will-change:auto}
-.ns-page-banner .ns-banner-caption,.ns-shop-film .ns-shop-film-copy{position:absolute;z-index:3;left:clamp(16px,3.4vw,64px);right:auto;top:auto;bottom:clamp(16px,3vw,44px);width:auto;max-width:min(560px,calc(100% - 32px));margin:0;padding:clamp(14px,1.5vw,22px) clamp(16px,1.9vw,28px);box-sizing:border-box;border-radius:12px;background:rgba(16,30,48,.8);background-image:none;color:#fff;text-align:left;pointer-events:none;animation:nsCapBox .45s ease-out both}
+.ns-page-banner .ns-banner-media img{display:block;position:static;width:100%;height:auto;max-width:100%;max-height:none;object-fit:cover;object-position:center;transform:none!important;translate:none!important;scale:none!important;opacity:1!important;-webkit-mask-image:none;mask-image:none;will-change:auto}
+.ns-page-banner .ns-banner-caption,.ns-shop-film .ns-shop-film-copy{position:absolute;z-index:3;left:clamp(16px,3.4vw,64px);right:auto;top:auto;bottom:clamp(16px,3vw,44px);width:auto;max-width:min(560px,calc(100% - 32px));margin:0;padding:0;box-sizing:border-box;border-radius:0;background:none;background-image:none;color:#fff;text-align:left;pointer-events:none;animation:nsCapBox .45s ease-out both}
 .ns-shop-film .ns-shop-film-copy{bottom:calc(clamp(16px,3vw,44px) + 20px)}
 .ns-shop-film .ns-shop-film-copy::before,.ns-shop-film .ns-shop-film-copy::after{content:none;display:none;background:none}
-.ns-page-banner .ns-banner-caption h1,.ns-shop-film .ns-shop-film-copy h1{margin:0;padding:0;font-size:clamp(26px,3vw,48px);font-weight:600;line-height:1.2;letter-spacing:-.02em;color:#fff;background:none;-webkit-text-fill-color:currentColor;text-shadow:none}
-.ns-page-banner .ns-banner-caption p,.ns-shop-film .ns-shop-film-copy p{margin:8px 0 0;padding:0;max-width:40ch;font-size:clamp(13px,1.05vw,16px);font-weight:400;line-height:1.6;color:#fff;background:none;-webkit-text-fill-color:currentColor;text-shadow:none;animation:nsCapLine .9s cubic-bezier(.33,1,.68,1) .35s both}
+.ns-page-banner .ns-banner-caption h1,.ns-shop-film .ns-shop-film-copy h1{margin:0;padding:0;font-size:clamp(26px,3vw,48px);font-weight:600;line-height:1.2;letter-spacing:-.02em;color:#fff;background:none;-webkit-text-fill-color:currentColor;text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 10px rgba(0,0,0,.7),0 0 26px rgba(0,0,0,.55)}
+.ns-page-banner .ns-banner-caption p,.ns-shop-film .ns-shop-film-copy p{margin:8px 0 0;padding:0;max-width:40ch;font-size:clamp(13px,1.05vw,16px);font-weight:400;line-height:1.6;color:#fff;background:none;-webkit-text-fill-color:currentColor;text-shadow:0 1px 2px rgba(0,0,0,.9),0 1px 8px rgba(0,0,0,.75),0 0 20px rgba(0,0,0,.55);animation:nsCapLine .9s cubic-bezier(.33,1,.68,1) .35s both}
 .ns-cap-chars{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em;white-space:nowrap}
 .ns-cap-chars>span{display:inline-block;white-space:pre;animation:nsCapChar 1.1s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(120ms + var(--i,0) * 28ms)}
 @keyframes nsCapBox{from{opacity:0}to{opacity:1}}
@@ -44,7 +46,6 @@ body:has(.ns-page-banner) .ns-header{margin-bottom:0}
 .ns-subtabs.ns-hero-tabs a{flex:0 0 auto;white-space:nowrap}
 @media(max-width:420px){.ns-subtabs.ns-hero-tabs{gap:4px}.ns-subtabs.ns-hero-tabs a{padding:0 10px;font-size:12px}}
 /* Gradient switches for the two video heroes (home loop, shop film). */
-.ol-hero{background:#62807f}
 .ol-brand::before{content:none;display:none;background:none}
 .ns-shop-film .ns-water-shade,.ns-shop-film .ns-film-light{display:none!important;background:none!important}
 .ns-shop-film .ns-film-ambient{background:#1c2a3a!important}
@@ -52,3 +53,18 @@ body:has(.ns-page-banner) .ns-header{margin-bottom:0}
 /* Terms / privacy: the text written in iMweb admin (설정 → 약관) is loaded into .ns-policy-body (2026-10-02 widget Y1). */
 .ns-policy-body{max-width:960px;margin:24px auto 32px;text-align:left;font-size:15px;line-height:1.85;color:inherit;word-break:keep-all;overflow-wrap:anywhere}
 .ns-policy-body strong{font-weight:700}
+/* 2026-10-02 feedback #3 (고객센터 안내·공지사항·Q&A·1:1 문의 — user: "기존 이미지는 유지하되 바다가 움직였으면"):
+ * a second copy of the same hero photo sits on top, masked to roughly the open-water area only (box, ice and rock stay
+ * still — the mask fades out before the box and before the rocky foreground), and an SVG feTurbulence+feDisplacementMap
+ * filter (defined once near <body>) gently warps just that copy. The original <img> underneath is untouched. Masking is
+ * an approximate gradient (not a pixel cutout), kept soft so the seam is not visible. Off under 동작 줄이기. */
+.ns-sea-wave{position:absolute;inset:0;pointer-events:none;filter:url(#ns-sea-ripple);
+ mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%),linear-gradient(to right,#000 0%,#000 55%,transparent 70%);
+ mask-composite:intersect;mask-repeat:no-repeat;
+ -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%);-webkit-mask-repeat:no-repeat}
+.ns-sea-wave picture,.ns-sea-wave img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+@media(max-width:600px){
+ .ns-sea-wave{mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%);mask-composite:add;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%)}
+}
+@media(prefers-reduced-motion:reduce){.ns-sea-wave{display:none}}

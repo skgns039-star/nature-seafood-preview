@@ -66,10 +66,7 @@ body:has(.ol-hero) .ns-hero-track{display:none}
 @media(max-width:600px) and (orientation:portrait){
  .ol-copy{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;animation:none!important}
 }
-/* 2026-10-02 user "다보이게끔": the whole film frame shows on PC, phones and landscape. The hero takes the film's own ratio
- * (16:9 PC / 9:16 portrait phones and tablets) up to one screen high, and film + poster are contained, never cropped.
- * Only when the screen is wider than the film (e.g. 844×390, 21:9, portrait tablets) do side bands appear; they carry the
- * film's measured edge colours (poster left/right edge averages) so the frame reads as the scene, not a black letterbox. */
-.ol-hero{--ol-ratio:16/9;height:auto;aspect-ratio:var(--ol-ratio);max-height:100svh;background:linear-gradient(90deg,#6a8b95,#627a7a)}
-.ol-video,.ol-poster img{object-fit:contain;object-position:50% 50%}
-@media(max-width:1100px) and (orientation:portrait){.ol-hero{--ol-ratio:9/16;background:linear-gradient(90deg,#628187,#5f8892)}}
+/* 2026-10-02 feedback #1 (user: "히어로배너 우측 여백이 생겼어 전으로 되돌려줘, 왜 수정한거야? 지시 없었는데"): the
+ * 2026-10-02 X3 "다보이게끔" change above (aspect-ratio box + object-fit:contain) produced side bands whenever the
+ * browser window wasn't exactly 16:9, which is exactly the regression being reverted here. Back to the 2026-09-28
+ * baseline: full-bleed height:100svh with object-fit:cover (set at the top of this file) — no side margins, ever. */
