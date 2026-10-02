@@ -57,14 +57,33 @@ body:has(.ns-page-banner) .ns-header{margin-bottom:0}
  * a second copy of the same hero photo sits on top, masked to roughly the open-water area only (box, ice and rock stay
  * still — the mask fades out before the box and before the rocky foreground), and an SVG feTurbulence+feDisplacementMap
  * filter (defined once near <body>) gently warps just that copy. The original <img> underneath is untouched. Masking is
- * an approximate gradient (not a pixel cutout), kept soft so the seam is not visible. Off under 동작 줄이기. */
+ * an approximate gradient (not a pixel cutout), kept soft so the seam is not visible. Off under 동작 줄이기.
+ * 2026-10-02 17:12 feedback (총괄 공개확인, diff 지도 feedback-20261002/총괄_공개확인_support_상자흔들림_diff.jpg):
+ * root cause — this engine treats `-webkit-mask-image`/`-webkit-mask-composite` as aliases of the unprefixed
+ * `mask-image`/`mask-composite` (confirmed via getComputedStyle; whichever rule is parsed last wins for BOTH). The old
+ * rule set the two-gradient `mask-image` (vertical sea band ∩ horizontal band meant to stop before the box/rock) and
+ * then immediately overwrote it with a single-layer `-webkit-mask-image` "fallback" — that single layer silently became
+ * the real mask-image too, so the horizontal cutoff was gone and the ripple ran full width, right across the box.
+ * An SVG <mask> with an explicit box-shaped cutout was tried next, but `maskContentUnits="objectBoundingBox"` nested
+ * inside another mask (and gradients inside it) rendered as a uniform wash in this engine, not a clean band — confirmed
+ * by swapping the ripple for a flat red fill and screenshotting (box excluded, but the band covered the full photo
+ * instead of just the open-water area). Reverted to plain CSS gradients (no SVG mask involved — screenshot-verified
+ * clean band + box fully outside it), and instead of a third mask layer for the box, the existing horizontal cutoff is
+ * pulled in so it finishes **before** the box's left edge (box starts at 65.97% of the photo width on
+ * support-pc.jpg/2880px and 37.04% on support-m.jpg/1080px — see feedback-20261002/check_box_wave_fix.py), so the box
+ * sits fully in the already-transparent part of the mask on every breakpoint, with real margin, not a partial overlap.
+ * `mask-image`/`mask-composite` and the `-webkit-` versions now carry the identical value, so there is no fallback
+ * divergence left to go stale. */
 .ns-sea-wave{position:absolute;inset:0;pointer-events:none;filter:url(#ns-sea-ripple);
- mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%),linear-gradient(to right,#000 0%,#000 55%,transparent 70%);
+ mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%),linear-gradient(to right,#000 0%,#000 50%,transparent 62%);
  mask-composite:intersect;mask-repeat:no-repeat;
- -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%);-webkit-mask-repeat:no-repeat}
+ -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%),linear-gradient(to right,#000 0%,#000 50%,transparent 62%);
+ -webkit-mask-composite:intersect;-webkit-mask-repeat:no-repeat}
 .ns-sea-wave picture,.ns-sea-wave img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 @media(max-width:600px){
- .ns-sea-wave{mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%);mask-composite:add;
-  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%)}
+ .ns-sea-wave{mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%),linear-gradient(to right,#000 0%,#000 28%,transparent 35%);
+  mask-composite:intersect;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%),linear-gradient(to right,#000 0%,#000 28%,transparent 35%);
+  -webkit-mask-composite:intersect}
 }
 @media(prefers-reduced-motion:reduce){.ns-sea-wave{display:none}}
