@@ -55,7 +55,22 @@ body:has(.ol-hero) .ns-hero-track{display:none}
  .ol-hero .ns-quick-go,.ol-hero .ns-quick-kakao{flex:1 1 0;justify-content:center}
  @keyframes ol-rise{from{opacity:0;translate:0 18px}}
 }
-@media(max-height:500px) and (orientation:landscape){.ol-copy h1{font-size:clamp(22px,3.4vw,30px)}.ol-copy p{display:none}.ol-hero .ns-quick{display:none}}
+/* 2026-10-03 (반응형 검사 다른 점 4: 휴대폰 가로 844×390 등, height<500 — PC처럼 설명·간편 주문 상담 바 노출): previously
+ * hidden entirely (display:none). Landscape phones have width to spare (667–852px) but little height, so the copy block's
+ * max-width is capped tighter than desktop (keeps clear of the centred brand lockup) and the quick bar is shrunk (smaller
+ * paddings/min-heights/font) while staying one row like PC — not the stacked portrait layout above, and overriding the
+ * generic ≤768px-width rules (hero-video.css) that would otherwise hide the title/wrap the bar on the two narrower phones. */
+@media(max-height:500px) and (orientation:landscape){
+ .ol-copy{max-width:min(280px,34vw)}
+ .ol-copy h1{font-size:clamp(22px,3.4vw,30px)}
+ .ol-copy p{display:block;margin-top:10px;font-size:clamp(12px,1.6vh,14px);line-height:1.5}
+ .ol-hero .ns-quick{display:flex;flex-wrap:nowrap;padding:4px;gap:4px}
+ .ol-hero .ns-quick-title{display:flex;flex:0 0 auto;padding:0 14px;font-size:12px}
+ .ol-hero .ns-quick-field{flex:0 0 auto}
+ .ol-hero .ns-quick select{width:auto;min-width:132px;min-height:44px;padding:0 28px 0 10px;font-size:12px;background-position:right 10px center;background-size:10px 7px}
+ .ol-hero .ns-quick-go{flex:0 0 auto;min-height:44px;padding:0 12px;font-size:12px}
+ .ol-hero .ns-quick-kakao{flex:0 0 auto;min-height:44px;padding:0 14px;font-size:12px}
+}
 /* tablet portrait (wider than 3:5): the 9:16 film is cropped top/bottom → anchor its bottom so the box stack sits above the quick bar */
 @media(max-width:1100px) and (orientation:portrait) and (min-aspect-ratio:3/5){.ol-hero{--ol-y:80%}.ol-hero .ns-quick{bottom:16px}
  /* v7.1: portrait tablets (up to 1100px, e.g. iPad) use the 9:16 film too, so the box stack is never cropped. The horizon
