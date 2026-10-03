@@ -354,12 +354,21 @@
  * video the seam between the two images is visible as a hard horizontal line with mismatched rock colour/texture,
  * exactly the "다른 사진 띠" the user is rejecting. Phones get the same honest single-photo cover as desktop/landscape:
  * no second image layer, just the one film cropped and anchored toward the box (right/bottom of the frame). */
+/* 2026-10-03 L1 (real iPhone feedback: 상자·라벨이 왼쪽에서 잘려 불안정): a 16:9 source filling a ~0.46-aspect
+ * portrait screen via cover always shows only ~26% of the frame's width (cover scales by height; the box/label sit
+ * across ~39-97% of the frame, far wider than that 26% window), so no single object-position can show the whole box
+ * without either cropping it or breaking the "화면 가득, 빈 칸·띠 금지" rule — measured on hero-sea-poster.jpg
+ * (library/… not needed, measured directly: label ~63-89% of frame width). The old 88% anchor centred the window on
+ * the box's right wall instead of the label, cutting the label's own left edge (logo/icon) — the "잘림" the user saw.
+ * Fix: drop the extra +4% rig oversize (was inset:-2%/104%, a constant zoom-in that shrank the visible window further
+ * for no reason here) and re-anchor so the full label sits inside the visible window with a small margin on each
+ * side; the crate's own left/right outer walls (plain styrofoam, no text) take the remaining crop instead. */
 @media(max-width:768px) and (orientation:portrait){
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{position:absolute;inset:0;grid-row:1/-1;grid-column:1/-1;z-index:0;height:auto;overflow:hidden;container-type:size}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:none}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:-2%;top:-2%;left:auto;right:auto;width:104%;height:104%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06))!important;transition:transform var(--dur-short) var(--ease-out);background:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:0;top:0;left:auto;right:auto;width:100%;height:100%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06))!important;transition:transform var(--dur-short) var(--ease-out);background:none}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{position:static;left:auto;top:auto;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;mask-image:none}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:88% 54%}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:84% 54%}
 }
 
 /* 2026-09-29 (user: "PC랑 똑같이 영상과 인터렉티브 모션 그래픽 … 휴대폰화면에서도 풀로"): the film hero no longer switches to

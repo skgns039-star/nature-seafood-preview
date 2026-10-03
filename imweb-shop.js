@@ -4,6 +4,12 @@
  * each card travels right at one slot / flow.millisecondsPerCard (2026-10-02 H1: 3600ms); the wrap is offscreen.
  * When the row is wider than the 5 originals can cover (PC shows 5), decorative copies are appended
  * (aria-hidden, inert, no ids) so the line never shows a gap; they are removed when the flow stops.
+ * 2026-10-03 L1 (real iPhone feedback: PC처럼 5개가 흘러야 하는데 실기기에서 2열 그리드로 보임): root cause was the
+ * `!reduced.matches` gate below — when the phone's 동작 줄이기(Reduce Motion) accessibility setting is ON, `enabled`
+ * went false and the widget fell back to iMweb's own default grid (imweb-shop.css ._item_wrap, no .n2j-shop-flow
+ * class). A headless check without reduced-motion forced never saw this. flow.ignoreReducedMotion (set in
+ * build_imweb.py) makes this one home flow play regardless of the setting, matching the existing precedent that the
+ * two hero films also always play regardless of 동작 줄이기 (hero-video.css / orca-loop.css history, 2026-09-29).
  */
 (() => {
   'use strict';
@@ -50,12 +56,12 @@
       if (numeric || price) { label?.remove(); return; }
       if (!label) { const p = document.createElement('p'); p.className = 'n2j-price-inquiry'; p.textContent = '가격 문의'; detail.append(p); }
     });
-    const enabled = widget.id === flow.widgetId && (!flow.maxWidth || innerWidth <= flow.maxWidth) && !reduced.matches && cards.length >= 3 && typeof Element.prototype.animate === 'function';
+    const enabled = widget.id === flow.widgetId && (!flow.maxWidth || innerWidth <= flow.maxWidth) && (flow.ignoreReducedMotion || !reduced.matches) && cards.length >= 3 && typeof Element.prototype.animate === 'function';
     const key = [viewport, enabled, cards.length, flow.millisecondsPerCard].join(':');
     if (state.key === key && state.row === row && cards.every((c,i) => c === state.cards[i])) return;
     stop(state); state.key = key; state.row = row; state.cards = cards;
     const duration = Number(flow.millisecondsPerCard) || 800;
-    widget.dataset.shopFlow = enabled ? 'right-' + duration + 'ms' : reduced.matches ? 'reduced-motion' : 'grid';
+    widget.dataset.shopFlow = enabled ? 'right-' + duration + 'ms' : reduced.matches && !flow.ignoreReducedMotion ? 'reduced-motion' : 'grid';
     if (!enabled) return;
     row.classList.add('n2j-shop-flow');
     const step = cards[0].getBoundingClientRect().width + parseFloat(getComputedStyle(row).columnGap);
