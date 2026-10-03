@@ -45,8 +45,14 @@ body:has(.ol-hero) .ns-hero-track{display:none}
  .ol-copy{top:calc(var(--ns-hdr-h,72px) + 1.5vh + min(46vw,200px) * .72 + 30px);translate:none;max-width:none;right:var(--ol-x)}
  .ol-copy h1{font-size:clamp(24px,7vw,34px)}
  .ol-copy p{margin-top:8px}
- .ol-hero .ns-quick{right:var(--ol-x);flex-wrap:nowrap}
- .ol-hero .ns-quick-field{display:none}              /* phones: two buttons only, so the box stack stays in view */
+ /* 2026-10-03 (반응형 검사 다른 점 3: "휴대폰에도 PC와 같은 항목·문구"): phones used to show only the two buttons
+  * (ns-quick-field hidden) — restored the "간편 주문 상담" label and the 상품 종류 선택 dropdown, stacked as rows so
+  * the bar still fits down to 360px without pushing into the box stack in the film. */
+ .ol-hero .ns-quick{right:var(--ol-x);flex-wrap:wrap}
+ .ol-hero .ns-quick-title{display:flex;flex:1 1 100%;justify-content:center;margin:-6px -6px 0;border-radius:10px 10px 0 0}
+ .ol-hero .ns-quick-field{display:flex;flex:1 1 100%}
+ .ol-hero .ns-quick select{width:100%;min-width:0}
+ .ol-hero .ns-quick-go,.ol-hero .ns-quick-kakao{flex:1 1 0;justify-content:center}
  @keyframes ol-rise{from{opacity:0;translate:0 18px}}
 }
 @media(max-height:500px) and (orientation:landscape){.ol-copy h1{font-size:clamp(22px,3.4vw,30px)}.ol-copy p{display:none}.ol-hero .ns-quick{display:none}}
@@ -60,12 +66,10 @@ body:has(.ol-hero) .ns-hero-track{display:none}
 /* 2026-09-29 phones: the header floats over the film (fixed) instead of a sticky header pulled up by a guessed 72px — the
  * guess left a 2px strip on 74px headers, so the film now fills the first screen exactly. */
 @media(max-width:768px){body:has(main[data-page=home]) .ns-header{position:fixed;top:0;left:0;right:0;margin-bottom:0}}
-/* 2026-09-29 b phones only (user: "체크한 타이포그래피 모바일에서만 없애줘" → 답: "문구 박스만"): the headline box
- * (바다를 담아 [식탁]으로 / 군산박대부터…) is hidden on phones (≤600px portrait); the lockup stays. It remains the page's h1
- * for search and screen readers (visually hidden, not display:none). PC and tablets unchanged. */
-@media(max-width:600px) and (orientation:portrait){
- .ol-copy{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;animation:none!important}
-}
+/* 2026-09-29 b phones only (user: "체크한 타이포그래피 모바일에서만 없애줘" → 답: "문구 박스만"): the headline box was
+ * hidden on phones (≤600px portrait), screen-reader-only. SUPERSEDED 2026-10-03 (반응형 검사 다른 점 1: "휴대폰에서도
+ * PC와 같은 제목·설명·등장 애니메이션이 보이게") — the headline is visible again on phones using the same tablet/phone
+ * layout above (43행, below the brand lockup, over the film, not clipped or overlapping). */
 /* 2026-10-02 feedback #1 (user: "히어로배너 우측 여백이 생겼어 전으로 되돌려줘, 왜 수정한거야? 지시 없었는데"): the
  * 2026-10-02 X3 "다보이게끔" change above (aspect-ratio box + object-fit:contain) produced side bands whenever the
  * browser window wasn't exactly 16:9, which is exactly the regression being reverted here. Back to the 2026-09-28

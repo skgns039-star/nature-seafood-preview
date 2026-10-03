@@ -84,10 +84,16 @@ body:has(.ns-page-banner) .ns-header{margin-bottom:0}
  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,transparent 58%),linear-gradient(to right,#000 0%,#000 50%,transparent 62%);
  -webkit-mask-composite:intersect;-webkit-mask-repeat:no-repeat}
 .ns-sea-wave picture,.ns-sea-wave img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+/* 2026-10-03 (반응형 검사 다른 점 2: 3초 간격 화면 차이가 PC 1.9~3.0인데 휴대폰은 0.25뿐): 원인은 상자 안전 마진이
+ * 아니라 세로 범위였다 — support-m.jpg(1080×1350)는 상단 0~28%가 하늘이고 실제 물결 텍스처가 있는 열린 바다는
+ * 약 28~72%(상자·바위는 더 아래/오른쪽)인데, 기존 세로 마스크(0→27% 불투명, 37%에서 완전 차단)는 거의 하늘만 보여줘
+ * 질감이 없어 차이가 거의 안 났다. 가로 마스크(0→28% 불투명, 35%에서 차단, 상자 좌측 37.04%보다 앞에서 끝남)는 상자를
+ * 이미 완전히 막고 있으므로(교집합) 세로만 늘려도 상자·바위·글자는 그대로 안전하다. 세로를 0→60% 불투명, 70%에서
+ * 차단(바위 시작 72%보다 앞)으로 넓혀 실제 바다 면적을 물결 영역에 포함시켰다. */
 @media(max-width:600px){
- .ns-sea-wave{mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%),linear-gradient(to right,#000 0%,#000 28%,transparent 35%);
+ .ns-sea-wave{mask-image:linear-gradient(to bottom,#000 0%,#000 60%,transparent 70%),linear-gradient(to right,#000 0%,#000 28%,transparent 35%);
   mask-composite:intersect;
-  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 27%,transparent 37%),linear-gradient(to right,#000 0%,#000 28%,transparent 35%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 60%,transparent 70%),linear-gradient(to right,#000 0%,#000 28%,transparent 35%);
   -webkit-mask-composite:intersect}
 }
 @media(prefers-reduced-motion:reduce){.ns-sea-wave{display:none}}
