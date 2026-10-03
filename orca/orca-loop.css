@@ -61,7 +61,12 @@ body:has(.ol-hero) .ns-hero-track{display:none}
  * paddings/min-heights/font) while staying one row like PC — not the stacked portrait layout above, and overriding the
  * generic ≤768px-width rules (hero-video.css) that would otherwise hide the title/wrap the bar on the two narrower phones. */
 @media(max-height:500px) and (orientation:landscape){
- .ol-copy{max-width:min(280px,34vw)}
+ /* 2026-10-03 K1 (총괄 실측: 가로 852×393·667×375에서 제목 첫 줄이 헤더 로고 배지에 가려짐): the inherited
+  * top:31%+translate:-50% vertical centering (base rule above, written for tall/short desktop-ish ratios) puts the
+  * copy block's box top within 1–7px of the header bottom at these narrow heights (negative at 667×375 — measured
+  * overlap), because the centering math doesn't know the header's real height. Anchor explicitly below the header
+  * instead, with a fixed clear gap; height/width values and the bar below are unchanged. */
+ .ol-copy{top:calc(var(--ns-hdr-h,72px) + 14px);translate:none;max-width:min(280px,34vw)}
  .ol-copy h1{font-size:clamp(22px,3.4vw,30px)}
  .ol-copy p{display:block;margin-top:10px;font-size:clamp(12px,1.6vh,14px);line-height:1.5}
  .ol-hero .ns-quick{display:flex;flex-wrap:nowrap;padding:4px;gap:4px}
@@ -70,6 +75,7 @@ body:has(.ol-hero) .ns-hero-track{display:none}
  .ol-hero .ns-quick select{width:auto;min-width:132px;min-height:44px;padding:0 28px 0 10px;font-size:12px;background-position:right 10px center;background-size:10px 7px}
  .ol-hero .ns-quick-go{flex:0 0 auto;min-height:44px;padding:0 12px;font-size:12px}
  .ol-hero .ns-quick-kakao{flex:0 0 auto;min-height:44px;padding:0 14px;font-size:12px}
+ @keyframes ol-rise{from{opacity:0;translate:0 18px}}
 }
 /* tablet portrait (wider than 3:5): the 9:16 film is cropped top/bottom → anchor its bottom so the box stack sits above the quick bar */
 @media(max-width:1100px) and (orientation:portrait) and (min-aspect-ratio:3/5){.ol-hero{--ol-y:80%}.ol-hero .ns-quick{bottom:16px}
