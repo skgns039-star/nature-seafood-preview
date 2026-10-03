@@ -51,13 +51,20 @@
   function markReady(){if(!reduce.matches||playing)video.dataset.ready='true';if(status)status.textContent='';}
   // Eased scrubbing: the film time glides toward the scroll target so packs and ice settle in slowly.
   let shown=-1;
-  function seek(){
+  // 2026-10-04 N4 (user: "전체상품 인터렉티브 모션 그래픽이 너무 빨라"): on portrait phones the /shop hero is no longer pinned, so a
+  // short flick reached the end at once — there the film may advance at most 1.4 s of film per second (whole film ≥ ~6.7 s).
+  const slowShop=root.querySelector('.ns-shop-film')?matchMedia('(max-width:600px) and (orientation:portrait)'):null;
+  let lastTs=0;
+  function seek(ts){
+   const dt=lastTs&&ts?Math.min(.05,(ts-lastTs)/1000):1/60;lastTs=ts||0;
    raf=0;if(failed||playing||video.readyState<2||!Number.isFinite(video.duration))return;
    const target=Math.min(Math.max(0,video.duration-.05),desired*video.duration);
    if(shown<0)shown=target;
-   shown+=(target-shown)*.2;   // 2026-09-28 b: follows the scroll faster (was .09 — ice fell too late)if(Math.abs(target-shown)<.02)shown=target;
+   let step=(target-shown)*.2;   // 2026-09-28 b: follows the scroll faster (was .09 — ice fell too late)
+   if(slowShop?.matches)step=Math.max(-1.4*dt,Math.min(1.4*dt,step));
+   shown+=step;if(Math.abs(target-shown)<.02)shown=target;
    if(!video.seeking&&Math.abs(video.currentTime-shown)>.02)video.currentTime=shown;
-   if(shown!==target||video.seeking)request();
+   if(shown!==target||video.seeking)request();else lastTs=0;
   }
   function request(){if(!raf)raf=requestAnimationFrame(seek);}
   video.addEventListener('loadeddata',()=>{
