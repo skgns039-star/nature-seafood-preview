@@ -46,7 +46,7 @@
       track.style.setProperty('--ns-header-h',`${header?.offsetHeight||0}px`);document.body.style.setProperty('--ns-hdr-h',`${header?.offsetHeight||0}px`);
       track.style.setProperty('--ns-notice-h',`${q('.ns-announcement')?.offsetHeight||0}px`);
       const r=track.getBoundingClientRect(),top=parseFloat(getComputedStyle(hero).top)||0;
-      if(!paused&&!heroReduce.matches)progress=Math.max(0,Math.min(1,(top-r.top)/Math.max(1,track.offsetHeight-hero.offsetHeight)));
+      if(!paused&&!heroReduce.matches){const span=track.offsetHeight-hero.offsetHeight;progress=Math.max(0,Math.min(1,(top-r.top)/(span>1?span:hero.offsetHeight*.6)));}   // 2026-10-04 N3: unpinned phone-portrait hero → film runs over 60% of its own height
       hero.style.setProperty('--ns-progress',progress.toFixed(4));
       hero.dataset.motionProgress=progress.toFixed(4);
       // Scroll dolly: the packing scene eases slightly toward the viewer as the box fills.
