@@ -315,8 +315,20 @@
   * assuming the two-column headline layout that .ns-shop-film turns off (single column, no headline beside the film).
   * Back to the normal full-bleed cover rig here too, same anchor as the desktop narrow-aspect bucket (box is close
   * to the right/bottom edges of the frame). */
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:-2%;top:-2%;left:auto;right:auto;width:104%;height:104%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06));transform-origin:92% 58%}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:92% 58%}
+ /* 2026-10-03 scroll-zoom re-centre (user 10/3 15시: 세로는 고쳤지만 스크롤 확대 시 좌측이 잘려 — landscape measured
+  * separately here): a 2.1–2.3:1 landscape phone is wider than the 16:9 film, so object-fit:cover always shows the
+  * film's FULL width (object-position-x has no visible effect — there is no horizontal slack to crop) and only crops
+  * top/bottom. The old 92%/58% anchor plus this rig's own +4% oversize (inset:-2%/104%, stacked on top of the
+  * scale(1.00→1.08) scroll-dolly) pushed the label (natural-frame y 15–50%) off the top of the screen by scroll 25%
+  * at all three tested widths (800×360/844×390/932×430) — measured top margin -28 to -61px. Fix: drop the rig's own
+  * +4% oversize (same reasoning as the portrait fix below — a constant zoom-in that only shrinks the safe margin)
+  * and re-anchor the crop + the scale's transform-origin together at natural-frame y≈20% (object-position-x is left
+  * at the label's own horizontal centre, 76%, for intent even though it has no effect on what's visible at this
+  * aspect ratio). Solved analytically against the same label-rect math `measure.py` uses
+  * (jobs/nature_seafood_20260925/shop-zoom-20261003/measure.py): worst-case margin ≈ +40px to +190px on every side,
+  * every tested width, both scale extremes (1.00 and 1.08) — see shop-zoom-20261003/landscape-solve.md. */
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:0;top:0;left:auto;right:auto;width:100%;height:100%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06))!important;transform-origin:76% 20%!important}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:76% 20%}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{mask-image:none}
 }
 
@@ -363,10 +375,26 @@
  * Fix: drop the extra +4% rig oversize (was inset:-2%/104%, a constant zoom-in that shrank the visible window further
  * for no reason here) and re-anchor so the full label sits inside the visible window with a small margin on each
  * side; the crate's own left/right outer walls (plain styrofoam, no text) take the remaining crop instead. */
+/* 2026-10-03 scroll-zoom re-centre (user: 스크롤했을 때 확대되면서 좌측이 잘려): L1 fixed the resting crop (object-position
+ * 84% 54%) but left this rig's own transform-origin unset here, so the cascade fell through to the generic mobile
+ * rule `.ns-hero-v4 .ns-film-rig{transform-origin:50% 55%}` (hero-video.css, max-width:768 bucket) — same specificity
+ * as this selector's siblings, later in source order, so it won. Since the label fills almost the full 84%/54%-anchored
+ * window (box-local centre ≈53%, not 50%), zooming from dead-centre pushed it further off on scroll. Pin the zoom
+ * anchor to the same point as the resting crop so scale growth (max 1.08, unchanged) holds the label still instead
+ * of sliding it left.
+ * 2026-10-03 re-work (10/3 15시 재검사): pinning the anchor to 84%/54% held the label roughly still but didn't fully
+ * stop the creep — the resting crop (L1, unchanged here) already leaves only 0.7–2.5px of margin on the label's own
+ * right/bottom edge at scroll 0 on all three widths (360/390/430), so any further zoom from a dead-on anchor still
+ * pushes those edges 2–5px past the screen by full scroll. Solved analytically against measure.py's own label-rect
+ * math (shop-zoom-20261003/landscape-solve.md has the method, applied here per-orientation): moving the zoom anchor
+ * to 99%/25% (object-position/the resting crop stays 84%/54%, untouched) and capping the growth at 1.05 instead of
+ * 1.08 via `min()` (floor stays exactly 1.00 at rest — no gap — only the top of the range is capped) keeps every
+ * corner's margin ≥ 0 at both scale extremes on all three widths. The remaining ~0.6–2.5px slack is the resting
+ * crop's own pre-existing margin (present at scroll 0 before this fix too, i.e. not something scroll-zoom caused). */
 @media(max-width:768px) and (orientation:portrait){
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{position:absolute;inset:0;grid-row:1/-1;grid-column:1/-1;z-index:0;height:auto;overflow:hidden;container-type:size}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:none}
- .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:0;top:0;left:auto;right:auto;width:100%;height:100%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(calc(var(--ns-dolly,1) + .06))!important;transition:transform var(--dur-short) var(--ease-out);background:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:0;top:0;left:auto;right:auto;width:100%;height:100%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(min(calc(var(--ns-dolly,1) + .06),1.05))!important;transform-origin:99% 25%!important;transition:transform var(--dur-short) var(--ease-out);background:none}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{position:static;left:auto;top:auto;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;mask-image:none}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:84% 54%}
 }
