@@ -391,12 +391,52 @@
  * 1.08 via `min()` (floor stays exactly 1.00 at rest — no gap — only the top of the range is capped) keeps every
  * corner's margin ≥ 0 at both scale extremes on all three widths. The remaining ~0.6–2.5px slack is the resting
  * crop's own pre-existing margin (present at scroll 0 before this fix too, i.e. not something scroll-zoom caused). */
-@media(max-width:768px) and (orientation:portrait){
+/* Tablet portrait (601–768px) keeps the L1/M1 full-bleed cover crop unchanged — only phones (≤600px, below) move
+ * to the frame-ratio fix, per 총괄 instruction 2026-10-04. */
+@media(min-width:601px) and (max-width:768px) and (orientation:portrait){
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{position:absolute;inset:0;grid-row:1/-1;grid-column:1/-1;z-index:0;height:auto;overflow:hidden;container-type:size}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:none}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{inset:0;top:0;left:auto;right:auto;width:100%;height:100%;aspect-ratio:auto;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(min(calc(var(--ns-dolly,1) + .06),1.05))!important;transform-origin:99% 25%!important;transition:transform var(--dur-short) var(--ease-out);background:none}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{position:static;left:auto;top:auto;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;mask-image:none}
  .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:84% 54%}
+}
+/* 2026-10-04 M2 (총괄 근본 원인, real-device feedback "스크롤했을 때 확대되면서 좌측이 잘려" persisted after L1/M1):
+ * the 16:9 film (box 42–90%, label 62–80% of its own width) filling a ~0.46-aspect phone-portrait screen via cover
+ * can only ever show ~26–37% of the film's width — narrower than the box itself (48%) — so L1/M1 could only move
+ * *which* edge got cut, not whether the box fit; the apparent "확대되며 잘림" was the scroll-scrubbed video content
+ * (ice landing in the box) moving inside that too-narrow crop, not an actual zoom bug (dolly scale here is capped at
+ * 1.05 and the video itself does not zoom, confirmed frame-by-frame 0–9.3s). Fix: on phones (≤600px) only, resize the
+ * *frame* itself — not the whole hero — to an aspect ratio narrow enough to show the whole box: 100/106 gives a
+ * cover-scale visible-width fraction of 1/(100/106)/(16/9) ≈ 53% ≥ the box's 48%, with zero vertical crop (height is
+ * the cover-constraining dimension at this ratio, so object-position-y has no effect, kept at 50% for clarity).
+ * object-position-x 83% centres the visible 53% window on ~65.5% of the film width, i.e. on the box's own centre
+ * (66%) — margins: box left 42% sits ~5.7% of screen width inside the window's left edge, box right 90% sits ~3.8%
+ * inside the right edge, both ≥ the required 2% (worked by the same cover-crop algebra `shop-zoom-20261003/measure.py`
+ * uses, not re-measured empirically here — verify in-browser before shipping). The dolly scale is hard-set to 1 (no
+ * `--ns-dolly` term) so there is no scroll-zoom left to re-crop the box at all, matching the "확대 없음" decision.
+ * The frame (aspect-ratio auto-height, ~1.06× its own width — well under the full screen height) is bottom-anchored
+ * inside the unchanged, still full-screen `.ns-packing-scene` (inset:0, same as before) so the bottom-left caption
+ * (`.ns-shop-film-copy`, bottom-anchored to the same hero box) keeps landing on the photo, not on the gap this
+ * opens above the frame. First attempt filled that gap with the hero's flat `--ns-stage-wall` colour — screenshot-
+ * checked and rejected (M2 review): on load (scroll 0%) it reads as roughly half the first screen being a plain
+ * colour block, i.e. the same "빈 띠" the user has rejected before, just moved from below the hero to above it; a
+ * flat colour, however sampled, is not the photo. Replaced with the SAME poster photo (`assets/hero-sea-poster.jpg`,
+ * already on the page — no new asset) blurred and cover-fit at the same 83% anchor as the sharp frame below it, so
+ * both layers show the same framing and the seam blends (same technique already used for the home hero's old mobile
+ * backdrop, lines ~269-271 above); a mask fades the blur out just before the sharp frame starts (~51% down) instead
+ * of cutting hard. This is one photo at two focus levels, not the second, mismatched "다른 사진" layer the 2026-10-02
+ * H1 fix removed (shop.html has no canvas-based ambient layer like the home hero's, so this CSS-only blur stands in
+ * for it). Hero height, the
+ * `.ns-shop-film.ns-hero-track` scroll length (260svh) and the next section's position are all untouched — the
+ * outer hero box is still exactly as tall as before, so the sticky-scrub math in motion.js (which reads the hero's
+ * own rendered height, not a hard-coded value) and the scroll-to-video-progress mapping are unaffected; the film
+ * still scrubs to 100% by the end of the same track as before. Landscape, tablet (above) and PC are untouched. */
+@media(max-width:600px) and (orientation:portrait){
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene{position:absolute;inset:0;grid-row:1/-1;grid-column:1/-1;z-index:0;height:auto;overflow:hidden;container-type:size}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-packing-scene::before{content:"";position:absolute;inset:-6%;z-index:0;pointer-events:none;background:url(assets/hero-sea-poster.jpg) 83% 50%/cover no-repeat;filter:blur(26px) saturate(.9) brightness(.96);mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 54%);-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 54%)}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-rig{position:absolute;inset:auto 0 0 0;top:auto;left:0;right:0;bottom:0;z-index:1;width:100%;height:auto;aspect-ratio:100/106;transform:translate3d(calc(var(--ns-px,0px) * .8),calc(var(--ns-py,0px) * .8),0) scale(1)!important;transform-origin:83% 50%!important;transition:transform var(--dur-short) var(--ease-out);background:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film-frame{position:static;left:auto;top:auto;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;mask-image:none}
+ .ns-shop-film .ns-hero-v4.ns-still-life .ns-film,.ns-shop-film .ns-hero-v4.ns-still-life .ns-film-poster{object-fit:cover;object-position:83% 50%}
 }
 
 /* 2026-09-29 (user: "PC랑 똑같이 영상과 인터렉티브 모션 그래픽 … 휴대폰화면에서도 풀로"): the film hero no longer switches to
