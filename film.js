@@ -51,20 +51,25 @@
   function markReady(){if(!reduce.matches||playing)video.dataset.ready='true';if(status)status.textContent='';}
   // Eased scrubbing: the film time glides toward the scroll target so packs and ice settle in slowly.
   let shown=-1;
-  // 2026-10-04 N4 (user: "전체상품 인터렉티브 모션 그래픽이 너무 빨라"): on portrait phones the /shop hero is no longer pinned, so a
-  // short flick reached the end at once — there the film may advance at most 1.4 s of film per second (whole film ≥ ~6.7 s).
-  const slowShop=root.querySelector('.ns-shop-film')?matchMedia('(max-width:600px) and (orientation:portrait)'):null;
-  let lastTs=0;
-  function seek(ts){
-   const dt=lastTs&&ts?Math.min(.05,(ts-lastTs)/1000):1/60;lastTs=ts||0;
+  // 2026-10-05 N5 (user: "동영상처럼 터치 스크롤을 내려야 모션그래픽이 형성돼 … 내려서 다른 거 볼 때 박대가 쏟아지니까 시각적으로
+  // 디자인이 눈에 안 들어와"): on portrait phones the /shop film no longer follows the scroll. It plays by itself like a video
+  // while at least half of the hero is on screen, pauses when the hero leaves, and rests on its last frame (full box).
+  const autoShop=root.querySelector('.ns-shop-film')?matchMedia('(max-width:600px) and (orientation:portrait)'):null;
+  let heroHalf=true;
+  function autoPlay(){
+   if(!autoShop?.matches||reduce.matches||saveData||document.hidden||!heroHalf||video.ended||playing)return;
+   load();playing=true;video.play()?.then(markReady).catch(()=>{playing=false;});
+  }
+  if(autoShop)new IntersectionObserver(e=>{heroHalf=e[0].intersectionRatio>=.5;if(!autoShop.matches)return;if(heroHalf)autoPlay();else if(playing)video.pause();},{threshold:[0,.5,1]}).observe(root.querySelector('.ns-cinema'));
+  function seek(){
+   if(autoShop?.matches)return;
    raf=0;if(failed||playing||video.readyState<2||!Number.isFinite(video.duration))return;
    const target=Math.min(Math.max(0,video.duration-.05),desired*video.duration);
    if(shown<0)shown=target;
-   let step=(target-shown)*.2;   // 2026-09-28 b: follows the scroll faster (was .09 — ice fell too late)
-   if(slowShop?.matches)step=Math.max(-1.4*dt,Math.min(1.4*dt,step));
-   shown+=step;if(Math.abs(target-shown)<.02)shown=target;
+   shown+=(target-shown)*.2;   // 2026-09-28 b: follows the scroll faster (was .09 — ice fell too late)
+   if(Math.abs(target-shown)<.02)shown=target;
    if(!video.seeking&&Math.abs(video.currentTime-shown)>.02)video.currentTime=shown;
-   if(shown!==target||video.seeking)request();else lastTs=0;
+   if(shown!==target||video.seeking)request();
   }
   function request(){if(!raf)raf=requestAnimationFrame(seek);}
   video.addEventListener('loadeddata',()=>{
@@ -91,6 +96,7 @@
   return {paint:queueAmbient,update(progress,paused){
    stopped=paused;syncWater();
    if(stopped){video.pause();return;}
+   if(autoShop?.matches){autoPlay();return;}
    if(reduce.matches||saveData||document.hidden||playing||!visible)return;
    desired=progress;request();
   }};
