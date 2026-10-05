@@ -45,7 +45,10 @@
   video.addEventListener('timeupdate',()=>{notifyFrame();queueAmbient();});
   video.addEventListener('seeked',notifyFrame);
   // 2026-09-28: phones get the same 1080p film as PC (the 960 cut looked soft on 3x screens); saveData keeps the small one.
-  function load(){if(loaded)return;loaded=true;video.src=(video.dataset.srcSmall&&saveData)?video.dataset.srcSmall:video.dataset.src;video.load();}
+  // 2026-10-05 (user: "처음에 기다려야 떨어지는 걸 볼 수 있어, 바로 볼 수 있게"): portrait phones on /shop load a phone cut —
+  // only the visible 100/106 window, first 0.5 s (empty box) trimmed, 0.9 MB instead of 7 MB — so the drop starts right away.
+  function load(){if(loaded)return;loaded=true;const phone=autoShop?.matches&&/hero-sea\.mp4$/.test(video.dataset.src||'');
+   video.src=phone?video.dataset.src.replace(/hero-sea\.mp4$/,'hero-sea-phone.mp4'):(video.dataset.srcSmall&&saveData)?video.dataset.srcSmall:video.dataset.src;if(phone)video.preload='auto';video.load();}
   // iOS Safari buffers a muted inline video only after it has played once → prime it on the first touch (then pause at once).
   addEventListener('touchstart',()=>{load();video.play()?.then(()=>{if(!playing)video.pause();}).catch(()=>{});},{once:true,passive:true});
   function markReady(){if(!reduce.matches||playing)video.dataset.ready='true';if(status)status.textContent='';}
