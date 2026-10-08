@@ -90,7 +90,9 @@
   // sea polygons per banner photo (file name), image coordinates 0–1, kept clear of the box, the rocks and the horizon
   const MASKS = {
     'support-pc': { horizon: .203, polys: [[[0, .2], [.722, .2], [.722, .45], [.69, .52], [.68, .555], [.68, .6], [.655, .62], [.6, .645], [.5, .665], [.35, .69], [.2, .72], [0, .745]], [[.89, .2], [1, .2], [1, .375], [.89, .395]]] },
-    'support-m': { horizon: .384, polys: [[[0, .375], [.52, .375], [.52, .55], [.405, .6], [.4, .7], [.3, .725], [.14, .765], [0, .795]], [[.96, .375], [1, .375], [1, .555], [.96, .555]]] }
+    // phone photo: the whole visible sea (left of the box, the gap under the lid, the strip right of it), traced from the photo's own pixels
+    // (seawave-m-20261008/build_mask.py) — 360×450 alpha map, 4–8 image px clear of the lid, box and rocks; no straight cut-offs
+    'support-m': { horizon: .384, amp: 14, glow: 2.5, ramp: .08, png: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAHCCAAAAADnCQyBAAACeElEQVR42u3d0W3DMBBEQW6Q/lt2fuMCuKKOMxUIDweKpAB7LQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgPfI59VPf/TTfaX9MWuVzkK3CC200AgttNASCC00QgstNEILjdBCC718YBHaRCO00EIjtNAILbTQCC30ctVhooUWGqGFRmihhUZooRFa6HXnVYeJFlpohBYaoYUWGqGFFtoJXGgTjdBCC43QQiO00EIjtNDLVYeJFlpohBYaoYUWGqGFRmihhUboNeLyzkQLPcyvBJ2FTujS60TorX/nG0tHe2fkZWjXITTXbO8itMyWDqFvGOgXho6J1nlQ6FijdR4UOnYdOg8KHftonQeFjpOhzoNCx10Hk0JHaJ0HhY6lQ+dBoeNlqPOg0LG909mBRehrB/rw0DHROg8KHWu0zoNCx65D50GhYx+t86DQcTLU2V2H0Ab6zNAx0ToPCh1rNEILjdBCC43QQiO00EIjtNAIve79lbAIrfKU0LMznxJ6euUzQl9Q+YDQd1R+OvQ1lR8NfVPl50JfVvmxk2EcwXUeFDoulXQeFDquSXV++fYu63Nv4P9/6GSCXz/RKjdCq9wIrXIjtMqV0DI3QqvcCK1yJbTMjdAqN0Kr3AitciW0zIXQIldCy9wIrfKqfGHRuTLRMncmWudOaJ07oXXev0ZrvD20xI3QKldCy1wJLXNn16FzJ7TOndA6d0Lr3HgZqrw9tMSN0Cp31midGxOtciO0yoXQInfWaJ0BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdvgDzmYIQxxruIAAAAAASUVORK5CYII=' }
   };
   const SPEED = .42;              // noise units per second toward the viewer
   const PERIOD = 256 / (SPEED * 3); // noise lattice repeats every 256 → time wraps seamlessly
@@ -100,7 +102,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-varying vec2 v;uniform sampler2D T,M;uniform vec4 map;uniform vec2 amp;uniform float t,hz,asp;
+varying vec2 v;uniform sampler2D T,M;uniform vec4 map;uniform vec2 amp;uniform float t,hz,asp,glow,ramp;
 float h(vec2 q){q=mod(q,256.);vec3 r=fract(vec3(q.xyx)*.1031);r+=dot(r,r.yzx+33.33);return fract((r.x+r.y)*r.z);}
 float n(vec2 q){vec2 i=floor(q),f=fract(q);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+1.),f.x),f.y);}
 float fb(vec2 q){return .55*n(q)+.3*n(q*2.+7.)+.15*n(q*4.+3.);}
@@ -109,20 +111,22 @@ void main(){vec2 u=map.zw+v*map.xy;
  float m=smoothstep(.45,1.,texture2D(M,u).a);if(m<.003){gl_FragColor=vec4(0.);return;}
  float d=clamp((u.y-hz)/(1.-hz),0.,1.),z=1./(d+.25);
  vec2 w=vec2((u.x-.5)*asp*z*.9,z*1.6)*vec2(1.,3.)+vec2(0.,t*${(SPEED * 3).toFixed(4)});
- float a=fb(w),b=fb(w+vec2(5.2,1.3));float k=m*smoothstep(0.,.3,d);
+ float a=fb(w),b=fb(w+vec2(5.2,1.3));float k=m*smoothstep(0.,ramp,d);
  vec2 o=vec2((b-.5)*.5,a-.5)*2.*k*amp;
  float r=1.-abs(2.*a-1.);r=r*r*r;                // crest lines that travel with the swell
- vec3 c=texture2D(T,u+o).rgb*(1.+k*(.2*(a-.5)+.14*r-.035));
+ float m2=smoothstep(.45,1.,texture2D(M,u+o).a);                     // displaced sample must be sea as well
+ vec3 c=mix(texture2D(T,u).rgb,texture2D(T,u+o).rgb,m2)*(1.+k*glow*(.2*(a-.5)+.14*r-.035));
  gl_FragColor=vec4(c*m,m);}`;
   // owner 2026-10-08 "무조건 보이게 만들어, 반응형에서도": the sea flow runs even with prefers-reduced-motion
   const reduce = { matches: false, addEventListener() {} };
   const flows = [];
 
-  function maskCanvas(def, iw, ih) {   // polygon → soft alpha (two 1-texel box blurs), image-space
-    const W = iw >= ih ? 512 : Math.round(640 * iw / ih), H = iw >= ih ? Math.round(512 * ih / iw) : 640;
+  function maskCanvas(def, iw, ih, pic) {   // polygons or traced map → soft alpha (two 1-texel box blurs), image-space
+    const W = pic ? pic.naturalWidth : iw >= ih ? 512 : Math.round(640 * iw / ih), H = pic ? pic.naturalHeight : iw >= ih ? Math.round(512 * ih / iw) : 640;
     const c = document.createElement('canvas'); c.width = W; c.height = H;
-    const x = c.getContext('2d'); x.fillStyle = '#fff';
-    def.polys.forEach(poly => { x.beginPath(); poly.forEach(([px, py], i) => x[i ? 'lineTo' : 'moveTo'](px * W, py * H)); x.closePath(); x.fill(); });
+    const x = c.getContext('2d', { willReadFrequently: true }); x.fillStyle = '#fff';
+    if (pic) { x.drawImage(pic, 0, 0); const d = x.getImageData(0, 0, W, H); for (let j = 0; j < d.data.length; j += 4) d.data[j + 3] = d.data[j]; x.putImageData(d, 0, 0); }
+    else def.polys.forEach(poly => { x.beginPath(); poly.forEach(([px, py], i) => x[i ? 'lineTo' : 'moveTo'](px * W, py * H)); x.closePath(); x.fill(); });
     const img = x.getImageData(0, 0, W, H), a = img.data, tmp = new Float32Array(W * H);
     for (let pass = 0; pass < 4; pass++) {
       const horiz = pass % 2 === 0;
@@ -173,14 +177,17 @@ void main(){vec2 u=map.zw+v*map.xy;
       st.key = key; st.def = MASKS[key] || null; st.ready = false; stop(); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       if (!st.def) return;                              // a photo without a mapped sea stays still
       const im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
-      im.onload = () => {
-        if (st.key !== key) return;
+      const pic = st.def.png ? new Image() : null;
+      let left = pic ? 2 : 1;
+      const done = () => {
+        if (--left || st.key !== key) return;
         try {
           gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, photoTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
-          gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, maskTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, maskCanvas(st.def, im.naturalWidth, im.naturalHeight));
+          gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, maskTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, st.mask = maskCanvas(st.def, im.naturalWidth, im.naturalHeight, pic));
         } catch (e) { return; }                          // cross-origin refused → stay still
         st.iw = im.naturalWidth; st.ih = im.naturalHeight; st.ready = true; size(); start();
       };
+      im.onload = done; if (pic) { pic.onload = done; pic.src = st.def.png; }
       // iOS Safari reuses the <img>'s non-CORS cache entry and taints the texture → load the photo as a same-origin blob
       fetch(src, { mode: 'cors', cache: 'no-store' }).then(r => r.ok ? r.blob() : Promise.reject()).then(bl => { if (st.key === key) im.src = URL.createObjectURL(bl); })
         .catch(() => { im.src = src + (src.includes('?') ? '&' : '?') + 'nsgl=1'; });
@@ -195,8 +202,9 @@ void main(){vec2 u=map.zw+v*map.xy;
       const ox = r.left - b.left + (r.width - dw) * pos[0], oy = r.top - b.top + (r.height - dh) * (pos[1] ?? .5);
       st.geo = { dw, dh, ox, oy };
       gl.uniform4f(U('map'), b.width / dw, b.height / dh, -ox / dw, -oy / dh);
-      const a = b.width <= 600 ? 13 : 9;   // swell height in CSS px; phones get more so the small sea reads clearly (owner 2026-10-08)
+      const a = st.def.amp || (b.width <= 600 ? 13 : 9);   // swell height in CSS px; never less on phones than on PCs (owner 2026-10-08: PC·반응형 동일)
       gl.uniform2f(U('amp'), a / dw, a / dh);
+      gl.uniform1f(U('glow'), st.def.glow || 1); gl.uniform1f(U('ramp'), st.def.ramp || .3);
       gl.uniform1f(U('hz'), st.def.horizon); gl.uniform1f(U('asp'), st.iw / st.ih);
     }
     const t0 = performance.now();
@@ -225,6 +233,6 @@ void main(){vec2 u=map.zw+v*map.xy;
   });
   document.addEventListener('visibilitychange', () => flows.forEach(f => document.hidden ? f.stop() : f.start()));
   // measurement hook (live checks): where the sea is on screen for each banner
-  window.NatureSeaFlow = { masks: MASKS, state: () => flows.map(f => ({ key: f.key, ready: f.ready, running: !!f.raf, geo: f.geo, rect: f.banner.getBoundingClientRect().toJSON(), polys: f.def?.polys || [] })) };
+  window.NatureSeaFlow = { masks: MASKS, state: () => flows.map(f => ({ key: f.key, ready: f.ready, running: !!f.raf, geo: f.geo, rect: f.banner.getBoundingClientRect().toJSON(), polys: f.def?.polys || [] })), mask: i => flows[i || 0]?.mask || null };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true }); else scan();
 })();
