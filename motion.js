@@ -90,7 +90,7 @@
   // sea polygons per banner photo (file name), image coordinates 0–1, kept clear of the box, the rocks and the horizon
   const MASKS = {
     'support-pc': { horizon: .203, polys: [[[0, .2], [.722, .2], [.722, .45], [.69, .52], [.68, .555], [.68, .6], [.655, .62], [.6, .645], [.5, .665], [.35, .69], [.2, .72], [0, .745]], [[.89, .2], [1, .2], [1, .375], [.89, .395]]] },
-    'support-m': { horizon: .384, polys: [[[0, .375], [.5, .375], [.5, .565], [.395, .575], [.395, .69], [.3, .715], [.14, .76], [0, .79]], [[.965, .375], [1, .375], [1, .55], [.965, .55]]] }
+    'support-m': { horizon: .384, polys: [[[0, .375], [.52, .375], [.52, .55], [.405, .6], [.4, .7], [.3, .725], [.14, .765], [0, .795]], [[.96, .375], [1, .375], [1, .555], [.96, .555]]] }
   };
   const SPEED = .42;              // noise units per second toward the viewer
   const PERIOD = 256 / (SPEED * 3); // noise lattice repeats every 256 → time wraps seamlessly
@@ -191,7 +191,7 @@ void main(){vec2 u=map.zw+v*map.xy;
       const ox = r.left - b.left + (r.width - dw) * pos[0], oy = r.top - b.top + (r.height - dh) * (pos[1] ?? .5);
       st.geo = { dw, dh, ox, oy };
       gl.uniform4f(U('map'), b.width / dw, b.height / dh, -ox / dw, -oy / dh);
-      const a = Math.min(9, Math.max(5, b.width / 160));   // swell height in CSS px: 5 on phones … 9 on wide PCs
+      const a = 9;   // swell height in CSS px, same on phones, tablets and PCs (owner 2026-10-08: PC·반응형 동일)
       gl.uniform2f(U('amp'), a / dw, a / dh);
       gl.uniform1f(U('hz'), st.def.horizon); gl.uniform1f(U('asp'), st.iw / st.ih);
     }
