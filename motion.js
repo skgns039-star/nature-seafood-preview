@@ -114,7 +114,8 @@ void main(){vec2 u=map.zw+v*map.xy;
  float r=1.-abs(2.*a-1.);r=r*r*r;                // crest lines that travel with the swell
  vec3 c=texture2D(T,u+o).rgb*(1.+k*(.2*(a-.5)+.14*r-.035));
  gl_FragColor=vec4(c*m,m);}`;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  // owner 2026-10-08 "무조건 보이게 만들어, 반응형에서도": the sea flow runs even with prefers-reduced-motion
+  const reduce = { matches: false, addEventListener() {} };
   const flows = [];
 
   function maskCanvas(def, iw, ih) {   // polygon → soft alpha (two 1-texel box blurs), image-space
@@ -147,6 +148,7 @@ void main(){vec2 u=map.zw+v*map.xy;
     layer.replaceChildren();
     layer.classList.add('ns-sea-flow');
     layer.style.cssText = 'position:absolute;inset:0;pointer-events:none;filter:none;mask-image:none;-webkit-mask-image:none;overflow:hidden';
+    layer.style.setProperty('display', 'block', 'important');   // beats the CSS reduced-motion `display:none` (owner: 무조건 보이게)
     const cv = document.createElement('canvas');
     cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';
     layer.appendChild(cv);
@@ -179,7 +181,9 @@ void main(){vec2 u=map.zw+v*map.xy;
         } catch (e) { return; }                          // cross-origin refused → stay still
         st.iw = im.naturalWidth; st.ih = im.naturalHeight; st.ready = true; size(); start();
       };
-      im.src = src;
+      // iOS Safari reuses the <img>'s non-CORS cache entry and taints the texture → load the photo as a same-origin blob
+      fetch(src, { mode: 'cors', cache: 'no-store' }).then(r => r.ok ? r.blob() : Promise.reject()).then(bl => { if (st.key === key) im.src = URL.createObjectURL(bl); })
+        .catch(() => { im.src = src + (src.includes('?') ? '&' : '?') + 'nsgl=1'; });
     }
     function size() {                                   // canvas = banner in device pixels; image placed like object-fit:cover
       const b = banner.getBoundingClientRect(), r = img.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
@@ -191,7 +195,7 @@ void main(){vec2 u=map.zw+v*map.xy;
       const ox = r.left - b.left + (r.width - dw) * pos[0], oy = r.top - b.top + (r.height - dh) * (pos[1] ?? .5);
       st.geo = { dw, dh, ox, oy };
       gl.uniform4f(U('map'), b.width / dw, b.height / dh, -ox / dw, -oy / dh);
-      const a = 9;   // swell height in CSS px, same on phones, tablets and PCs (owner 2026-10-08: PC·반응형 동일)
+      const a = b.width <= 600 ? 13 : 9;   // swell height in CSS px; phones get more so the small sea reads clearly (owner 2026-10-08)
       gl.uniform2f(U('amp'), a / dw, a / dh);
       gl.uniform1f(U('hz'), st.def.horizon); gl.uniform1f(U('asp'), st.iw / st.ih);
     }
