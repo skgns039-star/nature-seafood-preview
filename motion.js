@@ -75,164 +75,83 @@
   window.NatureMotion={init};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>init(),{once:true});else init();
 })();
-/* 2026-10-08 sea flow (대표님: "이용약관·개인정보처리방침·찾아오시는길·고객센터·Q&A·공지사항·1:1문의하기 히어로 배경이 물 흐르듯 안 흐르는데 … 근본적인 원인을 찾고 완벽하게 해결").
- * Cause (measured on nsaefood.imweb.me): the G1 ripple (.ns-sea-wave + SVG #ns-sea-ripple) lived in each page widget's HTML,
- * so terms/privacy/directions never had it (0.00% change), and where it did exist it only breathed (feTurbulence
- * baseFrequency 0.012→0.017 over 22 s, scale 9 → 1.5 s diff 0.5–2.5% of pixels, mean 0.3–0.6), which reads as a still photo.
- * Now this shared module adds the layer to every .ns-page-banner: one WebGL pass scrolls perspective noise toward the shore
- * and displaces + lights only the sea. The sea is a per-photo polygon in image coordinates; outside it the canvas is fully
- * transparent, so the box, rocks, sky, horizon and caption stay pixel-identical. An existing .ns-sea-wave is reused (no
- * duplicate) and the old SVG filter is removed. Off with prefers-reduced-motion; paused off-screen and in background tabs;
- * no WebGL / unknown photo → the photo simply stays still. */
+/* 2026-10-10 sea video (대표님 2026-10-08: "너무 인위적이야, 이미지에 울렁거리는 효과만 넣은 듯해. 모션그래픽으로 aicron 설정해서
+ * 사실화로 만들어서 넣어줘, 이미지 변질 없이." → library/media-prompts/WORKFLOW_히어로모션_사실화.md).
+ * The WebGL ripple drawn over the photo (2026-10-08) is gone. Every .ns-page-banner whose photo has a realism clip gets a real
+ * sea video: Midjourney realism still → AICRON clip (locked-off camera, only the water moves) → seamless loop, everything outside
+ * the sea re-composited from the still. On the page the video sits exactly over the <img> (same box, object-fit and position) and
+ * is clipped by a soft sea mask, so outside the sea the original photo shows through untouched (difference 0).
+ * <video muted autoplay loop playsinline preload=metadata poster>, H.264 MP4. Plays with prefers-reduced-motion as well (owner:
+ * "무조건 보이게"); paused off-screen and in background tabs; blocked autoplay or a failed load → the poster / the photo stays. */
 (() => {
   'use strict';
   if (window.NatureSeaFlow) return;
-  // sea polygons per banner photo (file name), image coordinates 0–1, kept clear of the box, the rocks and the horizon
-  const MASKS = {
-    'support-pc': { horizon: .203, polys: [[[0, .2], [.722, .2], [.722, .45], [.69, .52], [.68, .555], [.68, .6], [.655, .62], [.6, .645], [.5, .665], [.35, .69], [.2, .72], [0, .745]], [[.89, .2], [1, .2], [1, .375], [.89, .395]]] },
-    // phone photo: the whole visible sea (left of the box, the gap under the lid, the strip right of it), traced from the photo's own pixels
-    // (seawave-m-20261008/build_mask.py) — 360×450 alpha map, 4–8 image px clear of the lid, box and rocks; no straight cut-offs
-    'support-m': { horizon: .384, amp: 14, glow: 2.5, ramp: .08, png: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAHCCAAAAADnCQyBAAACeElEQVR42u3d0W3DMBBEQW6Q/lt2fuMCuKKOMxUIDweKpAB7LQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgPfI59VPf/TTfaX9MWuVzkK3CC200AgttNASCC00QgstNEILjdBCC718YBHaRCO00EIjtNAILbTQCC30ctVhooUWGqGFRmihhUZooRFa6HXnVYeJFlpohBYaoYUWGqGFFtoJXGgTjdBCC43QQiO00EIjtNDLVYeJFlpohBYaoYUWGqGFRmihhUboNeLyzkQLPcyvBJ2FTujS60TorX/nG0tHe2fkZWjXITTXbO8itMyWDqFvGOgXho6J1nlQ6FijdR4UOnYdOg8KHftonQeFjpOhzoNCx10Hk0JHaJ0HhY6lQ+dBoeNlqPOg0LG909mBRehrB/rw0DHROg8KHWu0zoNCx65D50GhYx+t86DQcTLU2V2H0Ab6zNAx0ToPCh1rNEILjdBCC43QQiO00EIjtNAIve79lbAIrfKU0LMznxJ6euUzQl9Q+YDQd1R+OvQ1lR8NfVPl50JfVvmxk2EcwXUeFDoulXQeFDquSXV++fYu63Nv4P9/6GSCXz/RKjdCq9wIrXIjtMqV0DI3QqvcCK1yJbTMjdAqN0Kr3AitciW0zIXQIldCy9wIrfKqfGHRuTLRMncmWudOaJ07oXXev0ZrvD20xI3QKldCy1wJLXNn16FzJ7TOndA6d0Lr3HgZqrw9tMSN0Cp31midGxOtciO0yoXQInfWaJ0BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdvgDzmYIQxxruIAAAAAASUVORK5CYII=' }
+  const V = '202610110100';
+  // banner photo (file name) → clip, poster and soft sea mask; files sit next to the photo (assets/banners/)
+  const VIDEOS = {
+    'support-pc': { mp4: 'support-pc-sea.mp4?v=' + V, poster: 'support-pc-sea-poster.jpg?v=' + V, mask: 'data:image/png;base64,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' },
+    'support-m': { mp4: 'support-m-sea.mp4?v=' + V, poster: 'support-m-sea-poster.jpg?v=' + V, mask: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtAAAAOECAQAAAAiNs5CAAAi0klEQVR42u3dW48jSX7e4bd7Djt70K4gyYJtwFc+fP/PYxgG7OmqYhXPZJLJPJDURQazamTLGMldxZze52nMCtLuVc7oh9hgxD8+XQPAFH32CQAEGgCBBhBoAAQaQKABEGgABBpAoAEQaACBBkCgARBoAIEGQKABBBoAgQYQaAAEGgCBBhBoAAQaQKABEGgABBpAoAEQaACBBkCgAQQaAIEGQKABBBoAgQYQaAAEGgCBBhBoAAQaQKABEGgAgQZAoAEQaACBBkCgAQQaAIEGQKABBBoAgQYQaAAEGgCBBhBoAAQaQKABEGgAgQZAoAEQaACBBkCgAQQaAIEGQKABBBoAgQYQaAAEGkCgARBoAAQaQKABEGgAgQZAoAEQaACBBkCgAQQaAIEGEGgABBoAgQYQaAAEGkCgARBoAAQaQKABEGgAgQZAoAEQaACBBkCgAQQaAIEGEGgABBoAgQYQaAAEGkCgARBoAAQaQKABEGgAgQZAoAEEGgCBBkCgAQQaAIEGEGgABBoAgQYQaAAEGkCgARBoAIEGQKABEGgAgQZAoAEEGgCBBkCgAQQaAIEGEGgABBoAgQYQaAAEGkCgARBoAIEGQKABEGgAgQZAoAEEGgCBBkCgAQQaAIEGEGgABBpAoAEQaAAEGkCgARBoAIEGQKABEGgAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaAAEGkCgARBoAIEGQKABEGgAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaAAEGkCgARBoAIEGQKABBBoAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaACBBkCgARBoAIEGQKABBBoAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaACBBkCgARBoAIEGQKABBBoAgQZAoAEEGgCBBhBoAAQaQKABEGgABBpAoAEQaACBBkCgARBoAIEGQKABBBoAgQYQaAAEGgCBBhBoAAQaQKABEGgABBpAoAEQaACBBkCgAQTaJwAQaAAEGkCgARBoAIEGQKABEGgAgQZAoAEEGgCBBkCgAQQaAIEGEGgABBpAoAEQaAAEGkCgARBoAIEGQKABEGgAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaAAEGkCgARBoAIEGQKABBBoAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaAAEGkCgARBoAIEGQKABBBoAgQZAoAEEGgCBBhBoAAQaAIEGEGgABBpAoAEQaACBBkCgARBoAIEGQKABBBoAgQZAoAEEGgCBBhBoAAQaQKABEGgABBpAoAF4F9/nP/sIfMOuueaSPm3a1Gl9EO7qp/yU3+XHfJdPv2Z5/H3+q2/GNx7oPk3qHLLLPpVPwp18lz/mz/mb/DE/5cd8/+sC/d98N75hl1zSpU6VdX7I55xT+yjcxR/yl/xd/j5/yZ/y+/yQz/kk0Py1r6DPaXLMOn/IdyXWcJ9A/zn/kH+ff5e/zR/yu18X6P/iu/FNB7rPKVX+Jj/knDp1Pufis3AHvy+B/g/5+/wpv893vybQ/8l345sOdJcmm/yQLoess8v3fiok9/mB8I/5c/4u/5h/zJ/zh3z/awL9D74b3/gWxzHf55wqq/whP+U7H4W7+LEk+m/zd/lL/vjrAv0n341vPNCfc84hf8zv81N+EGhyr1sn3+fH/JQ/5I/5068N9E++G/mWT3H0uaTO7/JjfsgPv2bfD/I+x+w+53O+z/f5IT/mx/z4awLtLiHfsk9l5TL8P8dngeaO/yx+yud8l+/yufzz+MlVb/g0/oGYxQGZ2G3C2x9H7BBomOBEjksuufoYCDRMJ86Xf/YHBBoyjXMcw33CPpdcchZoBBqmsn5OWTef06UTaAQaprXFcc4l5/Tpc7YLjUDDtM5wnNPnXP4VBBoyrfuEl1zTpvc5EGiY1imOc/kDAg2T+pnwagcagYZpXlE5OwWNQMPUVs8p73r3ZQ0NAg2T3IG2gkagYVJbHOdc0uecXqARaJjaRZVzOWrnkB0CDZnOJI7bLcIuydwnQaBhOol+XUPb4ECgIVPdhwaBhokN6u/LXyDQMKlEd2VQkkAj0DCpOXa3adAX11QQaJhWpPvxJqFAI9AwwR8IL7mk80EQaJjOLI5rOQfdJdn4JAg0TG0FfTbLDoGGKf5QeBuWZBo0Ag0TyvN5fPDKChqBhkzpmve1PBc7HLQDgYbJPHZ1OwXdWUEj0DC1UaO3aXb2oBFomNxdwr5c9XZRBYGGTGkfeviJ8JrWNDsEGqb6IiEINEzqZ8KrHWgEGqY5DfrsFDQCDVNbPQ+bHL1Zdgg0THsH2goagYYJvkXoPRUEGiZ4UeU8vkkIAg2ZxgnojLcIuyRznwSBhikNS3qdBg0CDZnmPjQINEzqFPRt/9kKGoGGiSW6K4OSBBqBhknNsbtNg764poJAw7Qi3Y83CQUagYYJ/kB4ySWdD4JAw3RmcVzLOeguycYnQaBhaivos1l2CDRM8YfC27Ak06ARaJhQns/jg1dW0Ag0ZErXvK/ludjhoB0INEzmsavbKejOChqBhqmNGr1Ns7MHjUDD5O4S9uWqt4sqCDRkSvvQw0+E17Sm2SHQMNUXCUGgYVI/E17tQCPQMM1p0GenoBFomNrqedjk6M2yQ6Bh2jvQVtAINEzwLULvqSDQMMGLKufxTUIQaMg0TkBnvEXYJZn7JAg0TGlY0us0aBBoyDT3oUGgYVKnoG/7z1bQCDRMLNFdGZQk0Ag0TGqO3W0a9MU1FQQaphXpfrxJKNAINExsi2OIsx8JEWiY3Hvew8+E16x9EgQapnSP8FouqjgHjUDD5H4mvD14JdAINEwo0bcDdhc/EiLQkMld8+7SpfOeCgINU9rgOI8/EdqDRqBhgi9692WjAwQaJnjM7pI2jU+CQMO05tgNa+jOB0GgYYq70Bc/ESLQMKU3vV+vegs0Ag2TyvNtFvQQaRBomNQO9HAOureCRqBhSnM4bn/OpkEj0JAJnoLujRpFoGFqF73fPhc790kQaMjENjmGHWhraAQaJvoqIQg0TOgMx7UcszNqFIGGCb5HeClraBBomOAp6M4ONAIN07pHeH5zlxAEGiaT6IxzOHqBRqBhijcJz0k2PggCDVPbhe7S5ZrWB0GgYZrvqYBAw8Ty3I/DkkCgIVOZxHEup6DPLqog0DC9HwmHU9Bn06ARaJjea4S9c9AINGSS06CHLQ4QaJjkGY42jU+CQMO0TkEPa+jOB0GgYYq70Bc/ESLQMK1hSdfxJ0KBRqBhUrPsbtdUej8SItAwzWnQvRU0Ag3Tm2Q3XPN2jxCBhkztFPQwDRoEGiY0ieP2okqfZO6TINCQiW1yDDvQ1tAINEzsJuF5fFEFBBomc4bjNg3aqFEEGiaX6H581xsEGiZ4CrqzA41Aw7TuEZ7f3CUEgYbJJDrjHI5eoBFomOJNwnOSjQ+CQMPUdqG7dLmm9UEQaJjmeyog0DCxPPfjsCQQaMhUJnGcyynos4sqCDRM70fC4RT02TRoBBqm9xph7xw0Ag2Z5DToYYsDBBomeYajTeOTINAwrVPQwxq680EQaJjiLvTFT4QINExrWNJ1/IlQoBFomNQsu9s1ld6PhAg0THMadG8FjUDDtAJ9Ga95u0eIQMPE7hHepkGDQEOmM4njOr6nksx9EgQapvjsVayhEWiY3i60F70RaAAEGv41B+0uuVpBI9AwzU0OgUagYVJH7M7jSeheoPnt+94nIN/WUbuunIJ2TYXf7kkkgeabnQR9TucUB7/BKF/LIiO3LTqB5tsbNnoudwnht3N2//bk8e03lGuuAs23d9H7XKbZGdfPb2FJcVtYXHPOOZd0ZZFxzVmg+fb+S+Kl3CPc+CT8ZjblLunLW/Rt2nQ5D9MYBZpv7R/519MckAn+jH1LcluG4/bp0qdJm1NOaXJKW37qFmi+wf/KCFNeM98mll/GMDdpcsoxdU455Jg2jUDz7a5QrlLNRE/qd2lzyg/p06bLKU3q1DnklEOqHHJInSZNOnvQAB+lS59TjqnyU865pEmTY4455pCq/Ost0N0wi1Gg+Tb3oa2gmZo+darss8o1u5LnQw5jmIc41+lSp8suO4Hm24szTFOTY7ZZJDnkmlNOY6APOaZOnSanVKlej4gKNN/qq4QwLYfs8lM+55Sf0qXOqWxwnHJKnUOabGMWB9/4of9boK2lmZZTtvmcLtt8ly5t6tRp06TO+l+6ViXQ5Bt6kfCcvrymcjYsicmtoK8555jf5XPaHNOkzzqm2fFXddV7uI/VW0GTqf1IWKXNId+nSvfr/vkUaL6lM6bDmKS+rKNhav8t75RTzIPmr24Kx22GXVNmGXjRmxjYD1OI87WMmalzSp1T2tRpfBwEGu598rnPOW2OqbLPPlUOadL6OAg03PvU8zCm8ZhdlllmmU12OVg/I9Bw7x8Gu3Spc8gum8wzyyzzbLL/1/0UAwINX3v13KVJnX22WWaZl8wyy3OW2af2iRBoyN2OLPVpc8w+yyzznOe85DnzzLPO3oNXCDTc89RzmzpVFlnkMbM85TnzrLPNxvoZgYb7/jh4SpV1FnnMz3nIU9l9XvpACDTcd/e5ziHbzPOcL/mSxzxnk5kLKgg03PdiSjvO1n3OYx7zmFlm1s4INNx37/maNk2qbLLKS2Z5zFOes5ZnBBqmcLTukE2WmeVhzPOzz4NAw32HibZpU2WTRWbj5sYyO9OfEWi479SNLm2qrLPMLI95yGNmWWSfvQ+EQMM9NzeGved12dx4yM95zEs22fhACDTcM9Bd2jd7zz/nIQ95yTo7nweBhtztUvftWvcuqzznIT+PJ5/XPg/frs8+Ab+Bk8/Dte59VnnJY9l9lmesoOHumxvndDmlyiovecpjvuQpL1nbe8YKGu6d52H1vM683Bt8yrOfBhFomEKem1TZZp6XPOWpDEVa+TwINEwjz8PUjdvmhmvdxB405G4nN96efF7kOU/jtW6bGwg03HX13JefBoeTz8NI0ZessvZiNwIN91w992lzyr5MfH4Yr3WvPAeLQMN9bw12qVNlnXlmecyXPOYxL9nm6AMh0HDP1XOXOrtsMi/nnh8zy0s22fpACDTc79bgkOd91nnJLF/KzOdFtvKMQMO9H4O95fkpD/nfZeLz0uYGAg33DPS5vJeyzSKzPORLHvKUVVbyjEDD/S+mHLLNqkx8/pJZFlmn9nkQaLj3xOfX7Y3h3qCDdQg03PmnwUv5cbAqeX7KU16ylGdiFgfc/UHY29mNRQn0c5bZ2NzAChruG+fb6nlbpm7M8pJFVql8Hqyg4f553peLKU95yizz7Lw2iEDDffN8GYciDXl+yFNeTHwGgeb+F1OGoUhDnh/Kte5Vtjn7QMQeNNxx9fz6Xsrbiyl7F1NAoLnn6nk4+Vxlk0We8qXkeZGZic+Q2OLgvhdTmhzKQP7HPOQhT5nnWZ7BCpr73xs8ZvuLPL9km8bnAStopnC0bpWXzPJzWT1vHa0Dgeb+9wZP5cWU4THYYSC/PENscXDfo3VDnrdZ5iWzPJbNDQP5wQqau6+e29TZZVmm1j1nkW02Pg5YQXPv1XOTQ3ZZZZ5ZZnnJS9ZZ+jxgBc39V8/HcSjSY57ynE0WPg5YQXPv1fPwYsptc+MpL1llm6sPBFbQ3DPRfbocs8syz3ksD1rNszNUFASae598bn+R59vJZz8OgkAzgYspw0+Dj2VqnR8HQaCZxMzn24spT3nMQ57ynLUfB0GgmcLM59u9wYc8lJnPc58H4hQHE5j5vMlyfDHF6hmsoJnE6rnJ7hcPWs2yztzROhBo7n9v8PZa92PZ3FhnkYsPBALNvfKcsno+ZJ1FZvlS8rzMNp0PBLEHzWReTPmSL+Xks4spINBMYOrGbszzbajo3ueB2OLgzhdTjtmXic8/54uZzyDQTGFz4+2DVk95KFPrXOsGgebuZzf68mLKPLM8jpsb8gyxB809A30efxycl/e6n7LIJmsfBwSaKbyYMpx8nuUpz3nJOiufB2KLg7uf3Thkk8U4kn+WlZ8GwQqa6bw3+FKudb9knW1aHwgEmvvl+Zz+zcWUp3JvcJF1Tj4QCDT3cclwrbvN4c3FlIc8Z55Njj4QCDT3PPfcp06dTZZ5zlO51v2SbXY+EAg09701OJx7XpVzzz/nKXNH60CgmcKtwWrce/6SxzzmORvvDYJAc+9bg3WqrLPIcx7K3vNztvIMAs29bw22qbN989qgzQ0QaCZxtK7LMdus8lJWz0+ZZ+2nQRBopjGzbp3n8uPgY+ZZGcgPcdWbu19MqVNllXme85inPMkzCDT3z/N1HIo0XOt+ylMWWcszxBYHkxiKtMsiL5llluessvGcFVhBc//d5zbH7LPKIk+ZZZZ51k5ugEAzlRdTht3nWWYG8oNAM5XtjVO5OfhcXhtcZJfexwGBZhqH65Zl93meRfZ2n0GgmcLtwdM4lP8lL5lna3sDBJop5Lkfbw8uMs/ca90g0EwhzynPWh2zzyarLLOz+wwCzZReHjzlkCq7HLN3NQUEmulc8W7T5JRjTtlm7qOAQDOlNfQwZrTPygcBgWZacziGHwvPPgcINNPb5jjnkksuPgcINIBAAyDQAAg0gEADINAAAg2AQAMg0AACDYBAAwg0AAININAACDQAAg0g0OSvZmD/pbyqAryr730CfmWWk2vOuYxvqVxyFmkQaKbwzFVyzjltujRp06UXaBBo7r9yHl7yPqdJnUMOOaZOk86zsSDQ3C/Ol7Kx0adPk2OqbLLJJvscckrvI4FA8/Gr5pT95tvGximnVNlkmee8ZJVdDgINAs1Hx/nturlNm1PqHHLMNpss85JZ5tnkkIsPBgLNx62ab2c1uvRpcyr7zlWqbLPLKqsss8gim1Q+Gwg0H7fXPGxpdOO6uU6VQ/bZZ1cCvck222xyyNGnA4Hmo/aau5zLMbpTjiXOu7J2vv2pcsjW/jMINO+913zONeec06dJnyZNTjnlkFOJ8z67sn7ep8ohdXbZ+Xwg0LzfqvlawjxsZ3Rp0qROnUNOOZZtjaoEukqVOsfs02TvE4JA836XTm4/A/bp0qbJKXWOOeaQQ6occsi+BHqfQw6pc8oqjTMbINC876r5UuL8ekKjTpUq+1Tlz6GE+ZhTjjlm5ROCQPOeV7UvY5qHdXMzbmXs3+wyD/vMhzQ55ZiNnwJBoHnvvebrL9Jcl7PNt+Nzw/88pCoH6/osfUIQaN5r+tx1PNU8HJ9r06bNMXWO5VbgIdtsyw+Bw15znTYLnw8EmvcbDHodzzV36dKkyyntmOaqrJ332ZZTGqdUOdlrBoHmfW8EXt5Mn2vSph5PadTj8bn9+KPgsHLepPP5QKB576nNfc5lzXzKoRyeGw7QvZ5vHn4KPKbKKXvH50Cged+Vcz/eCGzLj4CHcjJjuJ49BPpY1sxN5jkbuA8CzfuvnYfZc00ZDHoYbwFux/kZxxzT5JRD6uwdnwOB5iMSPfwYOFwqqbIfRxtty79WOeaUOqcsrZpBoPmoOF9yKcfnquyyLQ9SDY9SDZkeLp7MfSwQaD76tHObJofssso686yyyCbrMuJoGG9k+hwINHdYP7dpcygPUT1nnpcsssk2dfap0nr1BASa++S5S5tDdlnkOY95HJ9zPWblvRMQaO5jeKKqzTH7LPOShzzkS56zyDZb62YQaO55uK5Pmzr7rMrq+ec8Zp5tXnweEGju+ePgOV3qVNlknuc85iGPmefBxgYINPe9mNKlH/M8y2Me85S5fWcQaL52cH/9vz/kuU+fU6qs85JZnvKYWV6yNsMZBJqvO0Pj/5Xp23/iWv4Tt4FITQ5Zl9XzlzzlOatsfVAQaL7uaye34fq/9GnM83X86zbnuc0p+ywzy0Me8pTnrLM1MBQEmq8R50t5hOpaJtANAb6Oaf6UT2Oc+/Ka4O1oXZ8uh6yzzFMJ9DLrND4tCDRf462TSxlw1KdLl3O6fzHQffox0bcXuescsskiszzlJYusUvu8IND8/+T5tgLu06ZLkyantDmVSF/GnehP+ZTPyZjxLucxzpf0qcvsjUXmWWTn7AYINP/23ea8eb61zSlN6vKmSZ1TmjTp3wT68xjovgS6fxPoLk2O2WebbTapjEICgebfutucsqXRlzgfy6sm1fj01Clt+pz/L4G+bYL06ZOcy/yNIdFVDtml9aFBoPnXn9F43TXu3ozU32dfXjvZl5dOhkD/8tzz51+suvuyT33bi27LOvzqc4NA8+svndyOxb3GdXjCtX7z3skm2+xSZZ9jmrTp02ZTjtp9yp/yU5JP6XPNLk3JvGN08Ffm09Ua7Gu+DJjxjMYlbfo05afAOsfyTuDw6sm2vHXSpEqbhZUwYAX9fpOZr+VM823VPDzg2pTHWodXtffjW4H7VKlzcL0EEOj33W2+bWf0ZdXc5pQ6TQ5vfgwcHqDap8oudQ7ZZ+8DAgL9nnM0LmOa2zRpUqceT2oMUb6d1jiWv+ps3fsDBPq952hcysnmNnXqEuDDL1bO+3KUrkmVQ9rUDsYBAv1+q+breHyuLXvNx3ELY599DmXP+ZAqdY5psktl1QwI9Puvmt9eOznlmEN25VzGLrsS6OP47zXu+gEC/b57zZc3Z5ubtGnK4bl99tmUw3P77FKlTps6VXY5/x9jRAEE+qudbb7tNd/uAzZlx3nYb96V1fOmHJ875ZAqG58PEOj3nD53Hc9oDD8E3sYcDWcxbnvO23HlPJzQOPl4gEC//ySNfjzXfHpzTuP4z841V+XcxtrnAwT6fTc1LmX2RV+unNymzx2yzyH7MdC3081NKtdOAIF+35nNr89Q3Q7QHcr0ud14hG4I9DF1mmzTZp+zjwgI9PvtNV/GdwKHGczDynlffgTclp3mKsccc0yTU6rsDDkCBPp9NzRuPwS+fYyqLsONtlmNb5dUqVOncrIZEOj3P9/8euWkGX8MbMrPgfuybl5nm23ZbV6ZPgcI9EdMoLuUONfldcBjDjnlmLoMB92OdwOP2TujAQj0+78SOLzt15chR8O85m0ZbzSccT6UMxq7snLe2m0GBPr9HqJ6fSVw2NYYXjqpUpWbgLfLJsPPgPX47x79YwII9HvF+fKLC9u3nwEPqcc5GsMPgbvxje06bapUJmkAAv3ee82XXNKXdXNbdpz3qcr5jE3W2WaXY6qcsrVmBgT6fU9ovB1y1JdXApvyg2CVXTnjPMyh22WfOhv3AQGBfu9V8+0B17aEeThAdyo/CFblduA2u+yzTV2ucdvQAAT6nefPXdKPl7XrcifwND5ItX8z5GgYrL/y2gkg0O99J7AvD7h244WTqkyfe/tS4DD0aDj37HQzINDv6pJr2We+PUNVlzAPq+X9GOhhLX3KMev0/gEABPr9r2x344Cjw5tZzfvsxkDX5XnXYTwogEB/wL5zlz6nnEqQN+MzVLdXto85pMsum5ytmgGB/qg8X8rr2sNwo1VWWY/XTob95lOqNF4JBAT6Y/M8vLB9zCGbrLLMIvMss846VfZly2Nn1QwIdD74Z8FL2jQ5ZJ9VlnnJS14yzzKbMlp/6W8wIND3WD336VLnkG1WeclLZiXQ61SpbGkAAn2/1XOXOlU2WeY5T5nlKS+ZZ5u9lTMg0Peb6NynzzFV1pnnOY95zFNmWWSXZVp/WwGB/riBoa9TnYer3F1O2WeTeWZ5zJc8jnk2WB8Q6A/L8jXXJOfctjaGN7cP2WaZpzzkIY95yiIrs+gAgX7vl09eBx/dtjRub2/f3kI5Zpd1XvKUh3zJcxZZuR0ICPT7pXk42XxbKV/K2NDbXOeuPPHaljcEhx8Hn0qeDdkHBPod5jffXj55XSffRobe0nxOV56qGkYh7bLNopx9XskzINBff8hRykr59tPf8CxVn67867n8X7o3Q/frHMrMjVVW2WQvz4BAf90RR0lf3go8pxtXyE0ZtD/8793475zS5jSO36/KYKRDdobtAwL9td8LPI8TnNtxdXxL8BDqLk35UfAW6Kb8Z5rU5fkqAIH+qi+fdOnL+9q3Z1yH9wIPZdj+KU2aMdBturS5lEQf02XnOgog0F870beDck0J8vAuYFVeOxlePKlzSps2XXnCaoj0umyGAAj0O+w7D5sadXmMalf+7MdQH3MsO9B12lyyt4kBCPRHjNa/3QE8ZJNtNlllXV4+GZ52rdOkTZVdrrYwAIH+yNH6XY45ZJd1lllmkXWW2WZXXtg+ps3OFgbAxwX67csn+6yzyjzzvGSRVZZla2OV1pgjgI8M9HUcrd/mkF2WWeQlz5llnmWWOWSfjVUzwEcHejhW16XLKVW2WWVepmcM8zN2WefsbwLARwd6WD0Pb27vs8mi5Pkps8yzzS47fwMAPj7Q13LmuS0vnyzylFkey/S5TZbWzgAfG+jXCXXDBZPhze1FeZjqMc/l5RMAPizQ1zcnni+5pE2bOtusssisvBv4nJXR+gDvH+jrP1s1X5Kcc8k1fdrxWN0is3HveZ214aAA7xfoW5gv44r5dd18SZdzmrQ5lmddX/Kcp8zyklW2OfnoAO8R6Ncd5iHGGcftD6+ftOVKSpO6PEu1yHOe85xlNtm4wA3wPoG+PeV6Lkkehu1fytS5tsza6MrF7X02WWWReZZZZJu1zw3w9QN9fTPw6PUFlL68eNKX4fptWTu/TqtbZZ11Nqmy9bEBvn6gX1fOXXm4tcmpjNt/DXNT8jy8GnjMPlV22aXKIbVPDfB1A/26cj6XDYw6dQ5lvP6xhHp4/+RUAt2UN1FOZRC/UxsAXzXQt1PNlzevoNQ5jiP2hxnOTXk/sCmvCDZl3H6TOuv0ufjEAF8r0Nc36+bzuHZuynp4k23W2WRTti5OOZXXt5v0qdPknJ2jdABfO9C3F7evOZfDc5cyi+6UQ6qss8o6y6yzzi5VTuXF7W3qnHM1NhTgawf67enmc/nTj+9pn1LnmG02WWeZVTnRfMwhBzM1AN4v0Nc3O82XkuXuzV7yMU2qVNlknXUW2WSdXY6ubAO8d6CHNJ/LD4HDz3x1OSx3OzI3nGkeEr3NIbvsfTqA9w50W6Y2d+Mlk7fH6A5l97kqJzf2OWTjswF8RKAP6XMqR+jqVOWCSVVOMA+Xto85lmxvPe0K8FGB3qTOKVUO2ZfNi6okeriI0pQbg5s0PhfARwb6KceygXH7qyp5bnNIlxdrZoD7BPp/5ZBdNtmWPB/K/cBjds41A9wz0P+jrJ832Y27zU43A0wg0P+9HKOrUmeVg7e2AaYS6P+ZY06pszexGWBKPl3/Y9o0Lp4ATC/QP/gpEGCagfYNACbps08AINAACDSAQAMg0AACDYBAAyDQAAINgEADCDQAAg2AQAMINAACDSDQAAg0gEADINAACDSAQAMg0AACDYBAAyDQAAINgEADCDQAAg0g0AAINAACDSDQAAg0gEADINAACDSAQAMg0AACDYBAAwg0AAINgEADCDQAAg0g0AAINAACDSDQAAg0gEADINAACDSAQAMg0AACDYBAAwg0AAINgEADCDQAAg0g0AAINAACDSDQAAg0gEADINAAAg2AQAMg0AACDYBAAwg0AAINgEADCDQAAg0g0AAINIBAAyDQAAg0gEADINAAAg2AQAMg0AACDYBAAwg0AAINgEADCDQAAg0g0AAINIBAAyDQAAg0gEADINAAAg2AQAMg0AACDYBAAwg0AAININAACDQAAg0g0AAINIBAAyDQAAg0gEADINAAAg2AQAMINAACDYBAAwg0AAININAACDQAAg0g0AAINIBAAyDQAAg0gEADINAAAg2AQAMINAACDYBAAwg0AAININAACDQAAg0g0AAINIBAAyDQAAINgEADINAAAg2AQAMINAACDYBAA/wm/BN2o5wEtystUwAAAABJRU5ErkJggg==' }
   };
-  const SPEED = .42;              // noise units per second toward the viewer
-  const PERIOD = 256 / (SPEED * 3); // noise lattice repeats every 256 → time wraps seamlessly
-  const VS = 'attribute vec2 p;varying vec2 v;void main(){v=vec2(p.x+1.,1.-p.y)*.5;gl_Position=vec4(p,0.,1.);}';
-  const FS = `#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
-varying vec2 v;uniform sampler2D T,M;uniform vec4 map;uniform vec2 amp;uniform float t,hz,asp,glow,ramp;
-float h(vec2 q){q=mod(q,256.);vec3 r=fract(vec3(q.xyx)*.1031);r+=dot(r,r.yzx+33.33);return fract((r.x+r.y)*r.z);}
-float n(vec2 q){vec2 i=floor(q),f=fract(q);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+1.),f.x),f.y);}
-float fb(vec2 q){return .55*n(q)+.3*n(q*2.+7.)+.15*n(q*4.+3.);}
-void main(){vec2 u=map.zw+v*map.xy;
- if(u.x<0.||u.y<0.||u.x>1.||u.y>1.){gl_FragColor=vec4(0.);return;}
- float m=smoothstep(.45,1.,texture2D(M,u).a);if(m<.003){gl_FragColor=vec4(0.);return;}
- float d=clamp((u.y-hz)/(1.-hz),0.,1.),z=1./(d+.25);
- vec2 w=vec2((u.x-.5)*asp*z*.9,z*1.6)*vec2(1.,3.)+vec2(0.,t*${(SPEED * 3).toFixed(4)});
- float a=fb(w),b=fb(w+vec2(5.2,1.3));float k=m*smoothstep(0.,ramp,d);
- vec2 o=vec2((b-.5)*.5,a-.5)*2.*k*amp;
- float r=1.-abs(2.*a-1.);r=r*r*r;                // crest lines that travel with the swell
- float m2=smoothstep(.45,1.,texture2D(M,u+o).a);                     // displaced sample must be sea as well
- vec3 c=mix(texture2D(T,u).rgb,texture2D(T,u+o).rgb,m2)*(1.+k*glow*(.2*(a-.5)+.14*r-.035));
- gl_FragColor=vec4(c*m,m);}`;
-  // owner 2026-10-08 "무조건 보이게 만들어, 반응형에서도": the sea flow runs even with prefers-reduced-motion
-  const reduce = { matches: false, addEventListener() {} };
   const flows = [];
-
-  function maskCanvas(def, iw, ih, pic) {   // polygons or traced map → soft alpha (two 1-texel box blurs), image-space
-    const W = pic ? pic.naturalWidth : iw >= ih ? 512 : Math.round(640 * iw / ih), H = pic ? pic.naturalHeight : iw >= ih ? Math.round(512 * ih / iw) : 640;
-    const c = document.createElement('canvas'); c.width = W; c.height = H;
-    const x = c.getContext('2d', { willReadFrequently: true }); x.fillStyle = '#fff';
-    if (pic) { x.drawImage(pic, 0, 0); const d = x.getImageData(0, 0, W, H); for (let j = 0; j < d.data.length; j += 4) d.data[j + 3] = d.data[j]; x.putImageData(d, 0, 0); }
-    else def.polys.forEach(poly => { x.beginPath(); poly.forEach(([px, py], i) => x[i ? 'lineTo' : 'moveTo'](px * W, py * H)); x.closePath(); x.fill(); });
-    const img = x.getImageData(0, 0, W, H), a = img.data, tmp = new Float32Array(W * H);
-    for (let pass = 0; pass < 4; pass++) {
-      const horiz = pass % 2 === 0;
-      for (let y = 0; y < H; y++) for (let i = 0; i < W; i++) {
-        let s = 0, n = 0;
-        for (let k = -1; k <= 1; k++) { const xx = horiz ? i + k : i, yy = horiz ? y : y + k; if (xx >= 0 && yy >= 0 && xx < W && yy < H) { s += a[(yy * W + xx) * 4 + 3]; n++; } }
-        tmp[y * W + i] = s / n;
-      }
-      for (let j = 0; j < W * H; j++) a[j * 4 + 3] = tmp[j];
-    }
-    x.putImageData(img, 0, 0);
-    return c;
-  }
+  const keyOf = src => ((src || '').split('?')[0].split(/[\s,]/)[0].split('/').pop() || '').replace(/\.[a-z0-9]+$/i, '');
 
   function attach(banner) {
     if (banner.__nsSeaFlow) return;
     const img = banner.querySelector('.ns-banner-media img');
     if (!img) return;
+    const cands = [img.currentSrc, img.src, ...[...banner.querySelectorAll('.ns-banner-media source')].map(s => s.srcset)].map(keyOf);
+    if (!cands.some(k => VIDEOS[k])) return;                                       // no clip for this photo → it stays a photo
     banner.__nsSeaFlow = true;
-    let layer = banner.querySelector(':scope > .ns-sea-wave');                         // G1 widgets: reuse, never duplicate
+    let layer = banner.querySelector(':scope > .ns-sea-wave');                     // G1 widgets: reuse, never duplicate
     if (!layer) { layer = document.createElement('div'); layer.className = 'ns-sea-wave'; layer.setAttribute('aria-hidden', 'true'); banner.querySelector('.ns-banner-media').after(layer); }
-    document.getElementById('ns-sea-ripple')?.closest('svg')?.remove();             // old SMIL filter: no longer referenced
+    document.getElementById('ns-sea-ripple')?.closest('svg')?.remove();         // old SMIL filter: no longer referenced
     layer.replaceChildren();
     layer.classList.add('ns-sea-flow');
     layer.style.cssText = 'position:absolute;inset:0;pointer-events:none;filter:none;mask-image:none;-webkit-mask-image:none;overflow:hidden';
-    layer.style.setProperty('display', 'block', 'important');   // beats the CSS reduced-motion `display:none` (owner: 무조건 보이게)
-    const cv = document.createElement('canvas');
-    cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';
-    layer.appendChild(cv);
-    const gl = cv.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false, powerPreference: 'low-power' });
-    if (!gl) { layer.remove(); return; }
-    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
-    const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr);
-    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { layer.remove(); return; }
-    gl.useProgram(pr);
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    const U = k => gl.getUniformLocation(pr, k);
-    gl.uniform1i(U('T'), 0); gl.uniform1i(U('M'), 1);
-    const tex = unit => { const t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t);
-      [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]].forEach(([k, val]) => gl.texParameteri(gl.TEXTURE_2D, k, val)); return t; };
-    const photoTex = tex(0), maskTex = tex(1);
-    const st = { banner, layer, cv, gl, key: null, def: null, iw: 0, ih: 0, geo: null, ready: false, visible: true, raf: 0 };
+    layer.style.setProperty('display', 'block', 'important');                    // beats the CSS reduced-motion `display:none` (owner: 무조건 보이게)
+    const v = document.createElement('video');
+    v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.preload = 'metadata';
+    ['muted', 'autoplay', 'loop', 'playsinline', 'webkit-playsinline', 'disablepictureinpicture', 'disableremoteplayback'].forEach(k => v.setAttribute(k, ''));
+    v.setAttribute('aria-hidden', 'true'); v.tabIndex = -1;
+    v.style.cssText = 'position:absolute;display:block;margin:0;padding:0;border:0;max-width:none;object-fit:cover;pointer-events:none;'
+      + '-webkit-mask-size:cover;mask-size:cover;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat';
+    layer.appendChild(v);
+    const st = { banner, layer, video: v, key: null, def: null, visible: true, geo: null, errors: 0 };
 
-    function load() {                                   // photo for the current <picture> source → texture + mask
-      const src = img.currentSrc || img.src, key = (src.split('?')[0].split('/').pop() || '').replace(/\.[a-z0-9]+$/i, '');
-      if (key === st.key && st.ready) return;
-      st.key = key; st.def = MASKS[key] || null; st.ready = false; stop(); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-      if (!st.def) return;                              // a photo without a mapped sea stays still
-      const im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
-      const pic = st.def.png ? new Image() : null;
-      let left = pic ? 2 : 1;
-      const done = () => {
-        if (--left || st.key !== key) return;
-        try {
-          gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, photoTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
-          gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, maskTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, st.mask = maskCanvas(st.def, im.naturalWidth, im.naturalHeight, pic));
-        } catch (e) { return; }                          // cross-origin refused → stay still
-        st.iw = im.naturalWidth; st.ih = im.naturalHeight; st.ready = true; size(); start();
-      };
-      im.onload = done; if (pic) { pic.onload = done; pic.src = st.def.png; }
-      // iOS Safari reuses the <img>'s non-CORS cache entry and taints the texture → load the photo as a same-origin blob
-      fetch(src, { mode: 'cors', cache: 'no-store' }).then(r => r.ok ? r.blob() : Promise.reject()).then(bl => { if (st.key === key) im.src = URL.createObjectURL(bl); })
-        .catch(() => { im.src = src + (src.includes('?') ? '&' : '?') + 'nsgl=1'; });
+    const play = () => { if (st.def && st.visible && !document.hidden) { const p = v.play(); if (p) p.catch(() => {}); } };
+    const pause = () => { if (!v.paused) v.pause(); };
+    function size() {                                   // the video takes the <img>'s exact box, fit and position
+      const b = banner.getBoundingClientRect(), r = img.getBoundingClientRect();
+      const cs = getComputedStyle(img), pos = cs.objectPosition || '50% 50%', fit = cs.objectFit === 'contain' ? 'contain' : 'cover';
+      Object.assign(v.style, { left: `${r.left - b.left}px`, top: `${r.top - b.top}px`, width: `${r.width}px`, height: `${r.height}px`, objectFit: fit, objectPosition: pos });
+      v.style.setProperty('-webkit-mask-position', pos); v.style.setProperty('mask-position', pos);
+      v.style.setProperty('-webkit-mask-size', fit); v.style.setProperty('mask-size', fit);
+      st.geo = { left: r.left - b.left, top: r.top - b.top, width: r.width, height: r.height };
     }
-    function size() {                                   // canvas = banner in device pixels; image placed like object-fit:cover
-      const b = banner.getBoundingClientRect(), r = img.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
-      cv.width = Math.max(1, Math.round(b.width * dpr)); cv.height = Math.max(1, Math.round(b.height * dpr));
-      gl.viewport(0, 0, cv.width, cv.height);
-      if (!st.iw || !b.width || !b.height) return;
-      const cs = getComputedStyle(img), pos = (cs.objectPosition || '50% 50%').split(' ').map(s => s.endsWith('%') ? parseFloat(s) / 100 : .5);
-      const s = Math.max(r.width / st.iw, r.height / st.ih), dw = st.iw * s, dh = st.ih * s;
-      const ox = r.left - b.left + (r.width - dw) * pos[0], oy = r.top - b.top + (r.height - dh) * (pos[1] ?? .5);
-      st.geo = { dw, dh, ox, oy };
-      gl.uniform4f(U('map'), b.width / dw, b.height / dh, -ox / dw, -oy / dh);
-      const a = st.def.amp || (b.width <= 600 ? 13 : 9);   // swell height in CSS px; never less on phones than on PCs (owner 2026-10-08: PC·반응형 동일)
-      gl.uniform2f(U('amp'), a / dw, a / dh);
-      gl.uniform1f(U('glow'), st.def.glow || 1); gl.uniform1f(U('ramp'), st.def.ramp || .3);
-      gl.uniform1f(U('hz'), st.def.horizon); gl.uniform1f(U('asp'), st.iw / st.ih);
+    function load() {                                   // <picture> switches pc ↔ m on resize → matching clip
+      const src = img.currentSrc || img.src, key = keyOf(src);
+      if (key === st.key) return;
+      st.key = key; st.def = VIDEOS[key] || null;
+      if (!st.def) { pause(); v.removeAttribute('src'); v.removeAttribute('poster'); v.load(); layer.style.visibility = 'hidden'; return; }
+      const u = f => new URL(f, src).href;
+      layer.style.visibility = '';
+      v.style.setProperty('-webkit-mask-image', `url("${st.def.mask}")`); v.style.setProperty('mask-image', `url("${st.def.mask}")`);
+      v.poster = u(st.def.poster); v.src = u(st.def.mp4);
+      size(); play();
     }
-    const t0 = performance.now();
-    function frame(now) {
-      st.raf = 0;
-      if (!st.ready || !st.visible || document.hidden || reduce.matches) return;
-      gl.uniform1f(U('t'), ((now - t0) / 1000) % PERIOD);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      st.raf = requestAnimationFrame(frame);
-    }
-    function start() { if (!st.raf && st.ready && st.visible && !document.hidden && !reduce.matches) st.raf = requestAnimationFrame(frame); }
-    function stop() { if (st.raf) cancelAnimationFrame(st.raf); st.raf = 0; }
-    st.start = start; st.stop = stop; st.size = size;
-    img.addEventListener('load', load);               // <picture> switches pc ↔ m on resize
-    new ResizeObserver(() => { if (st.ready) size(); }).observe(banner);
-    if ('IntersectionObserver' in window) new IntersectionObserver(es => { st.visible = es[es.length - 1].isIntersecting; st.visible ? start() : stop(); }).observe(banner);
-    cv.addEventListener('webglcontextlost', e => { e.preventDefault(); stop(); st.ready = false; layer.style.display = 'none'; });
+    v.addEventListener('error', () => { st.errors++; layer.style.visibility = 'hidden'; });   // the photo underneath stays
+    img.addEventListener('load', () => { load(); size(); });
+    new ResizeObserver(size).observe(banner);
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { st.visible = es[es.length - 1].isIntersecting; st.visible ? play() : pause(); }).observe(banner);
+    st.start = play; st.stop = pause;
     flows.push(st);
-    if (img.complete && img.naturalWidth) load();
+    load();
   }
 
-  function scan() { if (!reduce.matches) document.querySelectorAll('.ns-page-banner').forEach(attach); }
-  reduce.addEventListener('change', () => {
-    flows.forEach(f => { f.layer.style.display = reduce.matches ? 'none' : ''; reduce.matches ? f.stop() : f.start(); });
-    scan();
-  });
+  function scan() { document.querySelectorAll('.ns-page-banner').forEach(attach); }
   document.addEventListener('visibilitychange', () => flows.forEach(f => document.hidden ? f.stop() : f.start()));
-  // measurement hook (live checks): where the sea is on screen for each banner
-  window.NatureSeaFlow = { masks: MASKS, state: () => flows.map(f => ({ key: f.key, ready: f.ready, running: !!f.raf, geo: f.geo, rect: f.banner.getBoundingClientRect().toJSON(), polys: f.def?.polys || [] })), mask: i => flows[i || 0]?.mask || null };
+  // measurement hook (live checks): which clip runs on each banner and where
+  window.NatureSeaFlow = { videos: VIDEOS, state: () => flows.map(f => ({ key: f.key, mode: 'video', src: f.video.currentSrc, playing: !f.video.paused && f.video.readyState > 2,
+    time: f.video.currentTime, errors: f.errors, geo: f.geo, rect: f.banner.getBoundingClientRect().toJSON() })) };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true }); else scan();
 })();
